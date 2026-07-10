@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#151310">
+<title>daily check-in</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<style>
+  :root {
+    --bg: #0e0c0a;
+    --card: #17140f;
+    --card-edge: #2a251d;
+    --field: #1d1913;
+    --text: #ece5d8;
+    --muted: #8a8375;
+    --faint: #56503f;
+    --sleep: #7b7fb8;
+    --sleep-dim: #4c4e74;
+    --mood: #c9a45c;
+    --mood-dim: #6d5a34;
+    --body: #8aa183;
+    --body-dim: #4d5c49;
+    --slipped: #c98b7a;
+    --cream: #ece5d8;
+    --seg-off: #221e17;
+    --radius: 14px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { height: 100%; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-size: 16px;
+    line-height: 1.4;
+  }
+  .serif { font-family: Georgia, "Times New Roman", serif; }
+
+  #app {
+    max-width: 560px;
+    margin: 0 auto;
+    padding: 20px 16px 90px;
+  }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--card-edge);
+    border-radius: 20px;
+    padding: 28px 22px;
+  }
+  h1 {
+    font-family: Georgia, "Times New Roman", serif;
+    font-weight: 500;
+    font-size: 2rem;
+    letter-spacing: 0.01em;
+  }
+  .sub {
+    color: var(--faint);
+    letter-spacing: 0.12em;
+    font-size: 0.95rem;
+    margin-top: 6px;
+  }
+  .label {
+    color: var(--muted);
+    letter-spacing: 0.14em;
+    font-size: 0.95rem;
+  }
+  .section { margin-top: 34px; }
+  .scale-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 14px;
+  }
+  .scale-val {
+    font-family: Georgia, serif;
+    font-size: 1.7rem;
+    min-width: 1.2em;
+    text-align: right;
+  }
+  .scale-val.empty { color: var(--faint); }
+
+  .segments { display: flex; gap: 7px; }
+  .segments button {
+    flex: 1;
+    height: 46px;
+    border: none;
+    border-radius: 8px;
+    background: var(--seg-off);
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+
+  .emoji-row { display: flex; gap: 4px; margin-top: 12px; }
+  .emoji-row button {
+    flex: 1;
+    background: none;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.25rem;
+    padding: 6px 0;
+    cursor: pointer;
+    filter: grayscale(1) opacity(0.45);
+    transition: filter 0.15s, transform 0.15s;
+  }
+  .emoji-row button.on {
+    filter: none;
+    transform: scale(1.25);
+  }
+
+  textarea {
+    width: 100%;
+    background: var(--field);
+    border: 1px solid var(--card-edge);
+    border-radius: var(--radius);
+    color: var(--text);
+    font: inherit;
+    padding: 16px;
+    min-height: 92px;
+    resize: vertical;
+    margin-top: 14px;
+  }
+  textarea::placeholder { color: var(--faint); }
+  textarea:focus { outline: 1px solid var(--muted); }
+
+  .btn-primary {
+    width: 100%;
+    margin-top: 34px;
+    background: var(--cream);
+    color: #17140f;
+    border: none;
+    border-radius: 999px;
+    padding: 18px;
+    font-family: Georgia, serif;
+    font-size: 1.35rem;
+    cursor: pointer;
+  }
+  .btn-primary:active { opacity: 0.85; }
+  .btn-ghost {
+    width: 100%;
+    margin-top: 14px;
+    background: none;
+    border: 1px solid var(--card-edge);
+    border-radius: var(--radius);
+    color: var(--muted);
+    padding: 15px;
+    font-size: 1.05rem;
+    letter-spacing: 0.06em;
+    cursor: pointer;
+  }
+
+  .summary {
+    background: var(--field);
+    border: 1px solid var(--card-edge);
+    border-radius: var(--radius);
+    padding: 18px;
+    margin-top: 26px;
+  }
+  .summary .label { font-size: 0.9rem; }
+  .summary-vals { display: flex; gap: 22px; margin-top: 12px; flex-wrap: wrap; }
+  .summary-vals span { color: var(--muted); letter-spacing: 0.06em; }
+  .summary-vals b {
+    font-family: Georgia, serif;
+    font-weight: 500;
+    font-size: 1.3rem;
+    color: var(--text);
+    margin-left: 4px;
+  }
+  .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 7px; vertical-align: 1px; }
+
+  .row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 20px 0;
+    border-bottom: 1px solid var(--card-edge);
+  }
+  .row:last-child { border-bottom: none; }
+  .row .name { flex: 1; font-size: 1.05rem; }
+  .pills { display: flex; gap: 8px; }
+  .pills button {
+    background: var(--field);
+    border: 1px solid var(--card-edge);
+    border-radius: 10px;
+    color: var(--muted);
+    padding: 12px 16px;
+    font-size: 0.95rem;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+  }
+  .pills button.held-on { border-color: var(--body); color: var(--body); background: #1a2018; }
+  .pills button.slipped-on { border-color: var(--slipped); color: var(--slipped); background: #241713; }
+  .pills button.neutral-on { border-color: var(--muted); color: var(--text); }
+  .row .remove {
+    background: none; border: none; color: var(--faint);
+    font-size: 1.1rem; cursor: pointer; padding: 6px;
+  }
+
+  .add-boundary { display: flex; gap: 8px; margin-top: 16px; }
+  .add-boundary input {
+    flex: 1;
+    background: var(--field);
+    border: 1px solid var(--card-edge);
+    border-radius: 10px;
+    color: var(--text);
+    font: inherit;
+    padding: 12px 14px;
+  }
+  .add-boundary input::placeholder { color: var(--faint); }
+  .add-boundary button {
+    background: var(--field);
+    border: 1px solid var(--card-edge);
+    border-radius: 10px;
+    color: var(--muted);
+    padding: 0 18px;
+    font-size: 1.3rem;
+    cursor: pointer;
+  }
+  .edit-link {
+    background: none; border: none; color: var(--faint);
+    font-size: 0.9rem; letter-spacing: 0.1em; cursor: pointer; padding: 4px 0;
+  }
+
+  /* trends */
+  .trends-head { display: flex; justify-content: space-between; align-items: center; }
+  .range-toggle {
+    display: flex;
+    background: var(--field);
+    border: 1px solid var(--card-edge);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .range-toggle button {
+    background: none; border: none; color: var(--muted);
+    padding: 10px 16px; font-size: 0.95rem; cursor: pointer;
+  }
+  .range-toggle button.on { background: #262117; color: var(--text); }
+  .avgs { display: flex; gap: 20px; margin-top: 26px; flex-wrap: wrap; }
+  .avgs span { color: var(--muted); letter-spacing: 0.06em; font-size: 0.95rem; }
+  .avgs b { font-family: Georgia, serif; font-weight: 500; font-size: 1.5rem; color: var(--text); margin-left: 6px; }
+  .chart-box {
+    background: var(--field);
+    border: 1px solid var(--card-edge);
+    border-radius: var(--radius);
+    padding: 12px;
+    margin-top: 22px;
+  }
+  .bar-row { display: flex; align-items: center; gap: 14px; padding: 14px 0; }
+  .bar-row .name { flex: 1; font-size: 1rem; }
+  .bar-track { flex: 1.2; height: 6px; background: var(--seg-off); border-radius: 3px; overflow: hidden; }
+  .bar-fill { height: 100%; background: var(--body); border-radius: 3px; }
+  .bar-row .pct { width: 56px; text-align: right; font-size: 1rem; }
+  .mini-card {
+    background: var(--field);
+    border: 1px solid var(--card-edge);
+    border-radius: var(--radius);
+    padding: 20px 18px;
+    margin-top: 30px;
+  }
+  .mini-card .bar-row { padding: 10px 0; }
+  .mini-card .bar-fill.gold-hi { background: var(--mood); }
+  .mini-card .bar-fill.gold-lo { background: var(--mood-dim); }
+  .mood-emoji-avg { margin-left: 8px; font-size: 1.2rem; }
+
+  .empty-note { color: var(--faint); margin-top: 20px; letter-spacing: 0.04em; }
+
+  /* tabs */
+  nav {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: rgba(14,12,10,0.92);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid var(--card-edge);
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
+  }
+  nav button {
+    background: none; border: none;
+    color: var(--muted);
+    font-size: 1.05rem;
+    letter-spacing: 0.08em;
+    padding: 12px 22px;
+    border-radius: 12px;
+    cursor: pointer;
+  }
+  nav button.on { background: #262117; color: var(--text); }
+
+  .toast {
+    position: fixed;
+    bottom: 92px; left: 50%;
+    transform: translateX(-50%);
+    background: var(--cream);
+    color: #17140f;
+    padding: 10px 22px;
+    border-radius: 999px;
+    font-size: 0.95rem;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s;
+    z-index: 10;
+  }
+  .toast.show { opacity: 1; }
+</style>
+</head>
+<body>
+<div id="app"><div class="card" id="view"></div></div>
+<nav>
+  <button data-tab="morning">morning</button>
+  <button data-tab="evening">evening</button>
+  <button data-tab="trends">trends</button>
+</nav>
+<div class="toast" id="toast"></div>
+
+<script>
+"use strict";
+
+// ---------- state ----------
+const STORE_KEY = "daily-checkin-v1";
+const MOOD_EMOJIS = ["😫","😞","😔","😕","😐","🙂","😊","😄","🤩","🥰"]; // 1..10
+
+const defaultState = () => ({
+  boundaries: ["22:00 cutoff", "no solo takeout", "bedtime before midnight"],
+  days: {}
+});
+
+let state = load();
+function load() {
+  try {
+    const raw = localStorage.getItem(STORE_KEY);
+    if (raw) {
+      const s = JSON.parse(raw);
+      if (s && typeof s === "object" && s.days) return Object.assign(defaultState(), s);
+    }
+  } catch (e) { /* corrupted store: start fresh */ }
+  return defaultState();
+}
+function save() { localStorage.setItem(STORE_KEY, JSON.stringify(state)); }
+
+function todayKey(offset = 0) {
+  const d = new Date();
+  d.setDate(d.getDate() + offset);
+  return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+}
+function prettyDate(key) {
+  const [y, m, d] = key.split("-").map(Number);
+  const dt = new Date(y, m - 1, d);
+  return dt.toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long" });
+}
+function day(key) {
+  if (!state.days[key]) state.days[key] = { morning: null, evening: null };
+  return state.days[key];
+}
+
+// ---------- drafts (unsaved edits per tab) ----------
+let tab = "morning";
+let range = 7;
+let editingBoundaries = false;
+let draft = { morning: null, evening: null };
+
+function morningDraft() {
+  if (!draft.morning) {
+    const saved = day(todayKey()).morning;
+    draft.morning = saved
+      ? JSON.parse(JSON.stringify(saved))
+      : { sleep: null, mood: null, body: null, intention: "" };
+  }
+  return draft.morning;
+}
+function eveningDraft() {
+  if (!draft.evening) {
+    const saved = day(todayKey()).evening;
+    if (saved) {
+      draft.evening = JSON.parse(JSON.stringify(saved));
+      // pick up boundaries added since last save
+      for (const b of state.boundaries) if (!(b in draft.evening.boundaries)) draft.evening.boundaries[b] = null;
+    } else {
+      const bounds = {};
+      for (const b of state.boundaries) bounds[b] = null;
+      draft.evening = { mood: null, body: null, boundaries: bounds, gym: null, happened: "", honest: "" };
+    }
+  }
+  return draft.evening;
+}
+
+// ---------- rendering helpers ----------
+const view = document.getElementById("view");
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+
+function scaleHTML(id, label, value, color, dimColor, withEmoji) {
+  let segs = "";
+  for (let i = 1; i <= 10; i++) {
+    const on = value !== null && i <= value;
+    const bg = on ? (i === value ? color : dimColor) : "";
+    segs += `<button data-scale="${id}" data-v="${i}" ${bg ? `style="background:${bg}"` : ""} aria-label="${label} ${i}"></button>`;
+  }
+  let emojis = "";
+  if (withEmoji) {
+    emojis = `<div class="emoji-row">` + MOOD_EMOJIS.map((e, i) =>
+      `<button data-scale="${id}" data-v="${i + 1}" class="${value === i + 1 ? "on" : ""}" aria-label="${label} ${i + 1}">${e}</button>`
+    ).join("") + `</div>`;
+  }
+  return `<div class="section">
+    <div class="scale-head">
+      <span class="label">${label}</span>
+      <span class="scale-val serif ${value === null ? "empty" : ""}" style="color:${value === null ? "" : color}">${value === null ? "–" : value}</span>
+    </div>
+    <div class="segments">${segs}</div>
+    ${emojis}
+  </div>`;
+}
+
+function moodEmojiFor(v) { return v ? MOOD_EMOJIS[v - 1] : ""; }
+
+// ---------- morning tab ----------
+function renderMorning() {
+  const m = morningDraft();
+  view.innerHTML = `
+    <h1>${prettyDate(todayKey())}</h1>
+    <div class="sub">updating morning</div>
+    ${scaleHTML("sleep", "sleep", m.sleep, "var(--sleep)", "var(--sleep-dim)", false)}
+    ${scaleHTML("mood", "mood", m.mood, "var(--mood)", "var(--mood-dim)", true)}
+    ${scaleHTML("body", "body", m.body, "var(--body)", "var(--body-dim)", false)}
+    <div class="section">
+      <div class="label">intention for today</div>
+      <textarea id="intention" placeholder="what's the day for?">${esc(m.intention)}</textarea>
+    </div>
+    <button class="btn-primary" id="save-morning">update</button>
+  `;
+  view.querySelectorAll("[data-scale]").forEach(b => b.onclick = () => {
+    const v = Number(b.dataset.v);
+    m[b.dataset.scale] = m[b.dataset.scale] === v ? null : v;
+    renderMorning();
+  });
+  view.querySelector("#intention").oninput = e => { m.intention = e.target.value; };
+  view.querySelector("#save-morning").onclick = () => {
+    m.savedAt = new Date().toISOString();
+    day(todayKey()).morning = JSON.parse(JSON.stringify(m));
+    save();
+    toast("morning saved");
+  };
+}
+
+// ---------- evening tab ----------
+function renderEvening() {
+  const ev = eveningDraft();
+  const m = day(todayKey()).morning;
+  const summary = m ? `
+    <div class="summary">
+      <div class="label">this morning</div>
+      <div class="summary-vals">
+        <span><span class="dot" style="background:var(--sleep)"></span>sleep <b>${m.sleep ?? "–"}</b></span>
+        <span><span class="dot" style="background:var(--mood)"></span>mood <b>${m.mood ?? "–"}</b>${m.mood ? `<span class="mood-emoji-avg">${moodEmojiFor(m.mood)}</span>` : ""}</span>
+        <span><span class="dot" style="background:var(--body)"></span>body <b>${m.body ?? "–"}</b></span>
+      </div>
+    </div>` : "";
+
+  const boundaryRows = state.boundaries.map(b => {
+    const st = ev.boundaries[b] ?? null;
+    return `<div class="row">
+      <span class="name">${esc(b)}</span>
+      <span class="pills">
+        <button data-b="${esc(b)}" data-s="held" class="${st === "held" ? "held-on" : ""}">held</button>
+        <button data-b="${esc(b)}" data-s="slipped" class="${st === "slipped" ? "slipped-on" : ""}">slipped</button>
+        <button data-b="${esc(b)}" data-s="" class="${st === null ? "neutral-on" : ""}">—</button>
+      </span>
+      ${editingBoundaries ? `<button class="remove" data-rm="${esc(b)}" aria-label="remove ${esc(b)}">✕</button>` : ""}
+    </div>`;
+  }).join("");
+
+  const gym = ev.gym;
+  view.innerHTML = `
+    <h1>${prettyDate(todayKey())}</h1>
+    <div class="sub">updating evening</div>
+    ${summary}
+    <div class="section">
+      <div class="label">how are you now?</div>
+    </div>
+    ${scaleHTML("mood", "mood", ev.mood, "var(--mood)", "var(--mood-dim)", true)}
+    ${scaleHTML("body", "body", ev.body, "var(--body)", "var(--body-dim)", false)}
+    <div class="section">
+      <div class="scale-head">
+        <span class="label">boundaries</span>
+        <button class="edit-link" id="edit-bounds">${editingBoundaries ? "done" : "edit"}</button>
+      </div>
+      ${boundaryRows}
+      ${editingBoundaries ? `<div class="add-boundary">
+        <input id="new-boundary" placeholder="new boundary…" maxlength="40">
+        <button id="add-boundary-btn" aria-label="add boundary">+</button>
+      </div>` : ""}
+    </div>
+    <div class="section">
+      <div class="row" style="border:none;padding:0">
+        <span class="name">gym</span>
+        <span class="pills">
+          <button data-gym="went" class="${gym === "went" ? "held-on" : ""}">went</button>
+          <button data-gym="rest" class="${gym === "rest" ? "neutral-on" : ""}">rest day</button>
+          <button data-gym="skipped" class="${gym === "skipped" ? "slipped-on" : ""}">skipped</button>
+        </span>
+      </div>
+    </div>
+    <div class="section">
+      <div class="label">what happened</div>
+      <textarea id="happened" placeholder="the shape of the day">${esc(ev.happened)}</textarea>
+    </div>
+    <div class="section">
+      <div class="label">one honest thing</div>
+      <textarea id="honest" placeholder="say it plainly">${esc(ev.honest)}</textarea>
+    </div>
+    <button class="btn-primary" id="save-evening">update</button>
+    <button class="btn-ghost" id="copy-md">copy daily note as markdown</button>
+  `;
+
+  view.querySelectorAll("[data-scale]").forEach(b => b.onclick = () => {
+    const v = Number(b.dataset.v);
+    ev[b.dataset.scale] = ev[b.dataset.scale] === v ? null : v;
+    renderEvening();
+  });
+  view.querySelectorAll("[data-b]").forEach(b => b.onclick = () => {
+    ev.boundaries[b.dataset.b] = b.dataset.s || null;
+    renderEvening();
+  });
+  view.querySelectorAll("[data-gym]").forEach(b => b.onclick = () => {
+    ev.gym = ev.gym === b.dataset.gym ? null : b.dataset.gym;
+    renderEvening();
+  });
+  view.querySelectorAll(".remove").forEach(b => b.onclick = () => {
+    const name = b.dataset.rm;
+    state.boundaries = state.boundaries.filter(x => x !== name);
+    delete ev.boundaries[name];
+    save();
+    renderEvening();
+  });
+  view.querySelector("#edit-bounds").onclick = () => { editingBoundaries = !editingBoundaries; renderEvening(); };
+  const addInput = view.querySelector("#new-boundary");
+  if (addInput) {
+    const add = () => {
+      const name = addInput.value.trim();
+      if (!name || state.boundaries.includes(name)) return;
+      state.boundaries.push(name);
+      ev.boundaries[name] = null;
+      save();
+      renderEvening();
+      view.querySelector("#new-boundary")?.focus();
+    };
+    view.querySelector("#add-boundary-btn").onclick = add;
+    addInput.onkeydown = e => { if (e.key === "Enter") add(); };
+  }
+  view.querySelector("#happened").oninput = e => { ev.happened = e.target.value; };
+  view.querySelector("#honest").oninput = e => { ev.honest = e.target.value; };
+  view.querySelector("#save-evening").onclick = () => {
+    ev.savedAt = new Date().toISOString();
+    day(todayKey()).evening = JSON.parse(JSON.stringify(ev));
+    save();
+    toast("evening saved");
+  };
+  view.querySelector("#copy-md").onclick = copyMarkdown;
+}
+
+function copyMarkdown() {
+  const key = todayKey();
+  const d = state.days[key] || {};
+  const m = d.morning, ev = d.evening;
+  const lines = [`# ${prettyDate(key)}`, ""];
+  if (m) {
+    lines.push("## morning");
+    lines.push(`- sleep: ${m.sleep ?? "–"}/10`);
+    lines.push(`- mood: ${m.mood ?? "–"}/10 ${moodEmojiFor(m.mood)}`.trim());
+    lines.push(`- body: ${m.body ?? "–"}/10`);
+    if (m.intention) lines.push(`- intention: ${m.intention}`);
+    lines.push("");
+  }
+  if (ev) {
+    lines.push("## evening");
+    lines.push(`- mood: ${ev.mood ?? "–"}/10 ${moodEmojiFor(ev.mood)}`.trim());
+    lines.push(`- body: ${ev.body ?? "–"}/10`);
+    const bounds = Object.entries(ev.boundaries).filter(([, s]) => s);
+    if (bounds.length) {
+      lines.push("- boundaries:");
+      for (const [name, s] of bounds) lines.push(`  - ${name}: ${s}`);
+    }
+    if (ev.gym) lines.push(`- gym: ${ev.gym}`);
+    if (ev.happened) lines.push(`- what happened: ${ev.happened}`);
+    if (ev.honest) lines.push(`- one honest thing: ${ev.honest}`);
+  }
+  const text = lines.join("\n").trim() + "\n";
+  navigator.clipboard.writeText(text).then(
+    () => toast("copied"),
+    () => toast("copy failed")
+  );
+}
+
+// ---------- trends tab ----------
+function collectWindow(n) {
+  const out = [];
+  for (let i = n - 1; i >= 0; i--) {
+    const key = todayKey(-i);
+    const d = state.days[key];
+    const m = d?.morning, ev = d?.evening;
+    out.push({
+      key,
+      sleep: m?.sleep ?? null,
+      mood: ev?.mood ?? m?.mood ?? null,
+      body: ev?.body ?? m?.body ?? null,
+      boundaries: ev?.boundaries ?? null
+    });
+  }
+  return out;
+}
+const avg = xs => xs.length ? xs.reduce((a, b) => a + b, 0) / xs.length : null;
+const fmt1 = x => x === null ? "–" : (Math.round(x * 10) / 10).toFixed(1);
+
+function chartSVG(days) {
+  const W = 640, H = 260, padL = 34, padR = 14, padT = 16, padB = 30;
+  const x = i => padL + (days.length === 1 ? 0 : i * (W - padL - padR) / (days.length - 1));
+  const y = v => padT + (10 - v) * (H - padT - padB) / 9; // 1..10
+  const series = [["sleep", "var(--sleep)"], ["mood", "var(--mood)"], ["body", "var(--body)"]];
+  let g = "";
+  for (const gy of [1, 4, 7, 10]) {
+    g += `<line x1="${padL}" y1="${y(gy)}" x2="${W - padR}" y2="${y(gy)}" stroke="#2a251d" stroke-width="1"/>`;
+    g += `<text x="${padL - 8}" y="${y(gy) + 4}" fill="#56503f" font-size="11" text-anchor="end">${gy}</text>`;
+  }
+  const labelEvery = Math.max(1, Math.ceil(days.length / 7));
+  days.forEach((d, i) => {
+    if (i % labelEvery === 0 || i === days.length - 1) {
+      const [, m, dd] = d.key.split("-");
+      g += `<text x="${x(i)}" y="${H - 8}" fill="#56503f" font-size="11" text-anchor="middle">${Number(dd)}.${m}</text>`;
+    }
+  });
+  for (const [field, color] of series) {
+    let path = "", prev = false;
+    days.forEach((d, i) => {
+      const v = d[field];
+      if (v === null) { prev = false; return; }
+      path += (prev ? "L" : "M") + x(i).toFixed(1) + " " + y(v).toFixed(1) + " ";
+      prev = true;
+      g += `<circle cx="${x(i).toFixed(1)}" cy="${y(v).toFixed(1)}" r="3.5" fill="${color}"/>`;
+    });
+    if (path) g = `<path d="${path.trim()}" fill="none" stroke="${color}" stroke-width="2" opacity="0.8"/>` + g;
+  }
+  return `<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="sleep, mood and body over time">${g}</svg>`;
+}
+
+function renderTrends() {
+  const days = collectWindow(range);
+  const sleepA = avg(days.map(d => d.sleep).filter(v => v !== null));
+  const moodVals = days.map(d => d.mood).filter(v => v !== null);
+  const moodA = avg(moodVals);
+  const bodyA = avg(days.map(d => d.body).filter(v => v !== null));
+  const hasData = days.some(d => d.sleep !== null || d.mood !== null || d.body !== null);
+
+  // boundary hold rates
+  const bstats = state.boundaries.map(name => {
+    let held = 0, total = 0;
+    for (const d of days) {
+      const s = d.boundaries?.[name];
+      if (s === "held") { held++; total++; }
+      else if (s === "slipped") total++;
+    }
+    return { name, pct: total ? Math.round(100 * held / total) : null };
+  });
+
+  // mood x sleep split
+  const paired = days.filter(d => d.sleep !== null && d.mood !== null);
+  let hi = null, lo = null;
+  if (paired.length >= 2) {
+    const sMean = avg(paired.map(d => d.sleep));
+    const hiDays = paired.filter(d => d.sleep >= sMean);
+    const loDays = paired.filter(d => d.sleep < sMean);
+    if (hiDays.length && loDays.length) {
+      hi = avg(hiDays.map(d => d.mood));
+      lo = avg(loDays.map(d => d.mood));
+    }
+  }
+
+  view.innerHTML = `
+    <div class="trends-head">
+      <h1 style="font-size:2.2rem">trends</h1>
+      <div class="range-toggle">
+        ${[7, 14, 30].map(n => `<button data-range="${n}" class="${range === n ? "on" : ""}">${n}d</button>`).join("")}
+      </div>
+    </div>
+    <div class="avgs">
+      <span><span class="dot" style="background:var(--sleep)"></span>sleep <b>${fmt1(sleepA)}</b></span>
+      <span><span class="dot" style="background:var(--mood)"></span>mood <b>${fmt1(moodA)}</b>${moodA !== null ? `<span class="mood-emoji-avg">${moodEmojiFor(Math.round(moodA))}</span>` : ""}</span>
+      <span><span class="dot" style="background:var(--body)"></span>body <b>${fmt1(bodyA)}</b></span>
+    </div>
+    <div class="chart-box">${hasData ? chartSVG(days) : `<div class="empty-note" style="margin:20px">no check-ins yet — trends appear once you save a few days</div>`}</div>
+    <div class="section">
+      <div class="label">boundaries</div>
+      ${bstats.map(b => `<div class="bar-row">
+        <span class="name">${esc(b.name)}</span>
+        <span class="bar-track"><span class="bar-fill" style="width:${b.pct ?? 0}%"></span></span>
+        <span class="pct">${b.pct === null ? "–" : b.pct + "%"}</span>
+      </div>`).join("")}
+    </div>
+    <div class="mini-card">
+      <div class="label">mood × sleep</div>
+      ${hi !== null ? `
+        <div class="bar-row"><span class="name" style="color:var(--muted)">higher-sleep days</span>
+          <span class="bar-track"><span class="bar-fill gold-hi" style="width:${hi * 10}%"></span></span>
+          <span class="pct">${fmt1(hi)}</span></div>
+        <div class="bar-row"><span class="name" style="color:var(--muted)">lower-sleep days</span>
+          <span class="bar-track"><span class="bar-fill gold-lo" style="width:${lo * 10}%"></span></span>
+          <span class="pct">${fmt1(lo)}</span></div>`
+      : `<div class="empty-note">needs a few days with both sleep and mood logged</div>`}
+    </div>
+    <button class="btn-ghost" id="export-json" style="margin-top:30px">export data (json)</button>
+    <button class="btn-ghost" id="import-json">import data</button>
+    <input type="file" id="import-file" accept="application/json" hidden>
+  `;
+  view.querySelectorAll("[data-range]").forEach(b => b.onclick = () => { range = Number(b.dataset.range); renderTrends(); });
+  view.querySelector("#export-json").onclick = () => {
+    const blob = new Blob([JSON.stringify(state, null, 2)], { type: "application/json" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = `daily-checkin-${todayKey()}.json`;
+    a.click();
+    URL.revokeObjectURL(a.href);
+  };
+  const fileInput = view.querySelector("#import-file");
+  view.querySelector("#import-json").onclick = () => fileInput.click();
+  fileInput.onchange = () => {
+    const f = fileInput.files[0];
+    if (!f) return;
+    f.text().then(text => {
+      const s = JSON.parse(text);
+      if (!s || typeof s !== "object" || !s.days) throw new Error("bad file");
+      state = Object.assign(defaultState(), s);
+      save();
+      draft = { morning: null, evening: null };
+      renderTrends();
+      toast("imported");
+    }).catch(() => toast("couldn't read that file"));
+  };
+}
+
+// ---------- shell ----------
+function toast(msg) {
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  clearTimeout(toast._t);
+  toast._t = setTimeout(() => t.classList.remove("show"), 1600);
+}
+
+const renderers = { morning: renderMorning, evening: renderEvening, trends: renderTrends };
+function setTab(name) {
+  tab = name;
+  document.querySelectorAll("nav button").forEach(b => b.classList.toggle("on", b.dataset.tab === name));
+  renderers[name]();
+  window.scrollTo(0, 0);
+}
+document.querySelectorAll("nav button").forEach(b => b.onclick = () => setTab(b.dataset.tab));
+
+// default tab: evening after 17:00, else morning
+setTab(new Date().getHours() >= 17 ? "evening" : "morning");
+
+if ("serviceWorker" in navigator && location.protocol === "https:") {
+  navigator.serviceWorker.register("sw.js").catch(() => {});
+}
+</script>
+</body>
+</html>
