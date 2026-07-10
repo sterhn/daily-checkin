@@ -34,160 +34,170 @@
     background: var(--bg);
     color: var(--text);
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    font-size: 16px;
-    line-height: 1.4;
+    font-size: 14.5px;
+    line-height: 1.45;
   }
   .serif { font-family: Georgia, "Times New Roman", serif; }
 
   #app {
-    max-width: 560px;
+    max-width: 480px;
     margin: 0 auto;
-    padding: 20px 16px 90px;
+    padding: 14px 12px 76px;
   }
   .card {
     background: var(--card);
     border: 1px solid var(--card-edge);
-    border-radius: 20px;
-    padding: 28px 22px;
+    border-radius: 16px;
+    padding: 24px 20px;
   }
   h1 {
     font-family: Georgia, "Times New Roman", serif;
-    font-weight: 500;
-    font-size: 2rem;
+    font-weight: 400;
+    font-size: 1.55rem;
     letter-spacing: 0.01em;
   }
   .sub {
     color: var(--faint);
-    letter-spacing: 0.12em;
-    font-size: 0.95rem;
-    margin-top: 6px;
+    letter-spacing: 0.14em;
+    font-size: 0.78rem;
+    margin-top: 3px;
   }
   .label {
     color: var(--muted);
     letter-spacing: 0.14em;
-    font-size: 0.95rem;
+    font-size: 0.78rem;
+    text-transform: lowercase;
   }
-  .section { margin-top: 34px; }
+  .section { margin-top: 26px; }
   .scale-head {
     display: flex;
     justify-content: space-between;
     align-items: baseline;
-    margin-bottom: 14px;
+    margin-bottom: 10px;
   }
   .scale-val {
     font-family: Georgia, serif;
-    font-size: 1.7rem;
+    font-size: 1.3rem;
     min-width: 1.2em;
     text-align: right;
   }
   .scale-val.empty { color: var(--faint); }
 
-  .segments { display: flex; gap: 7px; }
+  .segments { display: flex; gap: 5px; }
   .segments button {
     flex: 1;
-    height: 46px;
+    height: 30px;
     border: none;
-    border-radius: 8px;
+    border-radius: 6px;
     background: var(--seg-off);
     cursor: pointer;
     transition: background 0.15s;
   }
 
-  .emoji-row { display: flex; gap: 4px; margin-top: 12px; }
-  .emoji-row button {
+  .face-row { display: flex; gap: 5px; margin-top: 9px; align-items: center; }
+  .face-row button {
     flex: 1;
     background: none;
     border: none;
-    border-radius: 8px;
-    font-size: 1.25rem;
-    padding: 6px 0;
+    padding: 2px 0;
     cursor: pointer;
-    filter: grayscale(1) opacity(0.45);
-    transition: filter 0.15s, transform 0.15s;
+    line-height: 0;
   }
-  .emoji-row button.on {
-    filter: none;
-    transform: scale(1.25);
+  .face-row svg { width: 100%; max-width: 26px; height: auto; }
+  .face-row .face-stroke { stroke: var(--faint); transition: stroke 0.15s; }
+  .face-row .face-fill { fill: var(--faint); transition: fill 0.15s; }
+  .face-row button.on .face-stroke { stroke: var(--mood); }
+  .face-row button.on .face-fill { fill: var(--mood); }
+  .face-row button.on svg { filter: drop-shadow(0 0 5px rgba(201,164,92,0.45)); }
+  .mood-word {
+    margin-top: 7px;
+    font-family: Georgia, serif;
+    font-style: italic;
+    font-size: 0.85rem;
+    color: var(--mood);
+    letter-spacing: 0.08em;
+    min-height: 1.2em;
+    text-align: right;
   }
 
   textarea {
     width: 100%;
     background: var(--field);
     border: 1px solid var(--card-edge);
-    border-radius: var(--radius);
+    border-radius: 10px;
     color: var(--text);
     font: inherit;
-    padding: 16px;
-    min-height: 92px;
+    padding: 12px;
+    min-height: 68px;
     resize: vertical;
-    margin-top: 14px;
+    margin-top: 10px;
   }
   textarea::placeholder { color: var(--faint); }
   textarea:focus { outline: 1px solid var(--muted); }
 
   .btn-primary {
     width: 100%;
-    margin-top: 34px;
+    margin-top: 26px;
     background: var(--cream);
     color: #17140f;
     border: none;
     border-radius: 999px;
-    padding: 18px;
+    padding: 13px;
     font-family: Georgia, serif;
-    font-size: 1.35rem;
+    font-size: 1.1rem;
     cursor: pointer;
   }
   .btn-primary:active { opacity: 0.85; }
   .btn-ghost {
     width: 100%;
-    margin-top: 14px;
+    margin-top: 10px;
     background: none;
     border: 1px solid var(--card-edge);
-    border-radius: var(--radius);
+    border-radius: 10px;
     color: var(--muted);
-    padding: 15px;
-    font-size: 1.05rem;
-    letter-spacing: 0.06em;
+    padding: 11px;
+    font-size: 0.85rem;
+    letter-spacing: 0.08em;
     cursor: pointer;
   }
 
   .summary {
     background: var(--field);
     border: 1px solid var(--card-edge);
-    border-radius: var(--radius);
-    padding: 18px;
-    margin-top: 26px;
+    border-radius: 10px;
+    padding: 13px 15px;
+    margin-top: 20px;
   }
-  .summary .label { font-size: 0.9rem; }
-  .summary-vals { display: flex; gap: 22px; margin-top: 12px; flex-wrap: wrap; }
-  .summary-vals span { color: var(--muted); letter-spacing: 0.06em; }
+  .summary .label { font-size: 0.72rem; }
+  .summary-vals { display: flex; gap: 18px; margin-top: 8px; flex-wrap: wrap; align-items: center; }
+  .summary-vals span { color: var(--muted); letter-spacing: 0.05em; font-size: 0.85rem; }
   .summary-vals b {
     font-family: Georgia, serif;
-    font-weight: 500;
-    font-size: 1.3rem;
+    font-weight: 400;
+    font-size: 1.05rem;
     color: var(--text);
-    margin-left: 4px;
+    margin-left: 3px;
   }
-  .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 7px; vertical-align: 1px; }
+  .dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; margin-right: 6px; vertical-align: 1px; }
 
   .row {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 10px;
-    padding: 20px 0;
+    gap: 8px;
+    padding: 13px 0;
     border-bottom: 1px solid var(--card-edge);
   }
   .row:last-child { border-bottom: none; }
-  .row .name { flex: 1; font-size: 1.05rem; }
-  .pills { display: flex; gap: 8px; }
+  .row .name { flex: 1; font-size: 0.9rem; }
+  .pills { display: flex; gap: 6px; }
   .pills button {
     background: var(--field);
     border: 1px solid var(--card-edge);
-    border-radius: 10px;
+    border-radius: 8px;
     color: var(--muted);
-    padding: 12px 16px;
-    font-size: 0.95rem;
+    padding: 7px 11px;
+    font-size: 0.8rem;
     letter-spacing: 0.04em;
     cursor: pointer;
   }
@@ -196,32 +206,32 @@
   .pills button.neutral-on { border-color: var(--muted); color: var(--text); }
   .row .remove {
     background: none; border: none; color: var(--faint);
-    font-size: 1.1rem; cursor: pointer; padding: 6px;
+    font-size: 0.95rem; cursor: pointer; padding: 4px;
   }
 
-  .add-boundary { display: flex; gap: 8px; margin-top: 16px; }
+  .add-boundary { display: flex; gap: 6px; margin-top: 12px; }
   .add-boundary input {
     flex: 1;
     background: var(--field);
     border: 1px solid var(--card-edge);
-    border-radius: 10px;
+    border-radius: 8px;
     color: var(--text);
     font: inherit;
-    padding: 12px 14px;
+    padding: 9px 11px;
   }
   .add-boundary input::placeholder { color: var(--faint); }
   .add-boundary button {
     background: var(--field);
     border: 1px solid var(--card-edge);
-    border-radius: 10px;
+    border-radius: 8px;
     color: var(--muted);
-    padding: 0 18px;
-    font-size: 1.3rem;
+    padding: 0 14px;
+    font-size: 1.1rem;
     cursor: pointer;
   }
   .edit-link {
     background: none; border: none; color: var(--faint);
-    font-size: 0.9rem; letter-spacing: 0.1em; cursor: pointer; padding: 4px 0;
+    font-size: 0.75rem; letter-spacing: 0.12em; cursor: pointer; padding: 3px 0;
   }
 
   /* trends */
@@ -230,42 +240,45 @@
     display: flex;
     background: var(--field);
     border: 1px solid var(--card-edge);
-    border-radius: 12px;
+    border-radius: 9px;
     overflow: hidden;
   }
   .range-toggle button {
     background: none; border: none; color: var(--muted);
-    padding: 10px 16px; font-size: 0.95rem; cursor: pointer;
+    padding: 7px 12px; font-size: 0.8rem; cursor: pointer;
   }
   .range-toggle button.on { background: #262117; color: var(--text); }
-  .avgs { display: flex; gap: 20px; margin-top: 26px; flex-wrap: wrap; }
-  .avgs span { color: var(--muted); letter-spacing: 0.06em; font-size: 0.95rem; }
-  .avgs b { font-family: Georgia, serif; font-weight: 500; font-size: 1.5rem; color: var(--text); margin-left: 6px; }
+  .avgs { display: flex; gap: 18px; margin-top: 20px; flex-wrap: wrap; align-items: center; }
+  .avgs span { color: var(--muted); letter-spacing: 0.05em; font-size: 0.85rem; }
+  .avgs b { font-family: Georgia, serif; font-weight: 400; font-size: 1.2rem; color: var(--text); margin-left: 5px; }
   .chart-box {
     background: var(--field);
     border: 1px solid var(--card-edge);
-    border-radius: var(--radius);
-    padding: 12px;
-    margin-top: 22px;
+    border-radius: 10px;
+    padding: 10px;
+    margin-top: 18px;
   }
-  .bar-row { display: flex; align-items: center; gap: 14px; padding: 14px 0; }
-  .bar-row .name { flex: 1; font-size: 1rem; }
-  .bar-track { flex: 1.2; height: 6px; background: var(--seg-off); border-radius: 3px; overflow: hidden; }
-  .bar-fill { height: 100%; background: var(--body); border-radius: 3px; }
-  .bar-row .pct { width: 56px; text-align: right; font-size: 1rem; }
+  .bar-row { display: flex; align-items: center; gap: 12px; padding: 10px 0; }
+  .bar-row .name { flex: 1; font-size: 0.85rem; }
+  .bar-track { flex: 1.2; height: 4px; background: var(--seg-off); border-radius: 2px; overflow: hidden; }
+  .bar-fill { height: 100%; background: var(--body); border-radius: 2px; }
+  .bar-row .pct { width: 46px; text-align: right; font-size: 0.85rem; }
   .mini-card {
     background: var(--field);
     border: 1px solid var(--card-edge);
-    border-radius: var(--radius);
-    padding: 20px 18px;
-    margin-top: 30px;
+    border-radius: 10px;
+    padding: 15px 14px;
+    margin-top: 22px;
   }
-  .mini-card .bar-row { padding: 10px 0; }
+  .mini-card .bar-row { padding: 7px 0; }
   .mini-card .bar-fill.gold-hi { background: var(--mood); }
   .mini-card .bar-fill.gold-lo { background: var(--mood-dim); }
-  .mood-emoji-avg { margin-left: 8px; font-size: 1.2rem; }
+  .mood-face-inline { display: inline-block; vertical-align: -3px; margin-left: 6px; line-height: 0; }
+  .mood-face-inline svg { width: 15px; height: 15px; }
+  .mood-face-inline .face-stroke { stroke: var(--mood); }
+  .mood-face-inline .face-fill { fill: var(--mood); }
 
-  .empty-note { color: var(--faint); margin-top: 20px; letter-spacing: 0.04em; }
+  .empty-note { color: var(--faint); margin-top: 16px; letter-spacing: 0.04em; font-size: 0.85rem; }
 
   /* tabs */
   nav {
@@ -276,29 +289,29 @@
     border-top: 1px solid var(--card-edge);
     display: flex;
     justify-content: center;
-    gap: 8px;
-    padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
+    gap: 6px;
+    padding: 7px 14px calc(7px + env(safe-area-inset-bottom));
   }
   nav button {
     background: none; border: none;
     color: var(--muted);
-    font-size: 1.05rem;
-    letter-spacing: 0.08em;
-    padding: 12px 22px;
-    border-radius: 12px;
+    font-size: 0.85rem;
+    letter-spacing: 0.1em;
+    padding: 9px 18px;
+    border-radius: 9px;
     cursor: pointer;
   }
   nav button.on { background: #262117; color: var(--text); }
 
   .toast {
     position: fixed;
-    bottom: 92px; left: 50%;
+    bottom: 74px; left: 50%;
     transform: translateX(-50%);
     background: var(--cream);
     color: #17140f;
-    padding: 10px 22px;
+    padding: 8px 18px;
     border-radius: 999px;
-    font-size: 0.95rem;
+    font-size: 0.85rem;
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.25s;
@@ -321,7 +334,24 @@
 
 // ---------- state ----------
 const STORE_KEY = "daily-checkin-v1";
-const MOOD_EMOJIS = ["😫","😞","😔","😕","😐","🙂","😊","😄","🤩","🥰"]; // 1..10
+const MOOD_WORDS = ["drained","rough","low","meh","okay","fine","good","bright","great","radiant"]; // 1..10
+
+// minimal line-drawn face: mouth curves from frown (1) to smile (10)
+function faceSVG(v) {
+  const t = (v - 5.5) / 4.5;              // -1 .. 1
+  const bend = t * 11;                     // mouth curvature
+  const my = 31 - t * 1.5;                 // mouth drifts up slightly as it smiles
+  return `<svg viewBox="0 0 48 48" aria-hidden="true">
+    <g class="face-stroke" fill="none" stroke-width="2.6" stroke-linecap="round">
+      <circle cx="24" cy="24" r="20"/>
+      <path d="M15 ${my} Q 24 ${my + bend} 33 ${my}"/>
+    </g>
+    <g class="face-fill">
+      <circle cx="17.5" cy="19" r="2.1"/>
+      <circle cx="30.5" cy="19" r="2.1"/>
+    </g>
+  </svg>`;
+}
 
 const defaultState = () => ({
   boundaries: ["22:00 cutoff", "no solo takeout", "bedtime before midnight"],
@@ -391,18 +421,19 @@ function eveningDraft() {
 const view = document.getElementById("view");
 const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 
-function scaleHTML(id, label, value, color, dimColor, withEmoji) {
+function scaleHTML(id, label, value, color, dimColor, withFaces) {
   let segs = "";
   for (let i = 1; i <= 10; i++) {
     const on = value !== null && i <= value;
     const bg = on ? (i === value ? color : dimColor) : "";
     segs += `<button data-scale="${id}" data-v="${i}" ${bg ? `style="background:${bg}"` : ""} aria-label="${label} ${i}"></button>`;
   }
-  let emojis = "";
-  if (withEmoji) {
-    emojis = `<div class="emoji-row">` + MOOD_EMOJIS.map((e, i) =>
-      `<button data-scale="${id}" data-v="${i + 1}" class="${value === i + 1 ? "on" : ""}" aria-label="${label} ${i + 1}">${e}</button>`
-    ).join("") + `</div>`;
+  let faces = "";
+  if (withFaces) {
+    faces = `<div class="face-row">` + MOOD_WORDS.map((w, i) =>
+      `<button data-scale="${id}" data-v="${i + 1}" class="${value === i + 1 ? "on" : ""}" aria-label="${label} ${i + 1} — ${w}">${faceSVG(i + 1)}</button>`
+    ).join("") + `</div>
+    <div class="mood-word">${value ? moodWord(value) : ""}</div>`;
   }
   return `<div class="section">
     <div class="scale-head">
@@ -410,11 +441,12 @@ function scaleHTML(id, label, value, color, dimColor, withEmoji) {
       <span class="scale-val serif ${value === null ? "empty" : ""}" style="color:${value === null ? "" : color}">${value === null ? "–" : value}</span>
     </div>
     <div class="segments">${segs}</div>
-    ${emojis}
+    ${faces}
   </div>`;
 }
 
-function moodEmojiFor(v) { return v ? MOOD_EMOJIS[v - 1] : ""; }
+function moodWord(v) { return v ? MOOD_WORDS[v - 1] : ""; }
+function moodFaceInline(v) { return v ? `<span class="mood-face-inline">${faceSVG(v)}</span>` : ""; }
 
 // ---------- morning tab ----------
 function renderMorning() {
@@ -454,7 +486,7 @@ function renderEvening() {
       <div class="label">this morning</div>
       <div class="summary-vals">
         <span><span class="dot" style="background:var(--sleep)"></span>sleep <b>${m.sleep ?? "–"}</b></span>
-        <span><span class="dot" style="background:var(--mood)"></span>mood <b>${m.mood ?? "–"}</b>${m.mood ? `<span class="mood-emoji-avg">${moodEmojiFor(m.mood)}</span>` : ""}</span>
+        <span><span class="dot" style="background:var(--mood)"></span>mood <b>${m.mood ?? "–"}</b>${moodFaceInline(m.mood)}</span>
         <span><span class="dot" style="background:var(--body)"></span>body <b>${m.body ?? "–"}</b></span>
       </div>
     </div>` : "";
@@ -569,14 +601,14 @@ function copyMarkdown() {
   if (m) {
     lines.push("## morning");
     lines.push(`- sleep: ${m.sleep ?? "–"}/10`);
-    lines.push(`- mood: ${m.mood ?? "–"}/10 ${moodEmojiFor(m.mood)}`.trim());
+    lines.push(`- mood: ${m.mood ?? "–"}/10${m.mood ? ` (${moodWord(m.mood)})` : ""}`);
     lines.push(`- body: ${m.body ?? "–"}/10`);
     if (m.intention) lines.push(`- intention: ${m.intention}`);
     lines.push("");
   }
   if (ev) {
     lines.push("## evening");
-    lines.push(`- mood: ${ev.mood ?? "–"}/10 ${moodEmojiFor(ev.mood)}`.trim());
+    lines.push(`- mood: ${ev.mood ?? "–"}/10${ev.mood ? ` (${moodWord(ev.mood)})` : ""}`);
     lines.push(`- body: ${ev.body ?? "–"}/10`);
     const bounds = Object.entries(ev.boundaries).filter(([, s]) => s);
     if (bounds.length) {
@@ -679,14 +711,14 @@ function renderTrends() {
 
   view.innerHTML = `
     <div class="trends-head">
-      <h1 style="font-size:2.2rem">trends</h1>
+      <h1 style="font-size:1.7rem">trends</h1>
       <div class="range-toggle">
         ${[7, 14, 30].map(n => `<button data-range="${n}" class="${range === n ? "on" : ""}">${n}d</button>`).join("")}
       </div>
     </div>
     <div class="avgs">
       <span><span class="dot" style="background:var(--sleep)"></span>sleep <b>${fmt1(sleepA)}</b></span>
-      <span><span class="dot" style="background:var(--mood)"></span>mood <b>${fmt1(moodA)}</b>${moodA !== null ? `<span class="mood-emoji-avg">${moodEmojiFor(Math.round(moodA))}</span>` : ""}</span>
+      <span><span class="dot" style="background:var(--mood)"></span>mood <b>${fmt1(moodA)}</b>${moodA !== null ? moodFaceInline(Math.round(moodA)) : ""}</span>
       <span><span class="dot" style="background:var(--body)"></span>body <b>${fmt1(bodyA)}</b></span>
     </div>
     <div class="chart-box">${hasData ? chartSVG(days) : `<div class="empty-note" style="margin:20px">no check-ins yet — trends appear once you save a few days</div>`}</div>

@@ -6,9 +6,9 @@ Built as a single self-contained page — no accounts, no server, no tracking. E
 
 ## Features
 
-- **Morning**: sleep / mood / body on a 1–10 scale, mood also pickable by emoji 😫→🥰, and an intention for the day
+- **Morning**: sleep / mood / body on a 1–10 scale, plus an intention for the day
 - **Evening**: how you feel now, boundary tracking (held / slipped), gym (went / rest day / skipped), "what happened", and "one honest thing"
-- **Emoji mood picker**: tap an emoji to set your mood — it stays in sync with the numeric scale
+- **Mood face picker**: a row of ten minimal line-drawn faces, frown to smile — tap one to set your mood, in sync with the numeric scale, each with its own word (drained → radiant)
 - **Trends**: averages, a sleep/mood/body chart, boundary hold rates, and a mood × sleep comparison over 7, 14, or 30 days
 - **Editable boundaries**: add or remove your own boundaries from the evening tab
 - **Copy daily note as markdown** — paste the day into your journal or notes app
