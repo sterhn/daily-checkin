@@ -83,16 +83,17 @@
   }
   .scale-val.empty { color: var(--faint); }
 
-  .segments { display: flex; gap: 5px; }
+  .segments { display: flex; gap: 5px; touch-action: pan-y; cursor: pointer; }
   .segments button {
     flex: 1;
     height: 30px;
     border: none;
     border-radius: 6px;
     background: var(--seg-off);
-    cursor: pointer;
-    transition: background 0.15s;
+    pointer-events: none; /* slide is handled on the row */
+    transition: background 0.16s ease, transform 0.2s cubic-bezier(0.34, 1.4, 0.64, 1);
   }
+  .segments button.tip { transform: scaleY(1.25); }
 
   .face-row { display: flex; gap: 5px; margin-top: 9px; align-items: center; }
   .face-row button {
@@ -102,10 +103,12 @@
     padding: 2px 0;
     cursor: pointer;
     line-height: 0;
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
+  .face-row button.on { transform: scale(1.22); }
   .face-row svg { width: 100%; max-width: 26px; height: auto; }
-  .face-row .face-stroke { stroke: var(--faint); transition: stroke 0.15s; }
-  .face-row .face-fill { fill: var(--faint); transition: fill 0.15s; }
+  .face-row .face-stroke { stroke: var(--faint); transition: stroke 0.2s; }
+  .face-row .face-fill { fill: var(--faint); transition: fill 0.2s; }
   .face-row button.on .face-stroke { stroke: var(--mood); }
   .face-row button.on .face-fill { fill: var(--mood); }
   .face-row button.on svg { filter: drop-shadow(0 0 5px rgba(201,164,92,0.45)); }
@@ -118,6 +121,16 @@
     letter-spacing: 0.08em;
     min-height: 1.2em;
     text-align: right;
+  }
+  .mood-word.wisp { animation: wisp 0.35s ease; }
+  @keyframes wisp {
+    from { opacity: 0; transform: translateY(4px); }
+    to   { opacity: 1; transform: none; }
+  }
+  .scale-val.bump { animation: bump 0.28s cubic-bezier(0.34, 1.56, 0.64, 1); }
+  @keyframes bump {
+    0% { transform: scale(1.45); }
+    100% { transform: scale(1); }
   }
 
   textarea {
@@ -147,7 +160,13 @@
     font-size: 1.1rem;
     cursor: pointer;
   }
-  .btn-primary:active { opacity: 0.85; }
+  .btn-primary { transition: transform 0.12s ease, opacity 0.12s ease; }
+  .btn-primary:active { opacity: 0.88; transform: scale(0.975); }
+  .btn-primary.pulse { animation: pulse 0.45s ease; }
+  @keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(236, 229, 216, 0.45); }
+    100% { box-shadow: 0 0 0 14px rgba(236, 229, 216, 0); }
+  }
   .btn-ghost {
     width: 100%;
     margin-top: 10px;
@@ -200,7 +219,9 @@
     font-size: 0.8rem;
     letter-spacing: 0.04em;
     cursor: pointer;
+    transition: background 0.18s, color 0.18s, border-color 0.18s, transform 0.12s;
   }
+  .pills button:active { transform: scale(0.94); }
   .pills button.held-on { border-color: var(--body); color: var(--body); background: #1a2018; }
   .pills button.slipped-on { border-color: var(--slipped); color: var(--slipped); background: #241713; }
   .pills button.neutral-on { border-color: var(--muted); color: var(--text); }
@@ -261,7 +282,7 @@
   .bar-row { display: flex; align-items: center; gap: 12px; padding: 10px 0; }
   .bar-row .name { flex: 1; font-size: 0.85rem; }
   .bar-track { flex: 1.2; height: 4px; background: var(--seg-off); border-radius: 2px; overflow: hidden; }
-  .bar-fill { height: 100%; background: var(--body); border-radius: 2px; }
+  .bar-fill { height: 100%; background: var(--body); border-radius: 2px; transition: width 0.8s cubic-bezier(0.22, 1, 0.36, 1); }
   .bar-row .pct { width: 46px; text-align: right; font-size: 0.85rem; }
   .mini-card {
     background: var(--field);
@@ -306,7 +327,7 @@
   .toast {
     position: fixed;
     bottom: 74px; left: 50%;
-    transform: translateX(-50%);
+    transform: translate(-50%, 8px);
     background: var(--cream);
     color: #17140f;
     padding: 8px 18px;
@@ -314,10 +335,21 @@
     font-size: 0.85rem;
     opacity: 0;
     pointer-events: none;
-    transition: opacity 0.25s;
+    transition: opacity 0.25s, transform 0.25s cubic-bezier(0.34, 1.4, 0.64, 1);
     z-index: 10;
   }
-  .toast.show { opacity: 1; }
+  .toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+  #view.enter { animation: fadeUp 0.32s cubic-bezier(0.22, 1, 0.36, 1); }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: none; }
+  }
+  nav button { transition: background 0.2s, color 0.2s; }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+  }
 </style>
 </head>
 <body>
@@ -421,28 +453,104 @@ function eveningDraft() {
 const view = document.getElementById("view");
 const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 
+const SCALE_COLORS = {
+  sleep: ["var(--sleep)", "var(--sleep-dim)"],
+  mood: ["var(--mood)", "var(--mood-dim)"],
+  body: ["var(--body)", "var(--body-dim)"]
+};
+
 function scaleHTML(id, label, value, color, dimColor, withFaces) {
   let segs = "";
   for (let i = 1; i <= 10; i++) {
     const on = value !== null && i <= value;
     const bg = on ? (i === value ? color : dimColor) : "";
-    segs += `<button data-scale="${id}" data-v="${i}" ${bg ? `style="background:${bg}"` : ""} aria-label="${label} ${i}"></button>`;
+    segs += `<button tabindex="-1" data-v="${i}" class="${i === value ? "tip" : ""}" ${bg ? `style="background:${bg}"` : ""} aria-label="${label} ${i}"></button>`;
   }
   let faces = "";
   if (withFaces) {
     faces = `<div class="face-row">` + MOOD_WORDS.map((w, i) =>
-      `<button data-scale="${id}" data-v="${i + 1}" class="${value === i + 1 ? "on" : ""}" aria-label="${label} ${i + 1} — ${w}">${faceSVG(i + 1)}</button>`
+      `<button data-v="${i + 1}" class="${value === i + 1 ? "on" : ""}" aria-label="${label} ${i + 1} — ${w}">${faceSVG(i + 1)}</button>`
     ).join("") + `</div>
     <div class="mood-word">${value ? moodWord(value) : ""}</div>`;
   }
-  return `<div class="section">
+  return `<div class="section scale" data-scale-id="${id}">
     <div class="scale-head">
       <span class="label">${label}</span>
       <span class="scale-val serif ${value === null ? "empty" : ""}" style="color:${value === null ? "" : color}">${value === null ? "–" : value}</span>
     </div>
-    <div class="segments">${segs}</div>
+    <div class="segments" role="slider" aria-label="${label}" aria-valuemin="1" aria-valuemax="10" aria-valuenow="${value ?? 0}">${segs}</div>
     ${faces}
   </div>`;
+}
+
+// update one scale's DOM in place (used while sliding — no full re-render)
+function paintScale(root, id, value) {
+  const [color, dim] = SCALE_COLORS[id];
+  root.querySelectorAll(".segments button").forEach((b, i) => {
+    const n = i + 1;
+    b.style.background = value !== null && n <= value ? (n === value ? color : dim) : "";
+    b.classList.toggle("tip", n === value);
+  });
+  const val = root.querySelector(".scale-val");
+  const changed = val.textContent !== String(value === null ? "–" : value);
+  val.textContent = value === null ? "–" : value;
+  val.classList.toggle("empty", value === null);
+  val.style.color = value === null ? "" : color;
+  if (changed && value !== null) {
+    val.classList.remove("bump");
+    void val.offsetWidth;
+    val.classList.add("bump");
+  }
+  root.querySelector(".segments").setAttribute("aria-valuenow", value ?? 0);
+  root.querySelectorAll(".face-row button").forEach(b => b.classList.toggle("on", Number(b.dataset.v) === value));
+  const word = root.querySelector(".mood-word");
+  if (word) {
+    const w = value ? moodWord(value) : "";
+    if (word.textContent !== w) {
+      word.textContent = w;
+      word.classList.remove("wisp");
+      void word.offsetWidth;
+      if (w) word.classList.add("wisp");
+    }
+  }
+}
+
+// slide / tap interaction for every scale in the current view
+function wireScales(model) {
+  view.querySelectorAll(".scale").forEach(root => {
+    const id = root.dataset.scaleId;
+    const seg = root.querySelector(".segments");
+    const valueAt = e => {
+      const r = seg.getBoundingClientRect();
+      return Math.min(10, Math.max(1, Math.ceil((e.clientX - r.left) / r.width * 10)));
+    };
+    let startVal = null, slid = false;
+    seg.addEventListener("pointerdown", e => {
+      e.preventDefault();
+      seg.setPointerCapture(e.pointerId);
+      startVal = model[id];
+      slid = false;
+      const v = valueAt(e);
+      if (v !== model[id]) { model[id] = v; paintScale(root, id, v); }
+    });
+    seg.addEventListener("pointermove", e => {
+      if (!seg.hasPointerCapture(e.pointerId)) return;
+      const v = valueAt(e);
+      if (v !== model[id]) { slid = true; model[id] = v; paintScale(root, id, v); }
+    });
+    seg.addEventListener("pointerup", () => {
+      // a plain tap on the already-selected value clears it
+      if (!slid && startVal !== null && model[id] === startVal) {
+        model[id] = null;
+        paintScale(root, id, null);
+      }
+    });
+    root.querySelectorAll(".face-row button").forEach(b => b.onclick = () => {
+      const v = Number(b.dataset.v);
+      model[id] = model[id] === v ? null : v;
+      paintScale(root, id, model[id]);
+    });
+  });
 }
 
 function moodWord(v) { return v ? MOOD_WORDS[v - 1] : ""; }
@@ -463,16 +571,13 @@ function renderMorning() {
     </div>
     <button class="btn-primary" id="save-morning">update</button>
   `;
-  view.querySelectorAll("[data-scale]").forEach(b => b.onclick = () => {
-    const v = Number(b.dataset.v);
-    m[b.dataset.scale] = m[b.dataset.scale] === v ? null : v;
-    renderMorning();
-  });
+  wireScales(m);
   view.querySelector("#intention").oninput = e => { m.intention = e.target.value; };
-  view.querySelector("#save-morning").onclick = () => {
+  view.querySelector("#save-morning").onclick = e => {
     m.savedAt = new Date().toISOString();
     day(todayKey()).morning = JSON.parse(JSON.stringify(m));
     save();
+    pulse(e.target);
     toast("morning saved");
   };
 }
@@ -547,11 +652,7 @@ function renderEvening() {
     <button class="btn-ghost" id="copy-md">copy daily note as markdown</button>
   `;
 
-  view.querySelectorAll("[data-scale]").forEach(b => b.onclick = () => {
-    const v = Number(b.dataset.v);
-    ev[b.dataset.scale] = ev[b.dataset.scale] === v ? null : v;
-    renderEvening();
-  });
+  wireScales(ev);
   view.querySelectorAll("[data-b]").forEach(b => b.onclick = () => {
     ev.boundaries[b.dataset.b] = b.dataset.s || null;
     renderEvening();
@@ -584,10 +685,11 @@ function renderEvening() {
   }
   view.querySelector("#happened").oninput = e => { ev.happened = e.target.value; };
   view.querySelector("#honest").oninput = e => { ev.honest = e.target.value; };
-  view.querySelector("#save-evening").onclick = () => {
+  view.querySelector("#save-evening").onclick = e => {
     ev.savedAt = new Date().toISOString();
     day(todayKey()).evening = JSON.parse(JSON.stringify(ev));
     save();
+    pulse(e.target);
     toast("evening saved");
   };
   view.querySelector("#copy-md").onclick = copyMarkdown;
@@ -726,7 +828,7 @@ function renderTrends() {
       <div class="label">boundaries</div>
       ${bstats.map(b => `<div class="bar-row">
         <span class="name">${esc(b.name)}</span>
-        <span class="bar-track"><span class="bar-fill" style="width:${b.pct ?? 0}%"></span></span>
+        <span class="bar-track"><span class="bar-fill" style="width:0" data-w="${b.pct ?? 0}"></span></span>
         <span class="pct">${b.pct === null ? "–" : b.pct + "%"}</span>
       </div>`).join("")}
     </div>
@@ -734,10 +836,10 @@ function renderTrends() {
       <div class="label">mood × sleep</div>
       ${hi !== null ? `
         <div class="bar-row"><span class="name" style="color:var(--muted)">higher-sleep days</span>
-          <span class="bar-track"><span class="bar-fill gold-hi" style="width:${hi * 10}%"></span></span>
+          <span class="bar-track"><span class="bar-fill gold-hi" style="width:0" data-w="${hi * 10}"></span></span>
           <span class="pct">${fmt1(hi)}</span></div>
         <div class="bar-row"><span class="name" style="color:var(--muted)">lower-sleep days</span>
-          <span class="bar-track"><span class="bar-fill gold-lo" style="width:${lo * 10}%"></span></span>
+          <span class="bar-track"><span class="bar-fill gold-lo" style="width:0" data-w="${lo * 10}"></span></span>
           <span class="pct">${fmt1(lo)}</span></div>`
       : `<div class="empty-note">needs a few days with both sleep and mood logged</div>`}
     </div>
@@ -769,6 +871,32 @@ function renderTrends() {
       toast("imported");
     }).catch(() => toast("couldn't read that file"));
   };
+  animateTrends();
+}
+
+// draw the chart lines in and grow the bars once the trends view is on screen
+function animateTrends() {
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    view.querySelectorAll(".bar-fill[data-w]").forEach(f => { f.style.width = f.dataset.w + "%"; });
+    return;
+  }
+  view.querySelectorAll(".chart-box path").forEach(p => {
+    const len = p.getTotalLength();
+    p.style.strokeDasharray = len;
+    p.style.strokeDashoffset = len;
+  });
+  view.querySelectorAll(".chart-box circle").forEach((c, i) => {
+    c.style.opacity = "0";
+    c.style.transition = `opacity 0.3s ease ${0.3 + i * 0.04}s`;
+  });
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    view.querySelectorAll(".chart-box path").forEach(p => {
+      p.style.transition = "stroke-dashoffset 1s ease";
+      p.style.strokeDashoffset = "0";
+    });
+    view.querySelectorAll(".chart-box circle").forEach(c => { c.style.opacity = "1"; });
+    view.querySelectorAll(".bar-fill[data-w]").forEach(f => { f.style.width = f.dataset.w + "%"; });
+  }));
 }
 
 // ---------- shell ----------
@@ -780,11 +908,20 @@ function toast(msg) {
   toast._t = setTimeout(() => t.classList.remove("show"), 1600);
 }
 
+function pulse(btn) {
+  btn.classList.remove("pulse");
+  void btn.offsetWidth;
+  btn.classList.add("pulse");
+}
+
 const renderers = { morning: renderMorning, evening: renderEvening, trends: renderTrends };
 function setTab(name) {
   tab = name;
   document.querySelectorAll("nav button").forEach(b => b.classList.toggle("on", b.dataset.tab === name));
   renderers[name]();
+  view.classList.remove("enter");
+  void view.offsetWidth;
+  view.classList.add("enter");
   window.scrollTo(0, 0);
 }
 document.querySelectorAll("nav button").forEach(b => b.onclick = () => setTab(b.dataset.tab));
