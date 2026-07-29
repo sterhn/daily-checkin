@@ -8,6 +8,7 @@ Built as a single self-contained page — no accounts, no server, no tracking. E
 
 - **Morning**: sleep / mood / body on a 1–10 scale — tap or slide across to set a value — plus an intention for the day
 - **Evening**: how you feel now, boundary tracking (held / slipped), gym (went / rest day / skipped), "what happened", and "one honest thing"
+- **Yesterday / today toggle** on the evening tab — for when you close the day after midnight. Before 5am the app opens on the evening tab already set to yesterday, and a small dot marks days you've already saved
 - **Mood face picker**: a row of ten minimal line-drawn faces, frown to smile — tap one to set your mood, in sync with the numeric scale, each with its own word (drained → radiant)
 - **Trends**: averages, a sleep/mood/body chart, boundary hold rates, and a mood × sleep comparison over 7, 14, or 30 days
 - **Editable boundaries**: add or remove your own boundaries from the evening tab

@@ -255,6 +255,24 @@
     font-size: 0.75rem; letter-spacing: 0.12em; cursor: pointer; padding: 3px 0;
   }
 
+  .head-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    margin-top: 3px;
+  }
+  .head-row .sub { margin-top: 0; }
+  .day-toggle button { padding: 6px 11px; font-size: 0.75rem; letter-spacing: 0.06em; }
+  .day-toggle .mark {
+    display: inline-block;
+    width: 4px; height: 4px;
+    border-radius: 50%;
+    background: var(--body);
+    margin-left: 5px;
+    vertical-align: 2px;
+  }
+
   /* trends */
   .trends-head { display: flex; justify-content: space-between; align-items: center; }
   .range-toggle {
@@ -422,7 +440,12 @@ function day(key) {
 let tab = "morning";
 let range = 7;
 let editingBoundaries = false;
-let draft = { morning: null, evening: null };
+// which day the evening tab is writing to: 0 = today, -1 = yesterday
+let eveningOffset = 0;
+// evening drafts are kept per day, so switching days doesn't drop unsaved edits
+let draft = { morning: null, evening: {} };
+
+function eveningKey() { return todayKey(eveningOffset); }
 
 function morningDraft() {
   if (!draft.morning) {
@@ -434,19 +457,20 @@ function morningDraft() {
   return draft.morning;
 }
 function eveningDraft() {
-  if (!draft.evening) {
-    const saved = day(todayKey()).evening;
+  const key = eveningKey();
+  if (!draft.evening[key]) {
+    const saved = day(key).evening;
     if (saved) {
-      draft.evening = JSON.parse(JSON.stringify(saved));
+      draft.evening[key] = JSON.parse(JSON.stringify(saved));
       // pick up boundaries added since last save
-      for (const b of state.boundaries) if (!(b in draft.evening.boundaries)) draft.evening.boundaries[b] = null;
+      for (const b of state.boundaries) if (!(b in draft.evening[key].boundaries)) draft.evening[key].boundaries[b] = null;
     } else {
       const bounds = {};
       for (const b of state.boundaries) bounds[b] = null;
-      draft.evening = { mood: null, body: null, boundaries: bounds, gym: null, happened: "", honest: "" };
+      draft.evening[key] = { mood: null, body: null, boundaries: bounds, gym: null, happened: "", honest: "" };
     }
   }
-  return draft.evening;
+  return draft.evening[key];
 }
 
 // ---------- rendering helpers ----------
@@ -585,10 +609,11 @@ function renderMorning() {
 // ---------- evening tab ----------
 function renderEvening() {
   const ev = eveningDraft();
-  const m = day(todayKey()).morning;
+  const key = eveningKey();
+  const m = day(key).morning;
   const summary = m ? `
     <div class="summary">
-      <div class="label">this morning</div>
+      <div class="label">${eveningOffset === 0 ? "this morning" : "that morning"}</div>
       <div class="summary-vals">
         <span><span class="dot" style="background:var(--sleep)"></span>sleep <b>${m.sleep ?? "–"}</b></span>
         <span><span class="dot" style="background:var(--mood)"></span>mood <b>${m.mood ?? "–"}</b>${moodFaceInline(m.mood)}</span>
@@ -610,9 +635,17 @@ function renderEvening() {
   }).join("");
 
   const gym = ev.gym;
+  const dayTabs = [[-1, "yesterday"], [0, "today"]].map(([off, label]) => {
+    const saved = state.days[todayKey(off)]?.evening;
+    return `<button data-day="${off}" class="${eveningOffset === off ? "on" : ""}">${label}${saved ? `<span class="mark"></span>` : ""}</button>`;
+  }).join("");
+
   view.innerHTML = `
-    <h1>${prettyDate(todayKey())}</h1>
-    <div class="sub">updating evening</div>
+    <h1>${prettyDate(key)}</h1>
+    <div class="head-row">
+      <div class="sub">updating evening</div>
+      <div class="range-toggle day-toggle">${dayTabs}</div>
+    </div>
     ${summary}
     <div class="section">
       <div class="label">how are you now?</div>
@@ -653,6 +686,11 @@ function renderEvening() {
   `;
 
   wireScales(ev);
+  view.querySelectorAll("[data-day]").forEach(b => b.onclick = () => {
+    eveningOffset = Number(b.dataset.day);
+    renderEvening();
+    window.scrollTo(0, 0);
+  });
   view.querySelectorAll("[data-b]").forEach(b => b.onclick = () => {
     ev.boundaries[b.dataset.b] = b.dataset.s || null;
     renderEvening();
@@ -687,16 +725,19 @@ function renderEvening() {
   view.querySelector("#honest").oninput = e => { ev.honest = e.target.value; };
   view.querySelector("#save-evening").onclick = e => {
     ev.savedAt = new Date().toISOString();
-    day(todayKey()).evening = JSON.parse(JSON.stringify(ev));
+    day(key).evening = JSON.parse(JSON.stringify(ev));
     save();
     pulse(e.target);
-    toast("evening saved");
+    // the day toggle marks days that already have an evening saved
+    const tabBtn = view.querySelector(`[data-day="${eveningOffset}"]`);
+    if (tabBtn && !tabBtn.querySelector(".mark")) tabBtn.insertAdjacentHTML("beforeend", `<span class="mark"></span>`);
+    toast(eveningOffset === 0 ? "evening saved" : "yesterday evening saved");
   };
   view.querySelector("#copy-md").onclick = copyMarkdown;
 }
 
 function copyMarkdown() {
-  const key = todayKey();
+  const key = eveningKey();
   const d = state.days[key] || {};
   const m = d.morning, ev = d.evening;
   const lines = [`# ${prettyDate(key)}`, ""];
@@ -866,7 +907,7 @@ function renderTrends() {
       if (!s || typeof s !== "object" || !s.days) throw new Error("bad file");
       state = Object.assign(defaultState(), s);
       save();
-      draft = { morning: null, evening: null };
+      draft = { morning: null, evening: {} };
       renderTrends();
       toast("imported");
     }).catch(() => toast("couldn't read that file"));
@@ -926,8 +967,15 @@ function setTab(name) {
 }
 document.querySelectorAll("nav button").forEach(b => b.onclick = () => setTab(b.dataset.tab));
 
-// default tab: evening after 17:00, else morning
-setTab(new Date().getHours() >= 17 ? "evening" : "morning");
+// default tab: evening after 17:00 — and in the small hours it's still last night,
+// so open the evening tab already pointed at yesterday
+const hour = new Date().getHours();
+if (hour < 5) {
+  eveningOffset = -1;
+  setTab("evening");
+} else {
+  setTab(hour >= 17 ? "evening" : "morning");
+}
 
 if ("serviceWorker" in navigator && location.protocol === "https:") {
   navigator.serviceWorker.register("sw.js").catch(() => {});
