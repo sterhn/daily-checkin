@@ -1,6 +1,6 @@
 # daily check-in
 
-A small, private daily check-in app: rate your **sleep, mood, and body** in the morning, set an intention, then close the day in the evening with boundaries, gym, and a couple of honest notes. A **goals** tab holds small weekly and monthly adventures, and a **trends** tab shows how the last 7/14/30 days went.
+A small, private daily check-in app, dressed as a vintage newspaper — *The Daily Check-In*: rate your **sleep, mood, and body** in the morning, set an intention, then close the day in the evening with boundaries, gym, and a couple of honest notes. A **goals** tab holds small weekly and monthly adventures, and a **trends** tab shows how the last 7/14/30 days went.
 
 Built as a single self-contained page — no accounts, no server, no tracking. Everything is stored in your browser's local storage, on your device only.
 
@@ -17,6 +17,7 @@ Built as a single self-contained page — no accounts, no server, no tracking. E
 - **Editable boundaries**: add or remove your own boundaries from the evening tab
 - **Copy daily note as markdown** — paste the day into your journal or notes app
 - **Export / import** your data (check-ins and goals) as JSON from the trends tab
+- **Day and night editions**: cream newsprint by day, a dark night edition — toggle it in the masthead
 - Installable as an app (PWA) and works offline
 
 ## Use it

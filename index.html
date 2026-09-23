@@ -3,109 +3,261 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#151310">
+<meta name="theme-color" content="#efe6d2">
 <title>daily check-in</title>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<script>try{if(localStorage.getItem("daily-checkin-theme")==="night")document.documentElement.dataset.theme="night"}catch(e){}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=UnifrakturMaguntia&display=swap">
 <style>
+  /* ---- day edition: newsprint ---- */
   :root {
-    --bg: #0e0c0a;
-    --card: #17140f;
-    --card-edge: #2a251d;
-    --field: #1d1913;
-    --text: #efe8db;
-    --muted: #a39b8b;
-    --faint: #6b6452;
-    --sleep: #8589c4;
-    --sleep-dim: #4c4e74;
-    --mood: #d1ac62;
-    --mood-dim: #6d5a34;
-    --body: #93ab8b;
-    --body-dim: #4d5c49;
-    --slipped: #d0917f;
-    --flame: #e0915a;
-    --flame-dim: #5e3b24;
-    --cream: #efe8db;
-    --seg-off: #241f18;
-    --radius: 14px;
+    --paper: #efe6d2;
+    --paper-2: #f6efdf;
+    --ink: #1d1a15;
+    --ink-soft: #3a342b;
+    --muted: #5f574a;
+    --faint: #968b76;
+    --rule: #1d1a15;
+    --rule-soft: rgba(29, 26, 21, 0.18);
+    --sleep: #2f4a78;
+    --mood: #a8741a;
+    --body: #52692f;
+    --red: #a8321e;
+    --stamp-bg: rgba(168, 50, 30, 0.06);
+    --grain-opacity: 0.35;
+    --serif: "EB Garamond", Georgia, "Times New Roman", serif;
+    --display: "Playfair Display", Georgia, "Times New Roman", serif;
+    --blackletter: "UnifrakturMaguntia", "Old English Text MT", Georgia, serif;
+    color-scheme: light;
+  }
+  /* ---- night edition ---- */
+  :root[data-theme="night"] {
+    --paper: #17150f;
+    --paper-2: #1f1c15;
+    --ink: #ece2cc;
+    --ink-soft: #d6ccb6;
+    --muted: #a99e88;
+    --faint: #6f6755;
+    --rule: #ece2cc;
+    --rule-soft: rgba(236, 226, 204, 0.16);
+    --sleep: #93a6d8;
+    --mood: #dcad55;
+    --body: #a3b87c;
+    --red: #e2694f;
+    --stamp-bg: rgba(226, 105, 79, 0.08);
+    --grain-opacity: 0.18;
+    color-scheme: dark;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-  html, body { height: 100%; }
+  html, body { min-height: 100%; }
   body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    font-size: 15.5px;
+    background-color: var(--paper);
+    color: var(--ink);
+    font-family: var(--serif);
+    font-size: 17px;
     line-height: 1.45;
+    font-variant-numeric: oldstyle-nums;
   }
-  .serif { font-family: Georgia, "Times New Roman", serif; }
-  button { font: inherit; }
+  /* paper grain + a soft aged vignette */
+  body::before {
+    content: "";
+    position: fixed; inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    opacity: var(--grain-opacity);
+    background-image:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.35  0 0 0 0 0.28  0 0 0 0 0.18  0 0 0 0.55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+      radial-gradient(ellipse at center, transparent 55%, rgba(110, 80, 40, 0.28) 100%);
+  }
+  :root[data-theme="night"] body::before {
+    background-image:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.9  0 0 0 0 0.85  0 0 0 0 0.75  0 0 0 0.35 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+      radial-gradient(ellipse at center, transparent 50%, rgba(0, 0, 0, 0.45) 100%);
+  }
+  button, input, textarea, select { font: inherit; color: inherit; }
+  .serif { font-family: var(--display); }
+  .num { font-family: var(--display); font-variant-numeric: lining-nums; }
 
   #app {
-    max-width: 480px;
+    position: relative;
+    z-index: 1;
+    max-width: 520px;
     margin: 0 auto;
-    padding: 14px 12px 92px;
+    padding: 10px 16px 100px;
   }
-  .card {
-    background: var(--card);
-    border: 1px solid var(--card-edge);
-    border-radius: 16px;
-    padding: 24px 20px;
+
+  /* ---- masthead ---- */
+  .mast { text-align: center; padding-top: 6px; }
+  .mast-top {
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted);
   }
-  h1 {
-    font-family: Georgia, "Times New Roman", serif;
-    font-weight: 400;
-    font-size: 1.6rem;
+  .mast-top .motto { font-style: italic; text-transform: none; letter-spacing: 0.02em; font-size: 0.85rem; }
+  .mast-title {
+    font-family: var(--blackletter);
+    font-size: clamp(2.1rem, 10.5vw, 3rem);
+    line-height: 1.05;
+    margin: 4px 0 6px;
     letter-spacing: 0.01em;
   }
-  .sub {
-    color: var(--muted);
-    letter-spacing: 0.08em;
-    font-size: 0.85rem;
-    margin-top: 3px;
+  .dateline {
+    display: flex; justify-content: space-between; align-items: center; gap: 8px;
+    border-top: 3px double var(--rule);
+    border-bottom: 1px solid var(--rule);
+    padding: 5px 2px;
+    font-size: 0.74rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
   }
+  .dateline .d { flex: 1; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .theme-btn {
+    background: none; border: none; cursor: pointer;
+    font-size: 0.74rem; letter-spacing: 0.12em; text-transform: uppercase;
+    padding: 6px 0; min-height: 32px; white-space: nowrap;
+  }
+  .theme-btn:hover { color: var(--red); }
+
+  /* ---- front page (streak) ---- */
+  .front { padding: 16px 0 4px; text-align: center; border-bottom: 1px solid var(--rule); }
+  .kicker {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 0.72rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--red);
+    font-weight: 600;
+  }
+  .kicker svg { width: 13px; height: 13px; }
+  .headline {
+    font-family: var(--display);
+    font-weight: 900;
+    font-size: clamp(1.9rem, 8.6vw, 2.5rem);
+    line-height: 1.02;
+    letter-spacing: -0.01em;
+    margin: 6px 0 6px;
+    text-wrap: balance;
+  }
+  .headline.pop { animation: press 0.55s cubic-bezier(0.22, 1, 0.36, 1); }
+  @keyframes press {
+    0% { opacity: 0; transform: scale(1.08); filter: blur(2px); }
+    100% { opacity: 1; transform: none; filter: none; }
+  }
+  .deck { font-style: italic; color: var(--ink-soft); font-size: 1.02rem; text-wrap: balance; }
+  .week { display: flex; justify-content: center; gap: 9px; margin: 14px 0 6px; }
+  .wd { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  .wd span { font-size: 0.7rem; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; }
+  .wd.today span { color: var(--ink); font-weight: 600; }
+  .pip {
+    width: 26px; height: 26px;
+    border: 1px solid var(--rule);
+    display: flex;
+  }
+  .pip i { flex: 1; }
+  .pip i + i { border-left: 1px dotted var(--rule-soft); }
+  .pip i.on { background: var(--ink); }
+  .wd.today .pip { outline: 1px solid var(--rule); outline-offset: 2px; }
+  .wd.future .pip { border-style: dashed; opacity: 0.45; }
+  .week-legend { color: var(--muted); font-size: 0.78rem; font-style: italic; margin-bottom: 12px; }
+  .index {
+    display: flex; flex-wrap: wrap; justify-content: center;
+    border-top: 1px solid var(--rule-soft);
+    padding: 8px 0 12px;
+    gap: 2px 0;
+  }
+  .index button {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: none; border: none; cursor: pointer;
+    padding: 6px 9px; min-height: 36px;
+    font-size: 0.9rem;
+  }
+  .index button + button { border-left: 1px solid var(--rule-soft); }
+  .index svg { width: 15px; height: 15px; }
+  .index .box {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 15px; height: 15px; border: 1px solid var(--rule);
+    font-size: 0.75rem; line-height: 1;
+  }
+  .index button.done { color: var(--red); }
+  .index button.done .box { border-color: var(--red); }
+
+  /* ---- the page / sections ---- */
+  .card { padding: 20px 0 0; }
+  .page-kicker { text-align: center; }
+  h1 {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 2rem;
+    line-height: 1.1;
+    text-align: center;
+    margin-top: 4px;
+  }
+  .sub { color: var(--muted); font-style: italic; font-size: 1rem; text-align: center; margin-top: 2px; }
+  .head-row {
+    display: flex; justify-content: center; align-items: center; gap: 12px; flex-wrap: wrap;
+    margin-top: 10px;
+    padding-bottom: 12px;
+    border-bottom: 3px double var(--rule);
+  }
+  .saved-note {
+    font-size: 0.72rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--faint);
+    transition: color 0.3s;
+  }
+  .saved-note.fresh { color: var(--red); }
+
   .label {
-    color: var(--muted);
-    letter-spacing: 0.08em;
-    font-size: 0.85rem;
-    text-transform: lowercase;
+    display: flex; align-items: center; gap: 10px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink);
   }
+  .label::after { content: ""; flex: 1; border-top: 1px solid var(--rule-soft); }
+  .label.plain::after { display: none; }
   .section { margin-top: 26px; }
   .scale-head {
     display: flex;
     justify-content: space-between;
-    align-items: baseline;
+    align-items: center;
+    gap: 12px;
     margin-bottom: 10px;
   }
+  .scale-head .label { flex: 1; }
   .scale-val {
-    font-family: Georgia, serif;
-    font-size: 1.35rem;
+    font-family: var(--display);
+    font-variant-numeric: lining-nums;
+    font-weight: 700;
+    font-size: 1.6rem;
+    line-height: 1;
     min-width: 1.2em;
     text-align: right;
   }
-  .scale-val.empty { color: var(--faint); }
+  .scale-val.empty { color: var(--faint); font-weight: 400; }
 
-  .segments { display: flex; gap: 5px; touch-action: pan-y; cursor: pointer; }
+  /* scales: halftone fill, solid ink at the tip */
+  .segments { display: flex; gap: 4px; touch-action: pan-y; cursor: pointer; }
   .segments button {
     flex: 1;
-    height: 46px;
-    border: none;
-    border-radius: 6px;
-    background: var(--seg-off);
+    height: 44px;
+    border: 1px solid var(--rule-soft);
+    background: var(--paper-2);
     pointer-events: none; /* slide is handled on the row */
-    transition: background 0.16s ease, transform 0.2s cubic-bezier(0.34, 1.4, 0.64, 1);
+    transition: background-color 0.16s ease, transform 0.2s cubic-bezier(0.34, 1.4, 0.64, 1);
   }
-  .segments button.tip { transform: scaleY(1.15); }
-  .segments:focus-visible {
-    outline: 2px solid var(--accent, var(--cream));
-    outline-offset: 3px;
-    border-radius: 8px;
+  .segments button.on {
+    border-color: var(--c);
+    background-color: var(--paper-2);
+    background-image: radial-gradient(var(--c) 1.15px, transparent 1.35px);
+    background-size: 4px 4px;
   }
+  .segments button.tip { background: var(--c); border-color: var(--c); transform: scaleY(1.12); }
+  .segments:focus-visible { outline: 2px solid var(--c, var(--ink)); outline-offset: 3px; }
+  .seg-ends { display: flex; justify-content: space-between; margin-top: 4px; font-size: 0.72rem; font-style: italic; color: var(--faint); }
 
-  .face-row { display: flex; gap: 5px; margin-top: 9px; align-items: center; }
+  .face-row { display: flex; gap: 4px; margin-top: 9px; align-items: center; }
   .face-row button {
     flex: 1;
     background: none;
@@ -121,15 +273,13 @@
   .face-row .face-fill { fill: var(--faint); transition: fill 0.2s; }
   .face-row button.on .face-stroke { stroke: var(--mood); }
   .face-row button.on .face-fill { fill: var(--mood); }
-  .face-row button.on svg { filter: drop-shadow(0 0 5px rgba(201,164,92,0.45)); }
   .mood-word {
-    margin-top: 7px;
-    font-family: Georgia, serif;
+    margin-top: 6px;
+    font-family: var(--display);
     font-style: italic;
-    font-size: 0.9rem;
+    font-size: 1.05rem;
     color: var(--mood);
-    letter-spacing: 0.08em;
-    min-height: 1.2em;
+    min-height: 1.3em;
     text-align: right;
   }
   .mood-word.wisp { animation: wisp 0.35s ease; }
@@ -143,401 +293,359 @@
     100% { transform: scale(1); }
   }
 
-  textarea, .field {
-    width: 100%;
-    background: var(--field);
-    border: 1px solid var(--card-edge);
-    border-radius: 10px;
-    color: var(--text);
-    font: inherit;
-    padding: 12px;
-  }
+  /* lined writing paper */
   textarea {
-    min-height: 68px;
+    width: 100%;
+    min-height: 90px;
+    margin-top: 8px;
+    padding: 0 4px;
+    border: none;
+    border-bottom: 1px solid var(--rule-soft);
     resize: vertical;
-    margin-top: 10px;
+    background-color: transparent;
+    background-image: repeating-linear-gradient(to bottom, transparent 0, transparent 29px, var(--rule-soft) 29px, var(--rule-soft) 30px);
+    background-attachment: local;
+    line-height: 30px;
+    font-size: 1.05rem;
+    font-style: italic;
   }
-  textarea::placeholder, .field::placeholder { color: var(--faint); }
-  textarea:focus, .field:focus { outline: 1px solid var(--muted); }
-  .field[type="date"] { color-scheme: dark; }
+  textarea:focus { outline: none; background-image: repeating-linear-gradient(to bottom, transparent 0, transparent 29px, var(--muted) 29px, var(--muted) 30px); }
+  textarea::placeholder, .field::placeholder, .add-boundary input::placeholder { color: var(--faint); font-style: italic; }
+  .field {
+    width: 100%;
+    background: var(--paper-2);
+    border: 1px solid var(--rule);
+    padding: 10px 12px;
+    font-size: 1rem;
+  }
+  .field:focus { outline: 2px solid var(--ink); outline-offset: -2px; }
 
   .btn-primary {
+    display: block;
     width: 100%;
-    margin-top: 26px;
-    background: var(--cream);
-    color: #17140f;
+    margin-top: 28px;
+    background: var(--ink);
+    color: var(--paper);
     border: none;
-    border-radius: 999px;
-    padding: 13px;
-    font-family: Georgia, serif;
-    font-size: 1.1rem;
+    padding: 14px;
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 1rem;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
     cursor: pointer;
+    box-shadow: 3px 3px 0 var(--rule-soft);
+    transition: transform 0.12s ease, box-shadow 0.12s ease;
   }
-  .btn-primary { transition: transform 0.12s ease, opacity 0.12s ease; }
-  .btn-primary:active { opacity: 0.88; transform: scale(0.975); }
+  .btn-primary:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--rule-soft); }
   .btn-primary.pulse { animation: pulse 0.45s ease; }
   @keyframes pulse {
-    0% { box-shadow: 0 0 0 0 rgba(236, 229, 216, 0.45); }
-    100% { box-shadow: 0 0 0 14px rgba(236, 229, 216, 0); }
+    0% { outline: 2px solid var(--ink); outline-offset: 0; }
+    100% { outline: 2px solid transparent; outline-offset: 10px; }
   }
   .btn-ghost {
     width: 100%;
     margin-top: 10px;
     background: none;
-    border: 1px solid var(--card-edge);
-    border-radius: 10px;
-    color: var(--muted);
-    padding: 12px;
-    font-size: 0.9rem;
-    letter-spacing: 0.05em;
+    border: 1px solid var(--rule);
+    color: var(--ink);
+    padding: 11px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
     cursor: pointer;
   }
+  .btn-ghost:active { background: var(--rule-soft); }
 
   .summary {
-    background: var(--field);
-    border: 1px solid var(--card-edge);
-    border-radius: 10px;
-    padding: 13px 15px;
+    border: 1px solid var(--rule);
+    padding: 12px 14px;
     margin-top: 20px;
+    position: relative;
   }
-  .summary .label { font-size: 0.78rem; }
-  .summary-vals { display: flex; gap: 18px; margin-top: 8px; flex-wrap: wrap; align-items: center; }
-  .summary-vals span { color: var(--muted); letter-spacing: 0.05em; font-size: 0.9rem; }
-  .summary-vals b {
-    font-family: Georgia, serif;
-    font-weight: 400;
-    font-size: 1.05rem;
-    color: var(--text);
-    margin-left: 3px;
+  .summary::before {
+    content: ""; position: absolute; inset: 3px; border: 1px solid var(--rule-soft); pointer-events: none;
   }
-  .dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; margin-right: 6px; vertical-align: 1px; }
+  .summary-vals { display: flex; justify-content: space-around; gap: 12px; margin-top: 8px; flex-wrap: wrap; align-items: baseline; }
+  .summary-vals span { font-size: 0.78rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+  .summary-vals b { font-family: var(--display); font-variant-numeric: lining-nums; font-size: 1.4rem; color: var(--ink); margin-left: 4px; letter-spacing: 0; }
+  .summary .quote { margin-top: 8px; text-align: center; font-style: italic; color: var(--ink-soft); }
+  .dot { display: inline-block; width: 7px; height: 7px; margin-right: 6px; vertical-align: 1px; }
 
   .row {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 8px;
-    padding: 13px 0;
-    border-bottom: 1px solid var(--card-edge);
+    padding: 10px 0;
+    border-bottom: 1px dotted var(--rule-soft);
   }
   .row:last-child { border-bottom: none; }
-  .row .name { flex: 1; font-size: 0.95rem; }
-  .pills { display: flex; gap: 6px; flex-wrap: wrap; }
+  .row .name { flex: 1; font-size: 1.05rem; }
+  .pills { display: flex; gap: 8px; flex-wrap: wrap; }
   .pills button {
-    background: var(--field);
-    border: 1px solid var(--card-edge);
-    border-radius: 8px;
+    background: none;
+    border: 1px solid var(--rule-soft);
     color: var(--muted);
-    padding: 7px 12px;
-    min-height: 44px;
-    font-size: 0.85rem;
-    letter-spacing: 0.03em;
+    padding: 6px 11px;
+    min-height: 42px;
+    font-size: 0.74rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
     cursor: pointer;
-    transition: background 0.18s, color 0.18s, border-color 0.18s, transform 0.12s;
+    transition: color 0.18s, border-color 0.18s, transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
-  .pills button:active { transform: scale(0.94); }
-  .pills button.held-on { border-color: var(--body); color: var(--body); background: #1a2018; }
-  .pills button.slipped-on { border-color: var(--slipped); color: var(--slipped); background: #241713; }
-  .pills button.neutral-on { border-color: var(--muted); color: var(--text); }
-  .pills button.flame-on { border-color: var(--flame); color: var(--flame); background: #261a11; }
-  .row .remove, .remove {
+  /* selected pills look like rubber stamps */
+  .pills button.held-on { border: 2px solid var(--body); color: var(--body); transform: rotate(-2.5deg); background: transparent; }
+  .pills button.slipped-on { border: 2px solid var(--red); color: var(--red); transform: rotate(2.5deg); background: var(--stamp-bg); }
+  .pills button.neutral-on { border: 2px solid var(--ink); color: var(--ink); transform: rotate(-1.5deg); }
+  .pills button.flame-on { border: 2px solid var(--red); color: var(--red); transform: rotate(-2deg); }
+  .remove {
     background: none; border: none; color: var(--muted);
     font-size: 0.95rem; cursor: pointer;
     min-width: 44px; min-height: 44px;
     display: inline-flex; align-items: center; justify-content: center;
   }
+  .remove:hover { color: var(--red); }
 
   .add-boundary { display: flex; gap: 6px; margin-top: 12px; }
-  .add-boundary input {
-    flex: 1;
-    min-width: 0;
-    background: var(--field);
-    border: 1px solid var(--card-edge);
-    border-radius: 8px;
-    color: var(--text);
-    font: inherit;
-    padding: 9px 11px;
+  .add-boundary input, .add-boundary select, .add-boundary button {
+    background: var(--paper-2);
+    border: 1px solid var(--rule);
+    padding: 9px 10px;
   }
-  .add-boundary input::placeholder { color: var(--faint); }
-  .add-boundary button, .add-boundary select {
-    background: var(--field);
-    border: 1px solid var(--card-edge);
-    border-radius: 8px;
-    color: var(--muted);
-    padding: 0 14px;
-    font-size: 1.1rem;
-    cursor: pointer;
-  }
-  .add-boundary select { font-size: 0.85rem; padding: 0 8px; color-scheme: dark; }
+  .add-boundary input { flex: 1; min-width: 0; }
+  .add-boundary button { padding: 0 14px; font-size: 1.2rem; cursor: pointer; }
+  .add-boundary select { font-size: 0.9rem; }
   .edit-link {
     background: none; border: none; color: var(--muted);
-    font-size: 0.8rem; letter-spacing: 0.1em; cursor: pointer; padding: 6px 0;
+    font-size: 0.72rem; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase;
+    cursor: pointer; padding: 6px 0;
+    text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--rule-soft);
   }
 
-  .head-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 10px;
-    margin-top: 3px;
+  /* segmented toggles (yesterday/today, 7d/14d/30d) */
+  .range-toggle { display: inline-flex; border: 1px solid var(--rule); }
+  .range-toggle button {
+    background: none; border: none; cursor: pointer;
+    padding: 6px 12px; min-height: 34px;
+    font-size: 0.72rem; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted);
   }
-  .head-row .sub { margin-top: 0; }
-  .day-toggle button { padding: 6px 11px; font-size: 0.8rem; letter-spacing: 0.04em; }
-  .day-toggle .mark, .nav-dot {
-    display: inline-block;
-    width: 4px; height: 4px;
-    border-radius: 50%;
-    background: var(--body);
-    margin-left: 5px;
-    vertical-align: 2px;
+  .range-toggle button + button { border-left: 1px solid var(--rule); }
+  .range-toggle button.on { background: var(--ink); color: var(--paper); }
+  .day-toggle .mark {
+    display: inline-block; width: 5px; height: 5px; border-radius: 50%;
+    background: currentColor; margin-left: 6px; vertical-align: 2px;
   }
-  .saved-note {
-    color: var(--faint);
-    font-size: 0.78rem;
-    letter-spacing: 0.06em;
-    transition: color 0.3s;
-  }
-  .saved-note.fresh { color: var(--body); }
 
-  /* streak strip */
-  .strip {
-    background: var(--card);
-    border: 1px solid var(--card-edge);
-    border-radius: 16px;
-    padding: 14px 16px 12px;
-    margin-bottom: 10px;
-  }
-  .streak-row { display: flex; align-items: center; gap: 10px; }
-  .flame { width: 30px; height: 30px; color: var(--faint); line-height: 0; flex: none; }
-  .flame svg { width: 100%; height: 100%; }
-  .flame.lit { color: var(--flame); filter: drop-shadow(0 0 6px rgba(224,145,90,0.45)); }
-  .flame.lit.pop { animation: flamePop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); }
-  @keyframes flamePop {
-    0% { transform: scale(0.6); }
-    60% { transform: scale(1.25); }
-    100% { transform: scale(1); }
-  }
-  .streak-num { font-family: Georgia, serif; font-size: 1.9rem; line-height: 1; }
-  .streak-txt { flex: 1; font-size: 0.9rem; line-height: 1.25; }
-  .streak-txt small { display: block; color: var(--muted); font-size: 0.78rem; letter-spacing: 0.03em; }
-  .best { color: var(--muted); font-size: 0.8rem; letter-spacing: 0.05em; text-align: right; }
-  .best b { font-family: Georgia, serif; font-weight: 400; font-size: 1.05rem; color: var(--text); display: block; }
-
-  .week { display: flex; justify-content: space-between; margin-top: 13px; }
-  .wd { display: flex; flex-direction: column; align-items: center; gap: 5px; flex: 1; }
-  .wd span { font-size: 0.7rem; color: var(--faint); letter-spacing: 0.05em; }
-  .wd.today span { color: var(--text); }
-  .pip {
-    width: 22px; height: 22px; border-radius: 50%;
-    border: 1.5px solid var(--card-edge);
-    display: flex; overflow: hidden;
-  }
-  .pip i { flex: 1; }
-  .pip i.on { background: var(--flame); }
-  .wd.today .pip { border-color: var(--muted); }
-  .wd.future .pip { opacity: 0.4; }
-  .week-legend { color: var(--faint); font-size: 0.7rem; text-align: center; margin-top: 7px; letter-spacing: 0.04em; }
-
-  .chips { display: flex; gap: 6px; margin-top: 12px; flex-wrap: wrap; }
-  .chip {
-    display: inline-flex; align-items: center; gap: 6px;
-    background: var(--field);
-    border: 1px solid var(--card-edge);
-    border-radius: 999px;
-    color: var(--muted);
-    padding: 6px 11px 6px 8px;
-    min-height: 36px;
-    font-size: 0.8rem;
-    cursor: pointer;
-  }
-  .chip svg { width: 16px; height: 16px; }
-  .chip.done { border-color: var(--flame-dim); color: var(--flame); }
-
-  /* goals */
+  /* ---- goals: the classifieds ---- */
   .goal {
     position: relative;
-    background: var(--field);
-    border: 1px solid var(--card-edge);
-    border-radius: 12px;
-    padding: 15px 14px;
+    border: 1px solid var(--rule);
+    padding: 14px 14px 12px;
     margin-top: 14px;
-    transition: border-color 0.3s;
+    background: var(--paper-2);
   }
-  .goal.done { border-color: var(--flame-dim); }
-  .goal-top { display: flex; align-items: center; gap: 12px; }
+  .goal-top { display: flex; align-items: flex-start; gap: 12px; }
   .goal-icon {
-    width: 38px; height: 38px; flex: none;
-    border-radius: 50%;
-    background: var(--card);
-    border: 1px solid var(--card-edge);
+    width: 40px; height: 40px; flex: none;
+    border: 1px solid var(--rule);
     display: flex; align-items: center; justify-content: center;
-    color: var(--muted);
   }
-  .goal.done .goal-icon { color: var(--flame); border-color: var(--flame-dim); }
-  .goal-icon svg { width: 20px; height: 20px; }
+  .goal-icon svg { width: 22px; height: 22px; }
   .goal-main { flex: 1; min-width: 0; }
-  .goal-title { font-size: 1rem; }
-  .goal-meta { color: var(--muted); font-size: 0.8rem; letter-spacing: 0.03em; }
-  .goal-count { font-family: Georgia, serif; font-size: 1.4rem; }
-  .goal-count span { color: var(--faint); font-size: 1rem; }
-  .goal.done .goal-count { color: var(--flame); }
+  .goal-kind { font-size: 0.68rem; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: var(--red); }
+  .goal-title { font-family: var(--display); font-weight: 700; font-size: 1.25rem; line-height: 1.15; }
+  .goal-meta { color: var(--muted); font-style: italic; font-size: 0.92rem; }
+  .goal-count { font-family: var(--display); font-variant-numeric: lining-nums; font-weight: 700; font-size: 1.6rem; line-height: 1; padding-top: 4px; }
+  .goal-count span { color: var(--faint); font-weight: 400; font-size: 1.05rem; }
+  .stamp {
+    position: absolute;
+    top: 12px; right: 10px;
+    border: 3px double var(--red);
+    color: var(--red);
+    padding: 3px 9px;
+    font-family: var(--display);
+    font-weight: 900;
+    font-size: 1.05rem;
+    letter-spacing: 0.14em;
+    transform: rotate(-11deg);
+    opacity: 0.88;
+    background: var(--stamp-bg);
+    mix-blend-mode: multiply;
+  }
+  :root[data-theme="night"] .stamp { mix-blend-mode: normal; }
+  .stamp.fresh { animation: stamp 0.45s cubic-bezier(0.22, 1.4, 0.36, 1); }
+  @keyframes stamp {
+    0% { transform: rotate(-11deg) scale(2.2); opacity: 0; }
+    70% { transform: rotate(-11deg) scale(0.94); opacity: 0.95; }
+    100% { transform: rotate(-11deg) scale(1); opacity: 0.88; }
+  }
   .goal-bar { display: flex; gap: 4px; margin-top: 12px; }
-  .goal-bar i { flex: 1; height: 5px; border-radius: 3px; background: var(--seg-off); transition: background 0.3s; }
-  .goal-bar i.on { background: var(--flame); }
-  .goal-streak { color: var(--flame); font-size: 0.8rem; margin-top: 9px; letter-spacing: 0.03em; display: flex; align-items: center; gap: 5px; }
+  .goal-bar i { flex: 1; height: 7px; border: 1px solid var(--rule); }
+  .goal-bar i.on { background: var(--ink); }
+  .goal-streak { color: var(--red); font-size: 0.92rem; font-style: italic; margin-top: 8px; display: flex; align-items: center; gap: 5px; }
   .goal-streak svg { width: 14px; height: 14px; }
-  .goal-streak.cold { color: var(--faint); }
-  .entries { list-style: none; margin-top: 10px; }
+  .goal-streak.cold { color: var(--muted); }
+  .entries { list-style: none; margin-top: 8px; }
   .entries li {
-    display: flex; align-items: center; gap: 8px;
-    padding: 7px 0;
-    border-top: 1px solid var(--card-edge);
-    font-size: 0.92rem;
+    display: flex; align-items: baseline; gap: 8px;
+    padding: 5px 0;
+    border-top: 1px dotted var(--rule-soft);
+    font-size: 1rem;
   }
-  .entries .e-date { color: var(--faint); font-size: 0.78rem; min-width: 52px; }
-  .entries .e-text { flex: 1; min-width: 0; overflow-wrap: anywhere; }
-  .entries .remove { min-width: 36px; min-height: 36px; font-size: 0.85rem; }
+  .entries .e-date { color: var(--muted); font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; min-width: 54px; }
+  .entries .e-text { flex: 1; min-width: 0; overflow-wrap: anywhere; font-style: italic; }
+  .entries .remove { min-width: 34px; min-height: 34px; font-size: 0.8rem; align-self: center; }
   .tag {
-    font-size: 0.7rem; letter-spacing: 0.05em;
-    color: var(--muted);
-    border: 1px solid var(--card-edge);
-    border-radius: 999px;
-    padding: 1px 7px;
+    font-size: 0.62rem; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--red);
+    border: 1px solid var(--red);
+    padding: 1px 6px;
+    transform: rotate(-3deg);
+    display: inline-block;
   }
-  .goal-actions { display: flex; gap: 8px; margin-top: 12px; align-items: center; }
-  .goal-actions .btn-ghost { margin-top: 0; flex: 1; color: var(--text); }
-  .goal-actions .edit-link { padding: 10px 4px; }
-  .log-form { margin-top: 12px; display: flex; flex-direction: column; gap: 9px; }
+  .goal-actions { display: flex; gap: 10px; margin-top: 10px; align-items: center; }
+  .goal-actions .btn-ghost { margin-top: 0; flex: 1; }
+  .log-form { margin-top: 12px; display: flex; flex-direction: column; gap: 10px; }
   .log-form .row-btns { display: flex; gap: 8px; }
-  .log-form .btn-primary { margin-top: 0; flex: 1; padding: 11px; font-size: 1rem; }
+  .log-form .btn-primary { margin-top: 0; flex: 1; padding: 11px; font-size: 0.9rem; }
   .log-form .btn-ghost { margin-top: 0; width: auto; padding: 11px 16px; }
-  .current-read { margin-top: 12px; }
-  .current-read .label { font-size: 0.75rem; }
-  .current-read .field { margin-top: 6px; padding: 9px 11px; }
-  .suggest { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
-  .suggest button { padding-left: 11px; }
-  .collection { display: flex; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
-  .collection div {
-    flex: 1; min-width: 90px;
-    background: var(--field);
-    border: 1px solid var(--card-edge);
-    border-radius: 10px;
-    padding: 11px 12px;
-  }
-  .collection b { display: block; font-family: Georgia, serif; font-weight: 400; font-size: 1.4rem; }
-  .collection span { color: var(--muted); font-size: 0.8rem; }
+  .current-read { margin-top: 10px; }
+  .current-read .label { font-size: 0.7rem; }
+  .current-read .field { margin-top: 6px; padding: 8px 10px; font-style: italic; }
+  .suggest { margin-top: 10px; }
+  .suggest button { text-transform: none; letter-spacing: 0.02em; font-size: 0.92rem; font-weight: 400; color: var(--ink); }
+  .suggest button span { color: var(--muted); font-style: italic; }
+  .collection { display: flex; margin-top: 10px; border: 1px solid var(--rule); }
+  .collection div { flex: 1; text-align: center; padding: 10px 6px; }
+  .collection div + div { border-left: 1px solid var(--rule); }
+  .collection b { display: block; font-family: var(--display); font-variant-numeric: lining-nums; font-weight: 900; font-size: 2rem; line-height: 1.1; }
+  .collection span { color: var(--muted); font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase; }
 
   .spark {
     position: absolute;
     left: 50%; top: 50%;
-    width: 6px; height: 6px;
-    border-radius: 50%;
-    background: var(--flame);
+    width: 7px; height: 7px;
+    background: var(--red);
     pointer-events: none;
-    animation: spark 0.75s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    animation: spark 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
   }
-  .spark:nth-child(3n) { background: var(--mood); }
-  .spark:nth-child(3n+1) { background: var(--cream); width: 4px; height: 4px; }
+  .spark:nth-child(3n) { background: var(--ink); width: 5px; height: 9px; }
+  .spark:nth-child(3n+1) { background: var(--mood); border-radius: 50%; }
   @keyframes spark {
-    from { transform: translate(-50%, -50%) scale(1); opacity: 1; }
-    to   { transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(0.2); opacity: 0; }
+    from { transform: translate(-50%, -50%) rotate(0) scale(1); opacity: 1; }
+    to   { transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) rotate(200deg) scale(0.4); opacity: 0; }
   }
 
-  /* trends */
-  .trends-head { display: flex; justify-content: space-between; align-items: center; }
-  .range-toggle {
-    display: flex;
-    background: var(--field);
-    border: 1px solid var(--card-edge);
-    border-radius: 9px;
-    overflow: hidden;
+  /* ---- trends: the almanac ---- */
+  .ticker { margin-top: 16px; border-top: 2px solid var(--rule); border-bottom: 2px solid var(--rule); }
+  .ticker-row {
+    display: flex; align-items: baseline; gap: 8px;
+    padding: 7px 2px;
+    border-bottom: 1px dotted var(--rule-soft);
   }
-  .range-toggle button {
-    background: none; border: none; color: var(--muted);
-    padding: 7px 12px; font-size: 0.85rem; cursor: pointer;
+  .ticker-row:last-child { border-bottom: none; }
+  .ticker-row .t-name { font-size: 0.8rem; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; }
+  .ticker-row .t-lead { flex: 1; border-bottom: 1px dotted var(--faint); transform: translateY(-4px); }
+  .ticker-row .t-val { font-family: var(--display); font-variant-numeric: lining-nums tabular-nums; font-weight: 700; font-size: 1.3rem; }
+  .ticker-row .t-delta { width: 58px; text-align: right; font-size: 0.85rem; font-variant-numeric: lining-nums tabular-nums; }
+  .t-delta.up { color: var(--body); }
+  .t-delta.down { color: var(--red); }
+  .t-delta.flat { color: var(--faint); }
+  .ticker-note { font-size: 0.78rem; font-style: italic; color: var(--muted); text-align: right; margin-top: 4px; }
+  .chart-box { margin-top: 18px; border: 1px solid var(--rule); padding: 8px 6px 2px; background: var(--paper-2); }
+  .chart-legend { display: flex; justify-content: center; gap: 16px; font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); padding: 4px 0 6px; }
+  .bar-row { display: flex; align-items: center; gap: 12px; padding: 8px 0; }
+  .bar-row .name { flex: 1; font-size: 1rem; }
+  .bar-track { flex: 1.1; height: 10px; border: 1px solid var(--rule); overflow: hidden; }
+  .bar-fill {
+    display: block; height: 100%;
+    background: repeating-linear-gradient(-45deg, var(--ink) 0 2px, transparent 2px 4.5px);
+    transition: width 0.8s cubic-bezier(0.22, 1, 0.36, 1);
   }
-  .range-toggle button.on { background: #262117; color: var(--text); }
-  .avgs { display: flex; gap: 18px; margin-top: 20px; flex-wrap: wrap; align-items: center; }
-  .avgs span { color: var(--muted); letter-spacing: 0.05em; font-size: 0.9rem; }
-  .avgs b { font-family: Georgia, serif; font-weight: 400; font-size: 1.2rem; color: var(--text); margin-left: 5px; }
-  .chart-box {
-    background: var(--field);
-    border: 1px solid var(--card-edge);
-    border-radius: 10px;
-    padding: 10px;
-    margin-top: 18px;
-  }
-  .bar-row { display: flex; align-items: center; gap: 12px; padding: 10px 0; }
-  .bar-row .name { flex: 1; font-size: 0.9rem; }
-  .bar-track { flex: 1.2; height: 4px; background: var(--seg-off); border-radius: 2px; overflow: hidden; }
-  .bar-fill { height: 100%; background: var(--body); border-radius: 2px; transition: width 0.8s cubic-bezier(0.22, 1, 0.36, 1); }
-  .bar-row .pct { width: 46px; text-align: right; font-size: 0.9rem; }
+  .bar-row .pct { width: 48px; text-align: right; font-family: var(--display); font-variant-numeric: lining-nums; font-weight: 700; }
   .mini-card {
-    background: var(--field);
-    border: 1px solid var(--card-edge);
-    border-radius: 10px;
-    padding: 15px 14px;
+    border: 1px solid var(--rule);
+    padding: 14px;
     margin-top: 22px;
   }
-  .mini-card .avgs { margin-top: 10px; }
-  .mini-card .bar-row { padding: 7px 0; }
   .mini-card .bar-fill.gold-hi { background: var(--mood); }
-  .mini-card .bar-fill.gold-lo { background: var(--mood-dim); }
+  .mini-card .bar-fill.gold-lo { background: repeating-linear-gradient(-45deg, var(--mood) 0 2px, transparent 2px 4.5px); }
+  .stats { display: flex; margin-top: 10px; }
+  .stats div { flex: 1; text-align: center; }
+  .stats div + div { border-left: 1px solid var(--rule-soft); }
+  .stats b { display: block; font-family: var(--display); font-variant-numeric: lining-nums; font-weight: 900; font-size: 1.9rem; line-height: 1.1; }
+  .stats span { font-size: 0.68rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); }
   .mood-face-inline { display: inline-block; vertical-align: -3px; margin-left: 6px; line-height: 0; }
-  .mood-face-inline svg { width: 15px; height: 15px; }
+  .mood-face-inline svg { width: 16px; height: 16px; }
   .mood-face-inline .face-stroke { stroke: var(--mood); }
   .mood-face-inline .face-fill { fill: var(--mood); }
 
-  .empty-note { color: var(--faint); margin-top: 16px; letter-spacing: 0.03em; font-size: 0.9rem; }
+  .empty-note { color: var(--muted); font-style: italic; margin-top: 14px; text-align: center; }
 
-  /* tabs */
+  /* ---- section tabs ---- */
   nav {
     position: fixed;
     bottom: 0; left: 0; right: 0;
-    background: rgba(14,12,10,0.94);
-    backdrop-filter: blur(10px);
-    border-top: 1px solid var(--card-edge);
+    z-index: 5;
+    background: var(--paper);
+    border-top: 3px double var(--rule);
     display: flex;
     justify-content: center;
-    gap: 4px;
-    padding: 7px 10px calc(7px + env(safe-area-inset-bottom));
+    padding: 4px 8px calc(4px + env(safe-area-inset-bottom));
+    box-shadow: 0 -6px 16px rgba(0, 0, 0, 0.08);
   }
   nav button {
     flex: 1;
-    max-width: 112px;
+    max-width: 120px;
     background: none; border: none;
     color: var(--muted);
-    font-size: 0.88rem;
-    letter-spacing: 0.06em;
-    padding: 11px 6px;
-    border-radius: 10px;
+    padding: 11px 4px 9px;
     cursor: pointer;
-    transition: background 0.2s, color 0.2s;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    border-bottom: 2px solid transparent;
+    transition: color 0.2s, border-color 0.2s;
   }
-  nav button.on { background: #262117; color: var(--text); }
+  nav button + button { border-left: 1px solid var(--rule-soft); }
+  nav button.on { color: var(--ink); border-bottom-color: var(--ink); }
+  .nav-dot { display: inline-block; width: 5px; height: 5px; border-radius: 50%; background: var(--red); margin-left: 5px; vertical-align: 2px; }
 
+  /* toast: a telegram slip */
   .toast {
     position: fixed;
-    bottom: 84px; left: 50%;
-    transform: translate(-50%, 8px);
-    background: var(--cream);
-    color: #17140f;
+    bottom: 86px; left: 50%;
+    transform: translate(-50%, 8px) rotate(-1deg);
+    z-index: 10;
+    max-width: calc(100vw - 32px);
+    background: var(--ink);
+    color: var(--paper);
     padding: 9px 18px;
-    border-radius: 999px;
-    font-size: 0.9rem;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    text-align: center;
+    box-shadow: 3px 3px 0 var(--rule-soft);
     opacity: 0;
     pointer-events: none;
-    white-space: nowrap;
     transition: opacity 0.25s, transform 0.25s cubic-bezier(0.34, 1.4, 0.64, 1);
-    z-index: 10;
   }
-  .toast.show { opacity: 1; transform: translate(-50%, 0); }
+  .toast.show { opacity: 1; transform: translate(-50%, 0) rotate(-1deg); }
 
-  #view.enter, #strip.enter { animation: fadeUp 0.32s cubic-bezier(0.22, 1, 0.36, 1); }
+  #view.enter, #front.enter { animation: fadeUp 0.36s cubic-bezier(0.22, 1, 0.36, 1); }
   @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(10px); }
+    from { opacity: 0; transform: translateY(8px); }
     to   { opacity: 1; transform: none; }
   }
+
+  :focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
 
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { animation: none !important; transition: none !important; }
@@ -545,7 +653,7 @@
 </style>
 </head>
 <body>
-<div id="app"><div id="strip"></div><div class="card" id="view"></div></div>
+<div id="app"><header id="mast" class="mast"></header><div id="front"></div><main class="card" id="view"></main></div>
 <nav>
   <button data-tab="morning">morning</button>
   <button data-tab="evening">evening</button>
@@ -854,19 +962,20 @@ function commit(key, part, model) {
   save();
   flashSaved();
   if (!wasFilled && dayFilled(today)) {
-    renderStrip(true);
+    renderFront(true);
     const n = currentStreak();
-    if (STREAK_MILESTONES.includes(n)) toast(`${n} days in a row — keep going`);
-    else if (n > 1) toast(`day ${n} of your streak`);
+    if (STREAK_MILESTONES.includes(n)) toast(`extra! ${n} days running`);
+    else if (n > 1) toast(`filed — day ${n} of the run`);
+    else toast("filed — the run begins");
   } else {
-    renderStrip();
+    renderFront();
   }
 }
 
 function flashSaved() {
   const el = view.querySelector(".saved-note");
   if (!el) return;
-  el.textContent = "saved ✓";
+  el.textContent = "filed ✓";
   el.classList.add("fresh");
   clearTimeout(flashSaved._t);
   flashSaved._t = setTimeout(() => el.classList.remove("fresh"), 1200);
@@ -874,23 +983,31 @@ function flashSaved() {
 
 // ---------- rendering helpers ----------
 const view = document.getElementById("view");
-const strip = document.getElementById("strip");
+const front = document.getElementById("front");
+const mast = document.getElementById("mast");
 const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const reducedMotion = () => matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-const SCALE_COLORS = {
-  sleep: ["var(--sleep)", "var(--sleep-dim)"],
-  mood: ["var(--mood)", "var(--mood-dim)"],
-  body: ["var(--body)", "var(--body-dim)"]
-};
+// headline numbers read better as words
+const ONES = ["zero","one","two","three","four","five","six","seven","eight","nine","ten","eleven","twelve","thirteen","fourteen","fifteen","sixteen","seventeen","eighteen","nineteen"];
+const TENS = ["","","twenty","thirty","forty","fifty","sixty","seventy","eighty","ninety"];
+function numWord(n) {
+  if (n < 20) return ONES[n];
+  if (n < 100) return TENS[Math.floor(n / 10)] + (n % 10 ? "-" + ONES[n % 10] : "");
+  return String(n);
+}
+// headline-style caps, leaving the small words lowercase
+const SMALL_WORDS = new Set(["a", "an", "and", "as", "at", "but", "by", "for", "in", "of", "on", "or", "the", "to", "with", "no"]);
+const titleCase = s => s.split(" ").map((w, i) =>
+  i > 0 && SMALL_WORDS.has(w.toLowerCase()) ? w : w.replace(/(^|-)([a-z])/g, (m, a, b) => a + b.toUpperCase())
+).join(" ");
 
-function scaleHTML(id, label, value, color, dimColor, withFaces) {
+function scaleHTML(id, label, value, withFaces, ends) {
   if (value == null) value = null; // treat undefined the same as null
   let segs = "";
   for (let i = 1; i <= 10; i++) {
-    const on = value !== null && i <= value;
-    const bg = on ? (i === value ? color : dimColor) : "";
-    segs += `<button tabindex="-1" data-v="${i}" class="${i === value ? "tip" : ""}" ${bg ? `style="background:${bg}"` : ""} aria-hidden="true"></button>`;
+    const cls = value === null || i > value ? "" : i === value ? "on tip" : "on";
+    segs += `<button tabindex="-1" data-v="${i}" class="${cls}" aria-hidden="true"></button>`;
   }
   let faces = "";
   if (withFaces) {
@@ -902,9 +1019,10 @@ function scaleHTML(id, label, value, color, dimColor, withFaces) {
   return `<div class="section scale" data-scale-id="${id}">
     <div class="scale-head">
       <span class="label">${label}</span>
-      <span class="scale-val serif ${value === null ? "empty" : ""}" style="color:${value === null ? "" : color}">${value === null ? "–" : value}</span>
+      <span class="scale-val ${value === null ? "empty" : ""}" style="color:${value === null ? "" : `var(--${id})`}">${value === null ? "–" : value}</span>
     </div>
-    <div class="segments" role="slider" tabindex="0" style="--accent:${color}" aria-label="${label}" aria-valuemin="1" aria-valuemax="10" aria-valuenow="${value ?? 0}">${segs}</div>
+    <div class="segments" role="slider" tabindex="0" style="--c:var(--${id})" aria-label="${label}" aria-valuemin="1" aria-valuemax="10" aria-valuenow="${value ?? 0}">${segs}</div>
+    ${ends && !withFaces ? `<div class="seg-ends"><span>${ends[0]}</span><span>${ends[1]}</span></div>` : ""}
     ${faces}
   </div>`;
 }
@@ -912,17 +1030,16 @@ function scaleHTML(id, label, value, color, dimColor, withFaces) {
 // update one scale's DOM in place (used while sliding — no full re-render)
 function paintScale(root, id, value) {
   if (value == null) value = null; // treat undefined the same as null
-  const [color, dim] = SCALE_COLORS[id];
   root.querySelectorAll(".segments button").forEach((b, i) => {
     const n = i + 1;
-    b.style.background = value !== null && n <= value ? (n === value ? color : dim) : "";
+    b.classList.toggle("on", value !== null && n <= value);
     b.classList.toggle("tip", n === value);
   });
   const val = root.querySelector(".scale-val");
   const changed = val.textContent !== String(value === null ? "–" : value);
   val.textContent = value === null ? "–" : value;
   val.classList.toggle("empty", value === null);
-  val.style.color = value === null ? "" : color;
+  val.style.color = value === null ? "" : `var(--${id})`;
   if (changed && value !== null) {
     val.classList.remove("bump");
     void val.offsetWidth;
@@ -991,17 +1108,54 @@ function wireScales(model, onChange) {
 function moodWord(v) { return v ? MOOD_WORDS[v - 1] : ""; }
 function moodFaceInline(v) { return v ? `<span class="mood-face-inline">${faceSVG(v)}</span>` : ""; }
 
-// ---------- streak strip (top of morning / evening) ----------
-function renderStrip(pop) {
+// ---------- theme: day / night edition ----------
+const THEME_KEY = "daily-checkin-theme";
+function getTheme() { return document.documentElement.dataset.theme === "night" ? "night" : "day"; }
+function setTheme(t) {
+  if (t === "night") document.documentElement.dataset.theme = "night";
+  else delete document.documentElement.dataset.theme;
+  document.querySelector('meta[name="theme-color"]').content = t === "night" ? "#17150f" : "#efe6d2";
+  try { localStorage.setItem(THEME_KEY, t); } catch (e) { /* private mode: just don't remember */ }
+}
+
+// ---------- masthead + front page ----------
+function renderMast() {
+  const today = todayKey();
+  const filledKeys = Object.keys(state.days).filter(dayFilled).sort();
+  const first = filledKeys[0] || today;
+  // issue number: days since the very first check-in
+  const issue = Math.round((parseKey(today) - parseKey(first)) / 86400000) + 1;
+  const date = parseKey(today).toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short", year: "numeric" });
+  const night = getTheme() === "night";
+  mast.innerHTML = `
+    <div class="mast-top"><span>Est. ${first.slice(0, 4)}</span><span class="motto">“all the news that's fit to feel”</span><span>Vol. I</span></div>
+    <div class="mast-title">The Daily Check-In</div>
+    <div class="dateline">
+      <span>No. ${issue}</span>
+      <span class="d">${date}</span>
+      <button class="theme-btn" id="theme-btn" aria-label="switch to ${night ? "day" : "night"} edition">${night ? "☀ day ed." : "☾ night ed."}</button>
+    </div>`;
+  mast.querySelector("#theme-btn").onclick = () => { setTheme(night ? "day" : "night"); renderMast(); };
+}
+
+function frontHeadline(cur, best, done) {
+  if (!cur) return ["A Fresh Start Awaits", "Check in today and the first edition goes to press."];
+  const words = titleCase(numWord(cur));
+  const days = cur === 1 ? "Day" : "Days";
+  if (done && cur === best && cur >= 3) return [`Record Run: ${words} ${days}`, "The longest streak in this paper's history."];
+  if (done) return [`${words} ${days} Running`, `Today's entry is filed. Best run on record: ${best}.`];
+  return [`${words} ${days} and Counting`, "Today's edition awaits — check in to keep the run alive."];
+}
+
+function renderFront(pop) {
   updateNavDots();
-  if (tab !== "morning" && tab !== "evening") { strip.innerHTML = ""; return; }
+  renderMast();
+  if (tab !== "morning" && tab !== "evening") { front.innerHTML = ""; return; }
   const today = todayKey();
   const done = dayFilled(today);
   const cur = currentStreak();
   const best = bestStreak();
-  const hint = done ? "today's in ✓"
-    : cur ? "check in today to keep it going"
-    : "check in today to start one";
+  const [head, deck] = frontHeadline(cur, best, done);
 
   const start = weekStart(today);
   let week = "";
@@ -1010,29 +1164,26 @@ function renderStrip(pop) {
     const d = state.days[k];
     const m = morningFilled(d?.morning), e = eveningFilled(d?.evening);
     const cls = k === today ? "today" : k > today ? "future" : "";
-    const letter = parseKey(k).toLocaleDateString("en-GB", { weekday: "narrow" }).toLowerCase();
+    const letter = parseKey(k).toLocaleDateString("en-GB", { weekday: "short" }).slice(0, 2);
     const aria = `${prettyDate(k)}: morning ${m ? "done" : "not done"}, evening ${e ? "done" : "not done"}`;
     week += `<div class="wd ${cls}" role="img" aria-label="${aria}"><span>${letter}</span><div class="pip"><i class="${m ? "on" : ""}"></i><i class="${e ? "on" : ""}"></i></div></div>`;
   }
 
-  const chips = state.goals.map(g => {
+  const index = state.goals.map(g => {
     const n = periodCount(g, periodOf(g, today));
     const met = n >= g.target;
-    return `<button class="chip ${met ? "done" : ""}" data-goto="goals" aria-label="${esc(g.title)}: ${n} of ${g.target} this ${g.period}">${icon(g.icon)}<span>${met ? "✓" : `${n}/${g.target}`}</span></button>`;
+    return `<button class="${met ? "done" : ""}" data-goto="goals" aria-label="${esc(g.title)}: ${n} of ${g.target} this ${g.period}">${icon(g.icon)}<span>${met ? "done" : `${n}/${g.target}`}</span></button>`;
   }).join("");
 
-  strip.innerHTML = `<div class="strip">
-    <div class="streak-row">
-      <span class="flame ${done ? "lit" : ""} ${pop ? "pop" : ""}">${icon("flame")}</span>
-      <span class="streak-num">${cur}</span>
-      <span class="streak-txt">${cur === 1 ? "day" : "days"} in a row<small>${hint}</small></span>
-      <span class="best">best<b>${best}</b></span>
-    </div>
+  front.innerHTML = `<section class="front">
+    <div class="kicker">${icon("flame")} the streak</div>
+    <div class="headline ${pop ? "pop" : ""}">${head}</div>
+    <div class="deck">${deck}</div>
     <div class="week">${week}</div>
-    <div class="week-legend">left half morning · right half evening</div>
-    ${chips ? `<div class="chips">${chips}</div>` : ""}
-  </div>`;
-  strip.querySelectorAll("[data-goto]").forEach(b => b.onclick = () => setTab(b.dataset.goto));
+    <div class="week-legend">left column the morning, right the evening</div>
+    ${index ? `<div class="index">${index}</div>` : ""}
+  </section>`;
+  front.querySelectorAll("[data-goto]").forEach(b => b.onclick = () => setTab(b.dataset.goto));
 }
 
 function updateNavDots() {
@@ -1052,25 +1203,24 @@ function renderMorning() {
   const m = morningModel(key);
   const onChange = () => commit(key, "morning", m);
   view.innerHTML = `
-    <h1>${prettyDate(key)}</h1>
-    <div class="head-row">
-      <div class="sub">morning</div>
-      <span class="saved-note">${m.savedAt ? "saved ✓" : "saves as you go"}</span>
-    </div>
-    ${scaleHTML("sleep", "sleep", m.sleep, "var(--sleep)", "var(--sleep-dim)", false)}
-    ${scaleHTML("mood", "mood", m.mood, "var(--mood)", "var(--mood-dim)", true)}
-    ${scaleHTML("body", "body", m.body, "var(--body)", "var(--body-dim)", false)}
+    <div class="page-kicker kicker">morning edition</div>
+    <h1>The Morning Report</h1>
+    <div class="sub">${prettyDate(key)}</div>
+    <div class="head-row"><span class="saved-note">${m.savedAt ? "filed ✓" : "saves as you go"}</span></div>
+    ${scaleHTML("sleep", "sleep", m.sleep, false, ["restless", "deep"])}
+    ${scaleHTML("mood", "mood", m.mood, true)}
+    ${scaleHTML("body", "body", m.body, false, ["aching", "strong"])}
     <div class="section">
       <div class="label">intention for today</div>
       <textarea id="intention" placeholder="what's the day for?">${esc(m.intention)}</textarea>
     </div>
-    <button class="btn-primary" id="done-morning">done</button>
+    <button class="btn-primary" id="done-morning">send to press</button>
   `;
   wireScales(m, onChange);
   view.querySelector("#intention").oninput = e => { m.intention = e.target.value; onChange(); };
   view.querySelector("#done-morning").onclick = e => {
     pulse(e.target);
-    toast(morningFilled(m) ? "morning saved — have a good one" : "nothing filled in yet");
+    toast(morningFilled(m) ? "morning edition filed" : "nothing to print yet");
   };
 }
 
@@ -1082,13 +1232,13 @@ function renderEvening() {
   const m = state.days[key]?.morning;
   const summary = morningFilled(m) ? `
     <div class="summary">
-      <div class="label">${eveningOffset === 0 ? "this morning" : "that morning"}</div>
+      <div class="label plain" style="justify-content:center">from ${eveningOffset === 0 ? "this" : "that"} morning's edition</div>
       <div class="summary-vals">
         <span><span class="dot" style="background:var(--sleep)"></span>sleep <b>${m.sleep ?? "–"}</b></span>
         <span><span class="dot" style="background:var(--mood)"></span>mood <b>${m.mood ?? "–"}</b>${moodFaceInline(m.mood)}</span>
         <span><span class="dot" style="background:var(--body)"></span>body <b>${m.body ?? "–"}</b></span>
       </div>
-      ${m.intention ? `<div style="margin-top:8px;color:var(--muted);font-size:0.88rem">“${esc(m.intention)}”</div>` : ""}
+      ${m.intention ? `<div class="quote">“${esc(m.intention)}”</div>` : ""}
     </div>` : "";
 
   const boundaryRows = state.boundaries.map(b => {
@@ -1110,17 +1260,16 @@ function renderEvening() {
   }).join("");
 
   view.innerHTML = `
-    <h1>${prettyDate(key)}</h1>
+    <div class="page-kicker kicker">evening edition</div>
+    <h1>The Evening Report</h1>
+    <div class="sub">${prettyDate(key)}</div>
     <div class="head-row">
-      <div class="sub">evening · <span class="saved-note">${ev.savedAt ? "saved ✓" : "saves as you go"}</span></div>
       <div class="range-toggle day-toggle">${dayTabs}</div>
+      <span class="saved-note">${ev.savedAt ? "filed ✓" : "saves as you go"}</span>
     </div>
     ${summary}
-    <div class="section">
-      <div class="label">how are you now?</div>
-    </div>
-    ${scaleHTML("mood", "mood", ev.mood, "var(--mood)", "var(--mood-dim)", true)}
-    ${scaleHTML("body", "body", ev.body, "var(--body)", "var(--body-dim)", false)}
+    ${scaleHTML("mood", "mood now", ev.mood, true)}
+    ${scaleHTML("body", "body now", ev.body, false, ["aching", "strong"])}
     <div class="section">
       <div class="scale-head">
         <span class="label">boundaries</span>
@@ -1133,13 +1282,11 @@ function renderEvening() {
       </div>` : ""}
     </div>
     <div class="section">
-      <div class="row" style="border:none;padding:0">
-        <span class="name">gym</span>
-        <span class="pills">
-          <button data-gym="went" class="${gym === "went" ? "held-on" : ""}">went</button>
-          <button data-gym="rest" class="${gym === "rest" ? "neutral-on" : ""}">rest</button>
-          <button data-gym="skipped" class="${gym === "skipped" ? "slipped-on" : ""}">skipped</button>
-        </span>
+      <div class="label">gym</div>
+      <div class="pills" style="margin-top:10px">
+        <button data-gym="went" class="${gym === "went" ? "held-on" : ""}">went</button>
+        <button data-gym="rest" class="${gym === "rest" ? "neutral-on" : ""}">rest day</button>
+        <button data-gym="skipped" class="${gym === "skipped" ? "slipped-on" : ""}">skipped</button>
       </div>
     </div>
     <div class="section">
@@ -1150,7 +1297,7 @@ function renderEvening() {
       <div class="label">one honest thing</div>
       <textarea id="honest" placeholder="say it plainly">${esc(ev.honest)}</textarea>
     </div>
-    <button class="btn-primary" id="done-evening">done</button>
+    <button class="btn-primary" id="done-evening">send to press</button>
     <button class="btn-ghost" id="copy-md">copy daily note as markdown</button>
   `;
 
@@ -1158,7 +1305,6 @@ function renderEvening() {
   view.querySelectorAll("[data-day]").forEach(b => b.onclick = () => {
     eveningOffset = Number(b.dataset.day);
     renderEvening();
-    window.scrollTo(0, 0);
   });
   // tapping the selected pill again clears it
   view.querySelectorAll("[data-b]").forEach(b => b.onclick = () => {
@@ -1200,11 +1346,11 @@ function renderEvening() {
   view.querySelector("#honest").oninput = e => { ev.honest = e.target.value; onChange(); };
   view.querySelector("#done-evening").onclick = e => {
     pulse(e.target);
-    if (!eveningFilled(ev)) { toast("nothing filled in yet"); return; }
+    if (!eveningFilled(ev)) { toast("nothing to print yet"); return; }
     // the day toggle marks days that already have an evening saved
     const tabBtn = view.querySelector(`[data-day="${eveningOffset}"]`);
     if (tabBtn && !tabBtn.querySelector(".mark")) tabBtn.insertAdjacentHTML("beforeend", `<span class="mark"></span>`);
-    toast(eveningOffset === 0 ? "evening saved — sleep well" : "yesterday evening saved");
+    toast(eveningOffset === 0 ? "evening edition filed — sleep well" : "yesterday's evening filed");
   };
   view.querySelector("#copy-md").onclick = () => copyMarkdown(key, ev);
 }
@@ -1250,7 +1396,7 @@ function copyMarkdown(key, ev) {
 }
 
 // ---------- goals tab ----------
-function goalCardHTML(g) {
+function goalCardHTML(g, freshStamp) {
   const today = todayKey();
   const p = periodOf(g, today);
   const all = goalEntries(g).sort((a, b) => b.date.localeCompare(a.date));
@@ -1261,7 +1407,9 @@ function goalCardHTML(g) {
   const id = esc(g.id);
 
   let bar = "";
-  for (let i = 0; i < g.target; i++) bar += `<i class="${i < n ? "on" : ""}"></i>`;
+  if (g.target > 1) {
+    for (let i = 0; i < g.target; i++) bar += `<i class="${i < n ? "on" : ""}"></i>`;
+  }
 
   const entryLi = (e, withMonth) => `<li>
     <span class="e-date">${shortDate(e.date, withMonth)}</span>
@@ -1273,9 +1421,9 @@ function goalCardHTML(g) {
   const histOpen = historyOpen.has(g.id);
   const shown = histOpen ? all : cur;
 
-  let streakLine;
-  if (streak > 0) streakLine = `<div class="goal-streak">${icon("flame")}${streak} ${unit(g, streak)} in a row</div>`;
-  else streakLine = `<div class="goal-streak cold">${icon("flame")}start a streak this ${g.period}</div>`;
+  const streakLine = streak > 0
+    ? `<div class="goal-streak">${icon("flame")}${numWord(streak)} ${unit(g, streak)} running</div>`
+    : `<div class="goal-streak cold">${icon("flame")}no run yet — start one this ${g.period}</div>`;
 
   let form = "";
   if (logging === g.id) {
@@ -1287,21 +1435,23 @@ function goalCardHTML(g) {
       <input class="field" type="date" id="log-date" value="${logDraft.date}" max="${today}" aria-label="date">
       <div class="row-btns">
         <button class="btn-ghost" id="log-cancel">cancel</button>
-        <button class="btn-primary" id="log-save">save</button>
+        <button class="btn-primary" id="log-save">file it</button>
       </div>
     </div>`;
   }
 
-  return `<div class="goal ${met ? "done" : ""}" data-goal="${id}">
+  const kind = g.period === "month" ? "monthly" : g.target > 1 ? `weekly · ${g.target} times` : "weekly";
+  return `<article class="goal" data-goal="${id}">
     <div class="goal-top">
-      <span class="goal-icon">${met ? icon("check") : icon(g.icon)}</span>
+      <span class="goal-icon">${icon(g.icon)}</span>
       <div class="goal-main">
-        <div class="goal-title">${esc(g.title)}</div>
-        <div class="goal-meta">${met ? `done this ${g.period}` : `this ${g.period} · ${periodLeft(g)}`}</div>
+        <div class="goal-kind">${kind}</div>
+        <div class="goal-title">${esc(titleCase(g.title))}</div>
+        <div class="goal-meta">${met ? `done this ${g.period}` : `${periodLeft(g)} this ${g.period}`}</div>
       </div>
-      <div class="goal-count">${n}<span>/${g.target}</span></div>
+      ${met ? `<span class="stamp ${freshStamp ? "fresh" : ""}">DONE</span>` : `<div class="goal-count">${n}<span>/${g.target}</span></div>`}
     </div>
-    <div class="goal-bar">${bar}</div>
+    ${bar ? `<div class="goal-bar">${bar}</div>` : ""}
     ${streakLine}
     ${g.currentLabel !== undefined ? `<div class="current-read">
       <div class="label">${esc(g.currentLabel)}</div>
@@ -1310,28 +1460,27 @@ function goalCardHTML(g) {
     ${shown.length ? `<ul class="entries">${shown.map(e => entryLi(e, histOpen)).join("")}</ul>` : ""}
     ${form || `<div class="goal-actions">
       <button class="btn-ghost" data-log="${id}">+ log it</button>
-      ${all.length > cur.length || histOpen ? `<button class="edit-link" data-hist="${id}">${histOpen ? "less" : `all (${all.length})`}</button>` : ""}
+      ${all.length > cur.length || histOpen ? `<button class="edit-link" data-hist="${id}">${histOpen ? "less" : `archive (${all.length})`}</button>` : ""}
       ${goalsEditing ? `<button class="remove" data-rm-goal="${id}" aria-label="remove goal ${esc(g.title)}">✕</button>` : ""}
     </div>`}
-  </div>`;
+  </article>`;
 }
 
-function renderGoals() {
+function renderGoals(freshId) {
   const counts = state.goals.map(g => ({ g, n: goalEntries(g).length })).filter(x => x.n > 0);
   const collectionName = g => ({ "new-place": "new places", "new-food": "new foods", "book": "books" }[g.id] || g.title);
   const existing = new Set(state.goals.map(g => g.title.toLowerCase()));
   const ideas = GOAL_IDEAS.filter(i => !existing.has(i.title.toLowerCase()));
 
   view.innerHTML = `
-    <div class="trends-head">
-      <h1 style="font-size:1.7rem">goals</h1>
-      <button class="edit-link" id="edit-goals">${goalsEditing ? "done" : "edit"}</button>
-    </div>
-    <div class="sub">small adventures, every week and month</div>
-    ${state.goals.map(goalCardHTML).join("") || `<div class="empty-note">no goals yet — add one below</div>`}
+    <div class="page-kicker kicker">the adventures column</div>
+    <h1>Small Adventures</h1>
+    <div class="sub">filed weekly &amp; monthly</div>
+    <div class="head-row"><button class="edit-link" id="edit-goals">${goalsEditing ? "done editing" : "edit goals"}</button></div>
+    ${state.goals.map(g => goalCardHTML(g, g.id === freshId)).join("") || `<div class="empty-note">no goals yet — add one below</div>`}
     ${goalsEditing ? `
       <div class="section">
-        <div class="label">add your own</div>
+        <div class="label">place your own</div>
         <div class="add-boundary">
           <input id="new-goal" placeholder="e.g. call grandma" maxlength="40">
           <select id="new-goal-period" aria-label="how often">
@@ -1345,12 +1494,12 @@ function renderGoals() {
         </div>
       </div>
       ${ideas.length ? `<div class="section">
-        <div class="label">or pick an idea</div>
-        <div class="pills suggest">${ideas.map((i, idx) => `<button data-idea="${GOAL_IDEAS.indexOf(i)}">+ ${esc(i.title)} <span style="color:var(--faint)">· ${i.period === "week" ? "weekly" : "monthly"}</span></button>`).join("")}</div>
+        <div class="label">or pick from the wanted ads</div>
+        <div class="pills suggest">${ideas.map(i => `<button data-idea="${GOAL_IDEAS.indexOf(i)}">+ ${esc(i.title)} <span>· ${i.period === "week" ? "weekly" : "monthly"}</span></button>`).join("")}</div>
       </div>` : ""}
     ` : ""}
     ${counts.length ? `<div class="section">
-      <div class="label">your collection so far</div>
+      <div class="label">the record so far</div>
       <div class="collection">${counts.map(({ g, n }) => `<div><b>${n}</b><span>${esc(collectionName(g))}</span></div>`).join("")}</div>
     </div>` : ""}
   `;
@@ -1413,13 +1562,14 @@ function renderGoals() {
       state.log.push(entry);
       save();
       logging = null;
-      renderGoals();
-      if (periodOf(g, date) === p && before < g.target && before + 1 >= g.target) {
+      const justMet = periodOf(g, date) === p && before < g.target && before + 1 >= g.target;
+      renderGoals(justMet ? g.id : null);
+      if (justMet) {
         const s = goalStreak(g);
-        toast(s > 1 ? `done — ${s} ${unit(g, s)} in a row` : `done for this ${g.period}`);
+        toast(s > 1 ? `extra! ${numWord(s)} ${unit(g, s)} running` : `done for this ${g.period}`);
         sparkle(view.querySelector(`[data-goal="${CSS.escape(g.id)}"]`));
       } else {
-        toast("logged");
+        toast("filed");
       }
     };
     view.querySelector("#log-save").onclick = submit;
@@ -1449,23 +1599,24 @@ function renderGoals() {
 
 function sparkle(el) {
   if (!el || reducedMotion()) return;
-  for (let i = 0; i < 14; i++) {
+  for (let i = 0; i < 16; i++) {
     const s = document.createElement("span");
     s.className = "spark";
-    const a = (i / 14) * Math.PI * 2 + Math.random() * 0.4;
-    const r = 60 + Math.random() * 50;
+    const a = (i / 16) * Math.PI * 2 + Math.random() * 0.4;
+    const r = 70 + Math.random() * 60;
     s.style.setProperty("--dx", `${Math.cos(a) * r}px`);
     s.style.setProperty("--dy", `${Math.sin(a) * r * 0.6}px`);
     el.appendChild(s);
-    setTimeout(() => s.remove(), 800);
+    setTimeout(() => s.remove(), 850);
   }
 }
 
 // ---------- trends tab ----------
-function collectWindow(n) {
+// n days ending `shift` days ago
+function collectWindow(n, shift = 0) {
   const out = [];
   for (let i = n - 1; i >= 0; i--) {
-    const key = todayKey(-i);
+    const key = todayKey(-i - shift);
     const d = state.days[key];
     const m = d?.morning, ev = d?.evening;
     out.push({
@@ -1480,46 +1631,63 @@ function collectWindow(n) {
 }
 const avg = xs => xs.length ? xs.reduce((a, b) => a + b, 0) / xs.length : null;
 const fmt1 = x => x === null ? "–" : (Math.round(x * 10) / 10).toFixed(1);
+const fieldAvg = (days, f) => avg(days.map(d => d[f]).filter(v => v !== null));
 
 function chartSVG(days) {
   const W = 640, H = 260, padL = 34, padR = 14, padT = 16, padB = 30;
   const x = i => padL + (days.length === 1 ? 0 : i * (W - padL - padR) / (days.length - 1));
   const y = v => padT + (10 - v) * (H - padT - padB) / 9; // 1..10
-  const series = [["sleep", "var(--sleep)"], ["mood", "var(--mood)"], ["body", "var(--body)"]];
+  const series = [["sleep", "var(--sleep)", ""], ["mood", "var(--mood)", ""], ["body", "var(--body)", "6 4"]];
   let g = "";
   for (const gy of [1, 4, 7, 10]) {
-    g += `<line x1="${padL}" y1="${y(gy)}" x2="${W - padR}" y2="${y(gy)}" stroke="#2a251d" stroke-width="1"/>`;
-    g += `<text x="${padL - 8}" y="${y(gy) + 4}" fill="#6b6452" font-size="12" text-anchor="end">${gy}</text>`;
+    g += `<line x1="${padL}" y1="${y(gy)}" x2="${W - padR}" y2="${y(gy)}" stroke="var(--rule-soft)" stroke-width="1" stroke-dasharray="${gy === 1 ? "" : "2 4"}"/>`;
+    g += `<text x="${padL - 8}" y="${y(gy) + 4}" fill="var(--muted)" font-size="13" font-family="EB Garamond, Georgia, serif" text-anchor="end">${gy}</text>`;
   }
   const labelEvery = Math.max(1, Math.ceil(days.length / 7));
   days.forEach((d, i) => {
     if (i % labelEvery === 0 || i === days.length - 1) {
       const [, m, dd] = d.key.split("-");
-      g += `<text x="${x(i)}" y="${H - 8}" fill="#6b6452" font-size="12" text-anchor="middle">${Number(dd)}.${m}</text>`;
+      g += `<text x="${x(i)}" y="${H - 8}" fill="var(--muted)" font-size="13" font-family="EB Garamond, Georgia, serif" text-anchor="middle">${Number(dd)}.${m}</text>`;
     }
   });
-  for (const [field, color] of series) {
+  for (const [field, color, dash] of series) {
     let path = "", prev = false;
     days.forEach((d, i) => {
       const v = d[field];
       if (v === null) { prev = false; return; }
       path += (prev ? "L" : "M") + x(i).toFixed(1) + " " + y(v).toFixed(1) + " ";
       prev = true;
-      g += `<circle cx="${x(i).toFixed(1)}" cy="${y(v).toFixed(1)}" r="3.5" fill="${color}"/>`;
+      g += `<rect x="${(x(i) - 3.5).toFixed(1)}" y="${(y(v) - 3.5).toFixed(1)}" width="7" height="7" fill="var(--paper-2)" stroke="${color}" stroke-width="2"/>`;
     });
-    if (path) g = `<path d="${path.trim()}" fill="none" stroke="${color}" stroke-width="2" opacity="0.8"/>` + g;
+    if (path) g = `<path d="${path.trim()}" fill="none" stroke="${color}" stroke-width="2.2" ${dash ? `stroke-dasharray="${dash}"` : ""}/>` + g;
   }
   return `<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="sleep, mood and body over time">${g}</svg>`;
 }
 
 function renderTrends() {
   const days = collectWindow(range);
-  const sleepA = avg(days.map(d => d.sleep).filter(v => v !== null));
-  const moodVals = days.map(d => d.mood).filter(v => v !== null);
-  const moodA = avg(moodVals);
-  const bodyA = avg(days.map(d => d.body).filter(v => v !== null));
+  const prevDays = collectWindow(range, range);
+  const sleepA = fieldAvg(days, "sleep"), moodA = fieldAvg(days, "mood"), bodyA = fieldAvg(days, "body");
   const hasData = days.some(d => d.sleep !== null || d.mood !== null || d.body !== null);
   const checkedIn = days.filter(d => dayFilled(d.key)).length;
+
+  // stock-page style: this window vs the one before it
+  const tickerRow = (name, f, a) => {
+    const p = fieldAvg(prevDays, f);
+    let delta = `<span class="t-delta flat">—</span>`;
+    if (a !== null && p !== null) {
+      const dlt = Math.round((a - p) * 10) / 10;
+      delta = dlt > 0 ? `<span class="t-delta up">▲ ${dlt.toFixed(1)}</span>`
+        : dlt < 0 ? `<span class="t-delta down">▼ ${Math.abs(dlt).toFixed(1)}</span>`
+        : `<span class="t-delta flat">unch.</span>`;
+    }
+    return `<div class="ticker-row">
+      <span class="dot" style="background:var(--${f})"></span><span class="t-name">${name}</span>
+      <span class="t-lead"></span>
+      <span class="t-val">${fmt1(a)}</span>${f === "mood" && a !== null ? moodFaceInline(Math.round(a)) : ""}
+      ${delta}
+    </div>`;
+  };
 
   // boundary hold rates
   const holdRate = name => {
@@ -1558,49 +1726,54 @@ function renderTrends() {
   }
 
   view.innerHTML = `
-    <div class="trends-head">
-      <h1 style="font-size:1.7rem">trends</h1>
+    <div class="page-kicker kicker">the almanac</div>
+    <h1>Trends &amp; Figures</h1>
+    <div class="sub">the last ${numWord(range)} days, in print</div>
+    <div class="head-row">
       <div class="range-toggle">
-        ${[7, 14, 30].map(n => `<button data-range="${n}" class="${range === n ? "on" : ""}">${n}d</button>`).join("")}
+        ${[7, 14, 30].map(n => `<button data-range="${n}" class="${range === n ? "on" : ""}">${n} days</button>`).join("")}
       </div>
     </div>
-    <div class="avgs">
-      <span><span class="dot" style="background:var(--sleep)"></span>sleep <b>${fmt1(sleepA)}</b></span>
-      <span><span class="dot" style="background:var(--mood)"></span>mood <b>${fmt1(moodA)}</b>${moodA !== null ? moodFaceInline(Math.round(moodA)) : ""}</span>
-      <span><span class="dot" style="background:var(--body)"></span>body <b>${fmt1(bodyA)}</b></span>
+    <div class="ticker">
+      ${tickerRow("sleep", "sleep", sleepA)}
+      ${tickerRow("mood", "mood", moodA)}
+      ${tickerRow("body", "body", bodyA)}
     </div>
-    <div class="chart-box">${hasData ? chartSVG(days) : `<div class="empty-note" style="margin:20px">no check-ins yet — trends appear once you save a few days</div>`}</div>
+    <div class="ticker-note">change vs. the ${range} days before</div>
+    <div class="chart-box">${hasData
+      ? chartSVG(days) + `<div class="chart-legend"><span style="color:var(--sleep)">— sleep</span><span style="color:var(--mood)">— mood</span><span style="color:var(--body)">- - body</span></div>`
+      : `<div class="empty-note" style="margin:20px">no check-ins yet — the figures appear once a few days are filed</div>`}</div>
     <div class="mini-card">
-      <div class="label">streaks</div>
-      <div class="avgs">
-        <span><span class="dot" style="background:var(--flame)"></span>now <b>${currentStreak()}</b></span>
-        <span>best <b>${bestStreak()}</b></span>
-        <span>checked in <b>${checkedIn}/${range}</b></span>
+      <div class="label">the streak</div>
+      <div class="stats">
+        <div><b>${currentStreak()}</b><span>running</span></div>
+        <div><b>${bestStreak()}</b><span>record</span></div>
+        <div><b>${checkedIn}/${range}</b><span>days filed</span></div>
       </div>
     </div>
     <div class="section">
-      <div class="label">boundaries</div>
+      <div class="label">boundaries held</div>
       ${bstats.map(b => `<div class="bar-row">
         <span class="name">${esc(b.name)}</span>
         <span class="bar-track"><span class="bar-fill" style="width:0" data-w="${b.pct ?? 0}"></span></span>
         <span class="pct">${b.pct === null ? "–" : b.pct + "%"}</span>
       </div>`).join("")}
       ${pastStats.length ? `
-        <div class="label" style="margin-top:14px;color:var(--faint);font-size:0.72rem">past boundaries</div>
-        ${pastStats.map(b => `<div class="bar-row" style="opacity:0.6">
-          <span class="name" style="color:var(--faint)">${esc(b.name)}</span>
-          <span class="bar-track"><span class="bar-fill" style="width:0;background:var(--faint)" data-w="${b.pct ?? 0}"></span></span>
-          <span class="pct" style="color:var(--faint)">${b.pct === null ? "–" : b.pct + "%"}</span>
+        <div class="label plain" style="margin-top:14px;color:var(--muted);font-size:0.68rem">past boundaries</div>
+        ${pastStats.map(b => `<div class="bar-row" style="opacity:0.55">
+          <span class="name">${esc(b.name)}</span>
+          <span class="bar-track"><span class="bar-fill" style="width:0" data-w="${b.pct ?? 0}"></span></span>
+          <span class="pct">${b.pct === null ? "–" : b.pct + "%"}</span>
         </div>`).join("")}
       ` : ""}
     </div>
     <div class="mini-card">
       <div class="label">mood × sleep</div>
       ${hi !== null ? `
-        <div class="bar-row"><span class="name" style="color:var(--muted)">higher-sleep days</span>
+        <div class="bar-row"><span class="name">after better sleep</span>
           <span class="bar-track"><span class="bar-fill gold-hi" style="width:0" data-w="${hi * 10}"></span></span>
           <span class="pct">${fmt1(hi)}</span></div>
-        <div class="bar-row"><span class="name" style="color:var(--muted)">lower-sleep days</span>
+        <div class="bar-row"><span class="name">after worse sleep</span>
           <span class="bar-track"><span class="bar-fill gold-lo" style="width:0" data-w="${lo * 10}"></span></span>
           <span class="pct">${fmt1(lo)}</span></div>`
       : `<div class="empty-note">needs a few days with both sleep and mood logged</div>`}
@@ -1633,6 +1806,7 @@ function renderTrends() {
       editingBoundaries = false;
       goalsEditing = false;
       logging = null;
+      renderMast();
       renderTrends();
       toast("imported");
     }).catch(() => toast("couldn't read that file"))
@@ -1647,21 +1821,23 @@ function animateTrends() {
     view.querySelectorAll(".bar-fill[data-w]").forEach(f => { f.style.width = f.dataset.w + "%"; });
     return;
   }
-  view.querySelectorAll(".chart-box path").forEach(p => {
+  // dashed series keep their dash pattern, so only the solid ones draw in
+  const solid = [...view.querySelectorAll(".chart-box path")].filter(p => !p.hasAttribute("stroke-dasharray"));
+  solid.forEach(p => {
     const len = p.getTotalLength();
     p.style.strokeDasharray = len;
     p.style.strokeDashoffset = len;
   });
-  view.querySelectorAll(".chart-box circle").forEach((c, i) => {
+  view.querySelectorAll(".chart-box rect").forEach((c, i) => {
     c.style.opacity = "0";
     c.style.transition = `opacity 0.3s ease ${0.3 + i * 0.04}s`;
   });
   requestAnimationFrame(() => requestAnimationFrame(() => {
-    view.querySelectorAll(".chart-box path").forEach(p => {
+    solid.forEach(p => {
       p.style.transition = "stroke-dashoffset 1s ease";
       p.style.strokeDashoffset = "0";
     });
-    view.querySelectorAll(".chart-box circle").forEach(c => { c.style.opacity = "1"; });
+    view.querySelectorAll(".chart-box rect").forEach(c => { c.style.opacity = "1"; });
     view.querySelectorAll(".bar-fill[data-w]").forEach(f => { f.style.width = f.dataset.w + "%"; });
   }));
 }
@@ -1672,7 +1848,7 @@ function toast(msg) {
   t.textContent = msg;
   t.classList.add("show");
   clearTimeout(toast._t);
-  toast._t = setTimeout(() => t.classList.remove("show"), 2000);
+  toast._t = setTimeout(() => t.classList.remove("show"), 2200);
 }
 
 function pulse(btn) {
@@ -1690,9 +1866,9 @@ function setTab(name) {
     if (active) b.setAttribute("aria-current", "page");
     else b.removeAttribute("aria-current");
   });
-  renderStrip();
+  renderFront();
   renderers[name]();
-  for (const el of [view, strip]) {
+  for (const el of [view, front]) {
     el.classList.remove("enter");
     void el.offsetWidth;
     el.classList.add("enter");
@@ -1700,6 +1876,8 @@ function setTab(name) {
   window.scrollTo(0, 0);
 }
 document.querySelectorAll("nav button").forEach(b => b.onclick = () => setTab(b.dataset.tab));
+
+setTheme(getTheme());
 
 // default tab: evening after 17:00 — and in the small hours it's still last night,
 // so open the evening tab already pointed at yesterday
