@@ -115,7 +115,7 @@
     box-shadow: var(--shadow);
     flex: none;
   }
-  .streak-pill .blob { width: 30px; height: 30px; }
+  .streak-pill .blob { width: 36px; height: 36px; margin: -3px -2px; }
   .streak-pill b { font-size: 1rem; font-weight: 800; }
   .streak-pill:not(.lit) .blob { filter: grayscale(0.9) opacity(0.55); }
   .streak-pill.pop .blob { animation: boing 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); }
@@ -180,7 +180,7 @@
   @media (prefers-color-scheme: dark) { .badge { background: rgba(255, 255, 255, 0.12); } }
   .nudge-title { font-size: 1.15rem; font-weight: 800; letter-spacing: -0.01em; margin-top: 8px; }
   .nudge-sub { font-size: 0.8rem; color: var(--muted); margin-top: 1px; }
-  .nudge .blob { width: 64px; height: 64px; flex: none; }
+  .nudge .blob { width: 84px; height: 84px; flex: none; margin: -10px -6px -10px 0; }
   .bar { height: 5px; border-radius: 999px; background: rgba(23, 22, 27, 0.1); margin-top: 12px; overflow: hidden; }
   .bar i { display: block; height: 100%; border-radius: 999px; background: var(--ink); transition: width 0.6s cubic-bezier(0.22, 1, 0.36, 1); }
   @media (prefers-color-scheme: dark) { .bar { background: rgba(255, 255, 255, 0.14); } }
@@ -207,7 +207,7 @@
   .seg-ends { display: flex; justify-content: space-between; margin-top: 5px; font-size: 0.72rem; color: var(--muted); }
 
   .mood-head { justify-content: flex-start; align-items: center; gap: 12px; }
-  .mood-blob { width: 64px; height: 64px; flex: none; display: block; }
+  .mood-blob { width: 80px; height: 80px; flex: none; display: block; margin: -8px -6px -8px -10px; }
   .mood-blob .blob { width: 100%; height: 100%; }
   .mood-blob.squish { animation: squish 0.45s cubic-bezier(0.34, 1.56, 0.64, 1); }
   @keyframes squish {
@@ -349,7 +349,7 @@
     transition: transform 0.15s ease;
   }
   .gcard:active { transform: scale(0.97); }
-  .gcard .blob { width: 60px; height: 60px; margin-bottom: auto; }
+  .gcard .blob { width: 76px; height: 76px; margin: -8px 0 auto -8px; }
   .gtitle { font-weight: 700; font-size: 0.92rem; line-height: 1.25; margin-top: 14px; }
   .gmeta { font-size: 0.74rem; color: var(--muted); margin-top: 2px; }
   .gcheck {
@@ -401,7 +401,7 @@
   }
   .grab { width: 40px; height: 5px; border-radius: 999px; background: var(--faint); margin: 0 auto 12px; }
   .sheet-hero { border-radius: 22px; padding: 18px; text-align: center; }
-  .sheet-hero .blob { width: 76px; height: 76px; margin: 0 auto 8px; }
+  .sheet-hero .blob { width: 96px; height: 96px; margin: -6px auto 2px; }
   .sheet-hero h2 { font-size: 1.35rem; font-weight: 800; letter-spacing: -0.02em; }
   .sheet-hero .bar { max-width: 220px; margin: 12px auto 0; }
   .entries { list-style: none; }
@@ -515,157 +515,242 @@ const MOOD_WORDS = ["drained","rough","low","meh","okay","fine","good","bright",
 const STREAK_MILESTONES = [3, 7, 14, 21, 30, 50, 75, 100, 150, 200, 365];
 const GOAL_ICONS = new Set(["place", "food", "book", "star"]);
 
-// soft clay-like characters: shaded fill, a highlight, a ground shadow, and a face whose smile follows the mood
+// soft clay-like characters: glossy shaded bodies, big shiny eyes, blush, and a little flourish each
 const PALETTE = {
-  peach:  { hi: "#ffe3cb", c: "#ffb57d", lo: "#ec8744" },
-  pink:   { hi: "#ffd6e8", c: "#f59ac0", lo: "#dd6399" },
-  lav:    { hi: "#e2daff", c: "#a996ff", lo: "#7a5ff0" },
-  mint:   { hi: "#cff4de", c: "#7fd6a4", lo: "#46b276" },
-  blue:   { hi: "#d8e6ff", c: "#8db4ff", lo: "#5a86ea" },
-  yellow: { hi: "#fff3c4", c: "#ffd66e", lo: "#f0ab2e" },
-  grey:   { hi: "#f4f2f6", c: "#d8d4dd", lo: "#aaa4b2" }
+  peach:  { hi: "#ffe6d0", c: "#ffb27a", lo: "#f08743" },
+  pink:   { hi: "#ffdcec", c: "#f99bc4", lo: "#e2629c" },
+  lav:    { hi: "#e8e1ff", c: "#ae98ff", lo: "#7c5ef2" },
+  mint:   { hi: "#d6f7e3", c: "#86dcab", lo: "#43b476" },
+  blue:   { hi: "#deebff", c: "#93bbff", lo: "#5a88ee" },
+  yellow: { hi: "#fff6d2", c: "#ffdb73", lo: "#f2ad2c" },
+  white:  { hi: "#ffffff", c: "#f3f0f6", lo: "#c9c2d2" }
 };
-// each kind: colour, body, extra details drawn on top, where the face and highlight sit
+const INK = "#2b1e2a";
+const DECOR = { yellow: "#ffc53d", pink: "#ff7aa8", blue: "#6fb6ff", lav: "#a58bff" };
+
+// ---- little drawing helpers ----
+const f1 = n => (+n).toFixed(1);
+function burst(x, y, angles, color, r1 = 9, r2 = 17) {
+  return angles.map(a => {
+    const t = a * Math.PI / 180;
+    return `<path d="M${f1(x + Math.cos(t) * r1)} ${f1(y + Math.sin(t) * r1)} L${f1(x + Math.cos(t) * r2)} ${f1(y + Math.sin(t) * r2)}" stroke="${color}" stroke-width="4" stroke-linecap="round"/>`;
+  }).join("");
+}
+function heart(x, y, s, color) {
+  return `<path d="M${f1(x)} ${f1(y + s * 0.9)} C${f1(x - s * 1.3)} ${f1(y + s * 0.05)} ${f1(x - s * 0.75)} ${f1(y - s * 0.95)} ${f1(x)} ${f1(y - s * 0.25)} C${f1(x + s * 0.75)} ${f1(y - s * 0.95)} ${f1(x + s * 1.3)} ${f1(y + s * 0.05)} ${f1(x)} ${f1(y + s * 0.9)} Z" fill="${color}"/>`;
+}
+function sparkle(x, y, r, color) {
+  return `<path d="M${f1(x)} ${f1(y - r)} Q${f1(x)} ${f1(y)} ${f1(x + r)} ${f1(y)} Q${f1(x)} ${f1(y)} ${f1(x)} ${f1(y + r)} Q${f1(x)} ${f1(y)} ${f1(x - r)} ${f1(y)} Q${f1(x)} ${f1(y)} ${f1(x)} ${f1(y - r)} Z" fill="${color}"/>`;
+}
+function drop(x, y, s, color) {
+  return `<path d="M${f1(x)} ${f1(y - s)} Q${f1(x + s * 0.85)} ${f1(y + s * 0.25)} ${f1(x)} ${f1(y + s * 0.75)} Q${f1(x - s * 0.85)} ${f1(y + s * 0.25)} ${f1(x)} ${f1(y - s)} Z" fill="${color}"/>`;
+}
+function miniFlower(x, y, r, color) {
+  let s = "";
+  for (let i = 0; i < 5; i++) {
+    const a = (i * 72 - 90) * Math.PI / 180;
+    s += `<circle cx="${f1(x + Math.cos(a) * r)}" cy="${f1(y + Math.sin(a) * r)}" r="${f1(r * 0.8)}" fill="${color}"/>`;
+  }
+  return s + `<circle cx="${x}" cy="${y}" r="${f1(r * 0.55)}" fill="#fff4b8"/>`;
+}
+
+// ---- faces ----
+function glossyEye(x, y, s, big = 1) {
+  const rx = 4.6 * s * big, ry = 5.4 * s * big;
+  return `<ellipse cx="${f1(x)}" cy="${f1(y)}" rx="${f1(rx)}" ry="${f1(ry)}" fill="${INK}"/>
+    <circle cx="${f1(x - rx * 0.28)}" cy="${f1(y - ry * 0.35)}" r="${f1(rx * 0.42)}" fill="#fff"/>
+    <circle cx="${f1(x + rx * 0.38)}" cy="${f1(y + ry * 0.35)}" r="${f1(rx * 0.2)}" fill="#fff"/>`;
+}
+function eyePair(kind, cx, cy, s) {
+  const dx = 9.5 * s, L = cx - dx, R = cx + dx;
+  const line = d => `<path d="${d}" fill="none" stroke="${INK}" stroke-width="${f1(2.8 * s)}" stroke-linecap="round" stroke-linejoin="round"/>`;
+  const happy = x => line(`M${f1(x - 4.6 * s)} ${f1(cy + 1.8 * s)} Q${f1(x)} ${f1(cy - 4.8 * s)} ${f1(x + 4.6 * s)} ${f1(cy + 1.8 * s)}`);
+  switch (kind) {
+    case "wink":    // right eye winks
+      return glossyEye(L, cy, s) + line(`M${f1(R + 4 * s)} ${f1(cy - 4 * s)} L${f1(R - 3.2 * s)} ${f1(cy)} L${f1(R + 4 * s)} ${f1(cy + 4 * s)}`);
+    case "happy":
+      return happy(L) + happy(R);
+    case "squeeze": // > <
+      return line(`M${f1(L - 4 * s)} ${f1(cy - 4 * s)} L${f1(L + 3.4 * s)} ${f1(cy)} L${f1(L - 4 * s)} ${f1(cy + 4 * s)}`) +
+             line(`M${f1(R + 4 * s)} ${f1(cy - 4 * s)} L${f1(R - 3.4 * s)} ${f1(cy)} L${f1(R + 4 * s)} ${f1(cy + 4 * s)}`);
+    case "teary": { // watery eyes with tears running down
+      const tear = x => `<path d="M${f1(x)} ${f1(cy + 5 * s)} q ${f1(-0.6 * s)} ${f1(6 * s)} ${f1(0.4 * s)} ${f1(11 * s)}" stroke="#8cc8ff" stroke-width="${f1(3 * s)}" stroke-linecap="round" fill="none"/>`;
+      return glossyEye(L, cy, s, 1.12) + glossyEye(R, cy, s, 1.12) + tear(L - 1.5 * s) + tear(R + 1.5 * s);
+    }
+    case "wet":     // one tear welling up
+      return glossyEye(L, cy, s, 1.08) + glossyEye(R, cy, s, 1.08) + drop(R + 3 * s, cy + 8 * s, 2.6 * s, "#8cc8ff");
+    case "small":
+      return glossyEye(L, cy, s, 0.8) + glossyEye(R, cy, s, 0.8);
+    default:
+      return glossyEye(L, cy, s) + glossyEye(R, cy, s);
+  }
+}
+function worriedBrows(cx, cy, s) {
+  const dx = 9.5 * s;
+  return `<path d="M${f1(cx - dx - 5 * s)} ${f1(cy - 7.5 * s)} Q${f1(cx - dx)} ${f1(cy - 9 * s)} ${f1(cx - dx + 4.5 * s)} ${f1(cy - 11.5 * s)}
+    M${f1(cx + dx + 5 * s)} ${f1(cy - 7.5 * s)} Q${f1(cx + dx)} ${f1(cy - 9 * s)} ${f1(cx + dx - 4.5 * s)} ${f1(cy - 11.5 * s)}"
+    fill="none" stroke="${INK}" stroke-width="${f1(2.4 * s)}" stroke-linecap="round"/>`;
+}
+function mouthShape(kind, cx, y, s) {
+  const S = n => f1(n * s);
+  const stroke = d => `<path d="${d}" fill="none" stroke="${INK}" stroke-width="${S(2.6)}" stroke-linecap="round" stroke-linejoin="round" transform="translate(${f1(cx)} ${f1(y)})"/>`;
+  const open = (w, h) => `<g transform="translate(${f1(cx)} ${f1(y)})">
+      <path d="M${S(-w)} ${S(-1)} Q0 ${S(h)} ${S(w)} ${S(-1)} Z" fill="${INK}" stroke="${INK}" stroke-width="${S(1.4)}" stroke-linejoin="round"/>
+      <path d="M${S(-w * 0.55)} ${S(h * 0.42)} Q0 ${S(h * 0.18)} ${S(w * 0.55)} ${S(h * 0.42)} Q0 ${S(h * 0.72)} ${S(-w * 0.55)} ${S(h * 0.42)} Z" fill="#ff7aa8"/>
+    </g>`;
+  switch (kind) {
+    case "open":   return open(4.8, 7);
+    case "grin":   return open(6.8, 9.5);
+    case "smile":  return stroke(`M${S(-4.8)} 0 Q0 ${S(4.8)} ${S(4.8)} 0`);
+    case "cat":    return stroke(`M${S(-5.5)} 0 Q${S(-2.75)} ${S(3.2)} 0 0 Q${S(2.75)} ${S(3.2)} ${S(5.5)} 0`);
+    case "frown":  return stroke(`M${S(-4.5)} ${S(3)} Q0 ${S(-1.8)} ${S(4.5)} ${S(3)}`);
+    case "wobble": return stroke(`M${S(-5.5)} ${S(3.5)} Q${S(-2.8)} ${S(-0.4)} 0 ${S(2)} Q${S(2.8)} ${S(-0.4)} ${S(5.5)} ${S(3.5)}`);
+    case "flat":   return stroke(`M${S(-3.5)} ${S(1)} H${S(3.5)}`);
+    default:       return stroke(`M${S(-3.2)} 0 Q0 ${S(2.8)} ${S(3.2)} 0`);
+  }
+}
+function faceSVG(o, gid) {
+  const [cx, cy, s] = o.at;
+  const b = o.blush ?? 1;
+  return `${o.brows ? worriedBrows(cx, cy, s) : ""}
+    <ellipse cx="${f1(cx - 16 * s)}" cy="${f1(cy + 6 * s)}" rx="${f1(7 * s)}" ry="${f1(4.6 * s)}" fill="url(#${gid})" opacity="${b}"/>
+    <ellipse cx="${f1(cx + 16 * s)}" cy="${f1(cy + 6 * s)}" rx="${f1(7 * s)}" ry="${f1(4.6 * s)}" fill="url(#${gid})" opacity="${b}"/>
+    ${eyePair(o.eyes || "glossy", cx, cy, s)}
+    ${mouthShape(o.mouth || "smile", cx, cy + 8 * s, s)}`;
+}
+
+// ---- characters ----
 const FIGURES = {
   // go somewhere new: a little map pin
   pin: {
-    col: "peach", face: [50, 39, 1.3], shine: [36, 24],
-    body: () => `<path d="M50 90 C 40 76, 18 60, 18 38 A 32 32 0 1 1 82 38 C 82 60, 60 76, 50 90 Z"/>`
+    col: "peach", face: { at: [50, 42, 1.5], eyes: "wink", mouth: "open" }, shine: [34, 22],
+    body: () => `<path d="M50 94 C 40 79, 17 61, 17 38 A 33 33 0 1 1 83 38 C 83 61, 60 79, 50 94 Z"/>`,
+    decor: () => burst(22, 16, [185, 228, 271], DECOR.yellow)
   },
   // eat something new: a steamed bao
   bao: {
-    col: "yellow", face: [50, 60, 1.3], shine: [32, 44],
-    body: () => `<path d="M10 70 C 10 42, 28 26, 50 26 C 72 26, 90 42, 90 70 C 90 81, 78 85, 50 85 C 22 85, 10 81, 10 70 Z"/>`,
+    col: "yellow", face: { at: [50, 62, 1.45], eyes: "glossy", mouth: "open" }, shine: [28, 46],
+    body: () => `<path d="M8 72 C 8 44, 27 28, 50 28 C 73 28, 92 44, 92 72 C 92 84, 79 88, 50 88 C 21 88, 8 84, 8 72 Z"/>`,
     extra: p => `<g fill="none" stroke="${p.lo}" stroke-width="2.4" stroke-linecap="round" opacity="0.55">
-        <path d="M50 29 Q 43 35 36 34"/><path d="M50 29 Q 57 35 64 34"/><path d="M50 29 Q 49 35 50 38"/>
-      </g>
-      <g fill="none" stroke="${p.lo}" stroke-width="2.4" stroke-linecap="round" opacity="0.3">
-        <path d="M40 19 q -5 -5 0 -10 q 4 -4 0 -8"/><path d="M60 17 q 5 -5 0 -10 q -4 -4 0 -8"/>
+        <path d="M50 30 Q 42 37 34 36"/><path d="M50 30 Q 58 37 66 36"/><path d="M50 30 Q 46 37 44 41"/><path d="M50 30 Q 54 37 56 41"/>
+      </g>`,
+    decor: p => `<g fill="none" stroke="${p.lo}" stroke-width="3" stroke-linecap="round" opacity="0.45">
+        <path d="M36 20 q -5 -5 0 -10 q 4 -4 0 -9"/><path d="M50 18 q -5 -5 0 -10 q 4 -4 0 -9"/><path d="M64 20 q -5 -5 0 -10 q 4 -4 0 -9"/>
       </g>`
   },
   // read a book: a book with pages and a ribbon
   book: {
-    col: "lav", face: [51, 50, 1.2], shine: [36, 26],
-    under: () => `<rect x="25" y="19" width="60" height="72" rx="9" fill="#fbf8ff"/>
-      <path d="M31 85 H80 M31 80 H80" stroke="#d9d2f2" stroke-width="1.6"/>`,
-    body: () => `<rect x="17" y="12" width="62" height="74" rx="11"/>`,
-    extra: p => `<rect x="17" y="12" width="11" height="74" rx="6" fill="${p.lo}" opacity="0.35"/>
-      <path d="M62 8 h9 v22 l-4.5 -4.5 l-4.5 4.5 z" fill="#ff7aa8"/>`
+    col: "lav", face: { at: [46, 50, 1.4], eyes: "wink", mouth: "smile" }, shine: [30, 24],
+    under: () => `<rect x="24" y="18" width="62" height="76" rx="10" fill="#fbf8ff"/>
+      <path d="M30 88 H82 M30 83 H82" stroke="#ddd5f5" stroke-width="1.8"/>`,
+    body: () => `<rect x="14" y="10" width="64" height="76" rx="12"/>`,
+    extra: p => `<rect x="14" y="10" width="11" height="76" rx="6" fill="${p.lo}" opacity="0.3"/>
+      <path d="M58 5 h10 v24 l-5 -5 l-5 5 z" fill="#ff7aa8"/>`,
+    decor: () => sparkle(96, 40, 8, DECOR.pink)
   },
   star: {
-    col: "mint", face: [50, 57, 1.05], shine: [40, 34],
+    col: "mint", face: { at: [50, 57, 1.2], eyes: "glossy", mouth: "cat" }, shine: [40, 32],
     body: () => {
       let d = "";
       for (let i = 0; i < 10; i++) {
-        const r = i % 2 ? 17 : 36, a = (i * 36 - 90) * Math.PI / 180;
-        d += (i ? "L" : "M") + (50 + Math.cos(a) * r).toFixed(1) + " " + (56 + Math.sin(a) * r).toFixed(1);
+        const r = i % 2 ? 19 : 38, a = (i * 36 - 90) * Math.PI / 180;
+        d += (i ? "L" : "M") + f1(50 + Math.cos(a) * r) + " " + f1(56 + Math.sin(a) * r);
       }
-      return `<path d="${d}Z" stroke-width="12" stroke-linejoin="round"/>`;
-    }
+      return `<path d="${d}Z" stroke-width="13" stroke-linejoin="round"/>`;
+    },
+    decor: () => burst(16, 62, [150, 205], DECOR.yellow, 6, 13) + burst(86, 26, [-75, -20], DECOR.yellow, 6, 13)
   },
   bear: {
-    col: "blue", face: [50, 58, 1.3], shine: [36, 38],
-    body: () => `<circle cx="26" cy="30" r="12"/><circle cx="74" cy="30" r="12"/><circle cx="50" cy="57" r="32"/>`,
-    extra: () => `<circle cx="26" cy="30" r="5" fill="#ff8fb4" opacity="0.5"/><circle cx="74" cy="30" r="5" fill="#ff8fb4" opacity="0.5"/>`
+    col: "blue", face: { at: [50, 60, 1.5], eyes: "wink", mouth: "open" }, shine: [30, 38],
+    body: () => `<circle cx="24" cy="30" r="13"/><circle cx="76" cy="30" r="13"/><circle cx="50" cy="58" r="33"/>`,
+    extra: () => `<circle cx="24" cy="30" r="6" fill="#ff9dbf" opacity="0.65"/><circle cx="76" cy="30" r="6" fill="#ff9dbf" opacity="0.65"/>`,
+    decor: () => heart(98, 12, 7, DECOR.pink)
   },
   jelly: {
-    col: "pink", face: [50, 47, 1.3], shine: [34, 30],
-    body: () => `<path d="M18 42 C 18 24, 30 16, 50 16 C 70 16, 82 24, 82 42 V 72 C 82 79, 76 81, 72 76 C 68 71, 64 82, 57 82 C 51 82, 50 73, 44 76 C 39 79, 35 86, 29 80 C 24 75, 18 80, 18 71 Z"/>`
+    col: "pink", face: { at: [50, 48, 1.5], eyes: "glossy", mouth: "open" }, shine: [30, 26],
+    body: () => `<path d="M16 42 C 16 22, 30 14, 50 14 C 70 14, 84 22, 84 42 V 72 C 84 80, 77 82, 73 77 C 69 72, 65 84, 57 84 C 51 84, 50 74, 44 77 C 38 80, 34 88, 28 81 C 23 75, 16 81, 16 72 Z"/>`,
+    decor: () => heart(96, 22, 7, DECOR.pink) + heart(104, 40, 4.5, DECOR.pink)
   },
   cloud: {
-    col: "blue", face: [52, 58, 1.25], shine: [44, 32],
-    body: () => `<circle cx="32" cy="58" r="19"/><circle cx="54" cy="44" r="25"/><circle cx="74" cy="60" r="17"/><rect x="14" y="52" width="76" height="28" rx="14"/>`
+    col: "blue", face: { at: [52, 62, 1.45], eyes: "glossy", mouth: "open" }, shine: [42, 28],
+    body: () => `<circle cx="30" cy="60" r="20"/><circle cx="54" cy="44" r="27"/><circle cx="76" cy="62" r="18"/><rect x="11" y="54" width="82" height="30" rx="15"/>`,
+    decor: () => burst(18, 34, [195, 250], DECOR.blue, 6, 13) + burst(86, 28, [-70, -15], DECOR.blue, 6, 13)
   },
   flower: {
-    col: "pink", face: [50, 52, 1.25], shine: [37, 30],
+    col: "pink", face: { at: [50, 55, 1.4], eyes: "wink", mouth: "smile" }, shine: [36, 28],
     body: () => {
       let s = "";
       for (let i = 0; i < 6; i++) {
         const a = (i * 60 - 90) * Math.PI / 180;
-        s += `<circle cx="${(50 + Math.cos(a) * 22).toFixed(1)}" cy="${(52 + Math.sin(a) * 22).toFixed(1)}" r="18"/>`;
+        s += `<circle cx="${f1(50 + Math.cos(a) * 23)}" cy="${f1(54 + Math.sin(a) * 23)}" r="19"/>`;
       }
-      return s + `<circle cx="50" cy="52" r="24"/>`;
-    }
+      return s + `<circle cx="50" cy="54" r="25"/>`;
+    },
+    decor: () => miniFlower(100, 10, 5, DECOR.pink)
   }
 };
+
 let blobSeq = 0;
-function gradDef(id, p) {
-  return `<radialGradient id="${id}" gradientUnits="userSpaceOnUse" cx="36" cy="30" r="74">
-    <stop offset="0" stop-color="${p.hi}"/><stop offset="0.5" stop-color="${p.c}"/><stop offset="1" stop-color="${p.lo}"/>
-  </radialGradient>`;
+function defsFor(id, p) {
+  return `<defs>
+    <radialGradient id="${id}" gradientUnits="userSpaceOnUse" cx="36" cy="28" r="78">
+      <stop offset="0" stop-color="${p.hi}"/><stop offset="0.45" stop-color="${p.c}"/><stop offset="1" stop-color="${p.lo}"/>
+    </radialGradient>
+    <radialGradient id="${id}c"><stop offset="0" stop-color="#ff6a98" stop-opacity="0.9"/><stop offset="0.55" stop-color="#ff6a98" stop-opacity="0.55"/><stop offset="1" stop-color="#ff6f9c" stop-opacity="0"/></radialGradient>
+    <radialGradient id="${id}s"><stop offset="0" stop-color="#fff" stop-opacity="0.95"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
+  </defs>`;
 }
-function simpleFace(cx, cy, s, mood) {
-  const t = Math.max(-1, Math.min(1, (mood - 5.5) / 4.5));
-  const k = n => (n * s).toFixed(1);
-  return `<ellipse cx="${cx - 13 * s}" cy="${cy + 8 * s}" rx="${k(4.5)}" ry="${k(2.6)}" fill="#ff5c93" opacity="0.22"/>
-    <ellipse cx="${cx + 13 * s}" cy="${cy + 8 * s}" rx="${k(4.5)}" ry="${k(2.6)}" fill="#ff5c93" opacity="0.22"/>
-    <ellipse cx="${cx - 7 * s}" cy="${cy}" rx="${k(3.1)}" ry="${k(3.6)}" fill="#2b1e2a"/>
-    <ellipse cx="${cx + 7 * s}" cy="${cy}" rx="${k(3.1)}" ry="${k(3.6)}" fill="#2b1e2a"/>
-    <circle cx="${cx - 6 * s}" cy="${cy - 1.3 * s}" r="${k(1)}" fill="#fff"/>
-    <circle cx="${cx + 8 * s}" cy="${cy - 1.3 * s}" r="${k(1)}" fill="#fff"/>
-    <path d="M${cx - 5.5 * s} ${cy + 9 * s - t} Q ${cx} ${cy + 9 * s + t * 6 * s} ${cx + 5.5 * s} ${cy + 9 * s - t}" fill="none" stroke="#2b1e2a" stroke-width="${k(2.4)}" stroke-linecap="round"/>`;
+function shine(id, x, y) {
+  return `<ellipse cx="${x}" cy="${y}" rx="13" ry="7.5" fill="url(#${id}s)" transform="rotate(-30 ${x} ${y})"/>
+    <ellipse cx="${x - 1}" cy="${y}" rx="5" ry="2.8" fill="#fff" opacity="0.85" transform="rotate(-30 ${x} ${y})"/>`;
 }
-function blobSVG(kind, mood = 8) {
+// opts.decor = false leaves off the flourish (for tiny sizes)
+function blobSVG(kind, mood = 8, opts = {}) {
   const f = FIGURES[kind] || FIGURES.flower;
   const p = PALETTE[f.col];
   const id = "bg" + (blobSeq++);
-  const [fx, fy, fs] = f.face, [sx, sy] = f.shine;
-  return `<svg class="blob" viewBox="0 0 100 100" aria-hidden="true">
-    <defs>${gradDef(id, p)}</defs>
-    <ellipse cx="50" cy="95" rx="24" ry="3.5" fill="#2b1e2a" opacity="0.08"/>
+  // a low mood takes the grin off the mascot
+  const face = mood <= 4 ? { ...f.face, eyes: "wet", mouth: "frown", brows: true } : f.face;
+  return `<svg class="blob" viewBox="-12 -12 124 124" aria-hidden="true">
+    ${defsFor(id, p)}
+    <ellipse cx="50" cy="99" rx="26" ry="4" fill="#2b1e2a" opacity="0.1"/>
     ${f.under ? f.under(p) : ""}
     <g fill="url(#${id})" stroke="url(#${id})">${f.body()}</g>
     ${f.extra ? f.extra(p) : ""}
-    <ellipse cx="${sx}" cy="${sy}" rx="9" ry="5" fill="#fff" opacity="0.5" transform="rotate(-30 ${sx} ${sy})"/>
-    ${simpleFace(fx, fy, fs, mood)}
+    ${shine(id, f.shine[0], f.shine[1])}
+    ${faceSVG(face, id + "c")}
+    ${opts.decor === false || !f.decor ? "" : f.decor(p)}
   </svg>`;
 }
 
 // the mood character: one blob whose colour and expression follow the 1–10 value
-const MOOD_COLS = ["blue", "blue", "lav", "lav", "peach", "peach", "pink", "pink", "yellow", "yellow"];
+const MOODS = {
+  0:  { col: "white",  eyes: "small",   mouth: "flat",   decor: () => [96, 104, 112].map(x => `<circle cx="${x - 12}" cy="14" r="3" fill="#b9b2c2"/>`).join("") },
+  1:  { col: "blue",   eyes: "teary",   mouth: "wobble", brows: true, decor: () => drop(88, 20, 5, DECOR.blue) + drop(98, 32, 3.5, DECOR.blue) },
+  2:  { col: "blue",   eyes: "glossy",  mouth: "frown",  brows: true, decor: () => drop(90, 22, 4.5, DECOR.blue) },
+  3:  { col: "lav",    eyes: "wet",     mouth: "frown",  brows: true, decor: () => burst(24, 26, [205, 255], DECOR.lav, 6, 13) + burst(76, 26, [-75, -25], DECOR.lav, 6, 13) },
+  4:  { col: "lav",    eyes: "squeeze", mouth: "frown",  decor: () => `<path d="M92 30 q 6 -4 0 -8 q -6 -4 0 -8 q 6 -4 0 -8" fill="none" stroke="${DECOR.lav}" stroke-width="2.8" stroke-linecap="round"/>` },
+  5:  { col: "peach",  eyes: "glossy",  mouth: "smile",  decor: () => burst(24, 26, [185, 228, 271], DECOR.yellow) },
+  6:  { col: "peach",  eyes: "wink",    mouth: "open",   decor: () => heart(94, 16, 7, DECOR.pink) },
+  7:  { col: "pink",   eyes: "glossy",  mouth: "open",   decor: () => heart(92, 14, 6.5, DECOR.pink) + heart(102, 30, 4.2, DECOR.pink) },
+  8:  { col: "pink",   eyes: "happy",   mouth: "open",   decor: () => burst(24, 28, [195, 250], DECOR.pink, 6, 13) + burst(76, 28, [-70, -15], DECOR.pink, 6, 13) },
+  9:  { col: "yellow", eyes: "happy",   mouth: "grin",   decor: () => heart(94, 14, 7, DECOR.pink) + sparkle(104, 28, 4, DECOR.yellow) },
+  10: { col: "yellow", eyes: "happy",   mouth: "grin",   decor: () => sparkle(4, 14, 8, DECOR.yellow) + sparkle(96, 12, 7, DECOR.yellow) + sparkle(104, 40, 5, DECOR.yellow) }
+};
 function moodBlobSVG(v) {
-  const p = PALETTE[v ? MOOD_COLS[v - 1] : "grey"];
+  const m = MOODS[v || 0];
+  const p = PALETTE[m.col];
   const id = "mb" + (blobSeq++);
-  const ink = "#2b1e2a";
-  const droop = v ? Math.max(0, 5 - v) * 1.2 : 1;   // low moods sag a little
-  const lift = v ? Math.max(0, v - 6) * 0.8 : 0;     // high moods stand taller
-  const body = `<path d="M${16 - droop} ${70} C ${16 - droop} ${40 - lift}, ${30} ${20 - lift}, 50 ${20 - lift} C 70 ${20 - lift}, ${84 + droop} ${40 - lift}, ${84 + droop} 70 C ${84 + droop} 84, 70 88, 50 88 C 30 88, ${16 - droop} 84, ${16 - droop} 70 Z"/>`;
-  let eyes, mouth, brows = "", extra = "";
-  const cheek = !v ? 0 : v <= 4 ? 0 : v <= 6 ? 0.2 : v <= 8 ? 0.35 : 0.5;
-  if (!v) {
-    // not picked yet: sleepy
-    eyes = `<path d="M36 56 h9 M55 56 h9" stroke="${ink}" stroke-width="2.6" stroke-linecap="round"/>`;
-    mouth = `<ellipse cx="50" cy="67" rx="3" ry="2.4" fill="${ink}"/>`;
-  } else if (v >= 9) {
-    eyes = `<path d="M35 57 Q 40.5 50 46 57 M54 57 Q 59.5 50 65 57" fill="none" stroke="${ink}" stroke-width="2.8" stroke-linecap="round"/>`;
-    mouth = `<path d="M41 63 Q 50 77 59 63 Z" fill="${ink}"/><ellipse cx="50" cy="69.5" rx="4" ry="2.4" fill="#ff7aa8"/>`;
-    if (v === 10) extra = `<path d="M18 22 l2 -6 l2 6 l6 2 l-6 2 l-2 6 l-2 -6 l-6 -2 z M82 16 l1.5 -4.5 l1.5 4.5 l4.5 1.5 l-4.5 1.5 l-1.5 4.5 l-1.5 -4.5 l-4.5 -1.5 z" fill="${p.lo}"/>`;
-  } else {
-    const big = v >= 7 ? 1.15 : 1;
-    eyes = `<ellipse cx="41" cy="56" rx="${3.2 * big}" ry="${3.8 * big}" fill="${ink}"/><ellipse cx="59" cy="56" rx="${3.2 * big}" ry="${3.8 * big}" fill="${ink}"/>
-      <circle cx="42.2" cy="54.4" r="1.1" fill="#fff"/><circle cx="60.2" cy="54.4" r="1.1" fill="#fff"/>`;
-    if (v <= 4) {
-      const lift2 = v <= 2 ? 4 : 2.5;
-      brows = `<path d="M34 ${48} L45 ${48 - lift2} M66 ${48} L55 ${48 - lift2}" stroke="${ink}" stroke-width="2.4" stroke-linecap="round"/>`;
-    }
-    if (v === 1) {
-      mouth = `<path d="M42 70 Q 46 65 50 68 Q 54 65 58 70" fill="none" stroke="${ink}" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>`;
-      extra = `<path d="M37 62 q -3.5 6 0 8 q 3.5 -2 0 -8 z" fill="#6fa8ff"/>`;
-    } else if (v === 5) {
-      mouth = `<path d="M44 68 H56" stroke="${ink}" stroke-width="2.6" stroke-linecap="round"/>`;
-    } else {
-      const t = (v - 5.5) / 3.5; // -1 .. 0.7
-      mouth = `<path d="M43 ${68 - t} Q 50 ${68 + t * 8} 57 ${68 - t}" fill="none" stroke="${ink}" stroke-width="2.6" stroke-linecap="round"/>`;
-    }
-  }
-  return `<svg class="blob" viewBox="0 0 100 100" aria-hidden="true">
-    <defs>${gradDef(id, p)}</defs>
-    <ellipse cx="50" cy="94" rx="${26 + droop}" ry="3.5" fill="#2b1e2a" opacity="0.08"/>
+  const droop = v ? Math.max(0, 5 - v) * 1.2 : 0;   // low moods sag a little
+  const lift = v ? Math.max(0, v - 6) * 0.9 : 0;     // high moods stand taller
+  const body = `<path d="M${14 - droop} 72 C ${14 - droop} ${38 - lift}, 30 ${16 - lift}, 50 ${16 - lift} C 70 ${16 - lift}, ${86 + droop} ${38 - lift}, ${86 + droop} 72 C ${86 + droop} 86, 72 91, 50 91 C 28 91, ${14 - droop} 86, ${14 - droop} 72 Z"/>`;
+  return `<svg class="blob" viewBox="-12 -12 124 124" aria-hidden="true">
+    ${defsFor(id, p)}
+    <ellipse cx="50" cy="98" rx="${28 + droop}" ry="4" fill="#2b1e2a" opacity="0.1"/>
     <g fill="url(#${id})">${body}</g>
-    <ellipse cx="34" cy="${36 - lift}" rx="9" ry="5" fill="#fff" opacity="0.5" transform="rotate(-30 34 ${36 - lift})"/>
-    <ellipse cx="34" cy="65" rx="5" ry="3" fill="#ff5c93" opacity="${cheek}"/>
-    <ellipse cx="66" cy="65" rx="5" ry="3" fill="#ff5c93" opacity="${cheek}"/>
-    ${brows}${eyes}${mouth}${extra}
+    ${shine(id, 32, 34 - lift)}
+    ${faceSVG({ at: [50, 60, 1.55], eyes: m.eyes, mouth: m.mouth, brows: m.brows, blush: v ? 1 : 0.6 }, id + "c")}
+    ${m.decor()}
   </svg>`;
 }
 const CHECK = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 12.5l4 4 8-9" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
@@ -1079,7 +1164,7 @@ function moodWord(v) { return v ? MOOD_WORDS[v - 1] : ""; }
 function pillHTML(pop) {
   const cur = currentStreak();
   const done = dayFilled(todayKey());
-  return `<button class="streak-pill ${done ? "lit" : ""} ${pop ? "pop" : ""}" data-goto="progress" aria-label="${cur} day streak">${blobSVG("flower", done ? todaysMood() : 5)}<b>${cur}</b></button>`;
+  return `<button class="streak-pill ${done ? "lit" : ""} ${pop ? "pop" : ""}" data-goto="progress" aria-label="${cur} day streak">${blobSVG("flower", done ? todaysMood() : 5, { decor: false })}<b>${cur}</b></button>`;
 }
 
 function weekHTML() {

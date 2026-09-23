@@ -13,7 +13,7 @@ Built as a single self-contained page — no accounts, no server, no tracking. E
 - **Morning**: sleep / mood / body on a 1–10 scale — tap or slide across to set a value — plus an intention for the day
 - **Evening**: how you feel now, boundary tracking (held / slipped), gym (went / rest day / skipped), "what happened", and "one honest thing"
 - **Yesterday / today toggle** on the evening tab — for when you close the day after midnight. Before 5am the app opens on the evening tab already set to yesterday, and a small dot marks days you've already saved
-- **Mood character**: a little blob next to the mood scale changes colour and expression as you slide, from a worried blue at 1 to a sparkly yellow grin at 10, with a word for each (drained → radiant)
+- **Mood character**: a cute glossy blob next to the mood scale changes colour and expression as you slide, from a teary blue at 1 to a sparkly yellow grin at 10, with a word for each (drained → radiant)
 - **Progress**: your streak and record, the last 7 days, averages vs the period before, a sleep/mood/body chart, boundary hold rates, and mood after better vs worse sleep over 7, 14, or 30 days
 - **Editable boundaries**: add or remove your own boundaries from the evening tab
 - **Copy daily note as markdown** — paste the day into your journal or notes app
