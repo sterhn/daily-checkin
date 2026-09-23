@@ -368,11 +368,11 @@
   }
   .gadd span { font-size: 1.6rem; line-height: 1; font-weight: 400; }
   .t-map { background: var(--mint-t); }
-  .t-bao { background: var(--yellow-t); }
+  .t-ramen { background: var(--yellow-t); }
   .t-book, .t-round { background: var(--lav-t); }
   .t-star, .t-square { background: var(--mint-t); }
   .t-bear, .t-cloud { background: var(--blue-t); }
-  .t-jelly, .t-flower { background: var(--pink-t); }
+  .t-heart, .t-flower { background: var(--pink-t); }
   .section-label { font-weight: 700; font-size: 0.95rem; margin: 22px 2px 0; }
 
   .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
@@ -667,20 +667,37 @@ const FIGURES = {
     },
     decor: () => burst(90, 10, [-95, -45, 5], DECOR.yellow, 7, 15)
   },
-  // eat something new: a steamed bao
-  bao: {
-    col: "cream", face: { at: [50, 62, 1.2] },
-    body: () => `<path d="M8 74 C 8 46, 28 30, 50 30 C 72 30, 92 46, 92 74 C 92 86, 78 90, 50 90 C 22 90, 8 86, 8 74 Z"/>`,
-    extra: () => `<g fill="none" stroke="#d9cdb8" stroke-width="2.4" stroke-linecap="round">
-        <path d="M50 32 Q 42 38 35 38"/><path d="M50 32 Q 58 38 65 38"/><path d="M50 32 Q 46 39 44 43"/><path d="M50 32 Q 54 39 56 43"/>
-      </g>`,
+  // eat something new: a bowl of ramen with an egg and chopsticks
+  ramen: {
+    draw: id => `<defs>${grad(id, PALETTE.pink)}</defs>
+      <g filter="url(#clay-sm)">
+        <rect x="54" y="-2" width="6" height="58" rx="3" fill="#e8c48e" transform="rotate(38 57 27)"/>
+        <rect x="64" y="0" width="6" height="58" rx="3" fill="#dfb87f" transform="rotate(46 67 29)"/>
+      </g>
+      <g filter="url(#clay)">
+        <ellipse cx="50" cy="50" rx="42" ry="13" fill="#f6dc93"/>
+      </g>
+      <g fill="none" stroke="#e7c066" stroke-width="2.2" stroke-linecap="round">
+        <path d="M18 50 q 5 -5 10 0 t 10 0 t 10 0"/><path d="M52 54 q 5 -5 10 0 t 10 0"/><path d="M30 44 q 5 -4 10 0 t 10 0"/>
+      </g>
+      <g filter="url(#clay-sm)">
+        <ellipse cx="37" cy="47" rx="10" ry="6.5" fill="#fffaf0"/>
+        <circle cx="68" cy="45" r="7" fill="#fff4f4"/>
+      </g>
+      <circle cx="37" cy="47" r="4" fill="#f5b53f"/>
+      <path d="M68 45 m -3 0 a 3 3 0 1 1 3 3" fill="none" stroke="#f28a98" stroke-width="1.8" stroke-linecap="round"/>
+      <g fill="#8cc39c"><circle cx="54" cy="45" r="2.4"/><circle cx="58" cy="50" r="2"/><circle cx="26" cy="53" r="2"/></g>
+      <g filter="url(#clay)">
+        <path d="M6 50 C 6 78, 26 94, 50 94 C 74 94, 94 78, 94 50 Z" fill="url(#${id})"/>
+      </g>
+      <path d="M12 64 C 26 70, 74 70, 88 64" fill="none" stroke="#fff" stroke-opacity="0.45" stroke-width="3" stroke-linecap="round"/>`,
     decor: () => `<g fill="none" stroke="#cfc3b0" stroke-width="3.2" stroke-linecap="round">
-        <path d="M38 22 q -5 -5 0 -10 q 4 -4 0 -9"/><path d="M50 20 q -5 -5 0 -10 q 4 -4 0 -9"/><path d="M62 22 q -5 -5 0 -10 q 4 -4 0 -9"/>
+        <path d="M30 32 q -5 -5 0 -10 q 4 -4 0 -9"/><path d="M44 28 q -5 -5 0 -10 q 4 -4 0 -9"/>
       </g>`
   },
   // read a book: cover, spine grooves, pages and a ribbon
   book: {
-    col: "purple", face: { at: [52, 48, 1.15] },
+    col: "purple",
     under: () => `<g filter="url(#clay-sm)"><rect x="20" y="16" width="70" height="80" rx="11" fill="#f7f0e2"/></g>
       <path d="M26 88 H84 M26 84 H84" stroke="#e2d8c4" stroke-width="1.6"/>
       <g filter="url(#clay-sm)"><path d="M58 86 h10 v16 l-5 -4 l-5 4 z" fill="#f3c24c"/></g>`,
@@ -691,12 +708,12 @@ const FIGURES = {
     decor: () => burst(10, 8, [175, 225, 275], DECOR.yellow, 7, 15)
   },
   cloud: {
-    col: "cream", face: { at: [52, 62, 1.15] },
+    col: "cream",
     body: () => `<circle cx="30" cy="62" r="20"/><circle cx="54" cy="46" r="27"/><circle cx="77" cy="62" r="18"/><rect x="10" y="56" width="84" height="30" rx="15"/>`,
     decor: () => burst(92, 30, [-85, -35, 15], DECOR.yellow, 7, 15)
   },
   star: {
-    col: "mint", face: { at: [50, 58, 0.95] },
+    col: "mint",
     body: () => {
       let d = "";
       for (let i = 0; i < 10; i++) {
@@ -708,18 +725,18 @@ const FIGURES = {
     decor: () => burst(88, 22, [-80, -20], DECOR.yellow, 7, 15)
   },
   bear: {
-    col: "blue", face: { at: [50, 60, 1.2], eyes: "happy" },
+    col: "cream", face: { at: [50, 60, 1.2], eyes: "happy" },
     body: () => `<circle cx="24" cy="32" r="13"/><circle cx="76" cy="32" r="13"/><circle cx="50" cy="60" r="33"/>`,
     extra: () => `<circle cx="24" cy="32" r="6" fill="${BLUSH}" opacity="0.55"/><circle cx="76" cy="32" r="6" fill="${BLUSH}" opacity="0.55"/>`,
     decor: () => heart(98, 14, 7, DECOR.pink)
   },
-  jelly: {
-    col: "pink", face: { at: [50, 50, 1.2], mouth: "open", eyes: "happy" },
-    body: () => `<path d="M16 44 C 16 24, 30 16, 50 16 C 70 16, 84 24, 84 44 V 74 C 84 82, 77 84, 73 79 C 69 74, 65 86, 57 86 C 51 86, 50 76, 44 79 C 38 82, 34 90, 28 83 C 23 77, 16 83, 16 74 Z"/>`,
-    decor: () => heart(98, 24, 7, DECOR.pink) + heart(106, 42, 4.5, DECOR.pink)
+  heart: {
+    col: "pink",
+    body: () => `<path d="M50 90 C 28 74, 8 58, 8 38 C 8 22, 20 12, 33 12 C 42 12, 48 18, 50 24 C 52 18, 58 12, 67 12 C 80 12, 92 22, 92 38 C 92 58, 72 74, 50 90 Z" stroke-width="4" stroke-linejoin="round"/>`,
+    decor: () => sparkle(100, 14, 6, DECOR.yellow) + sparkle(-2, 30, 4, DECOR.yellow)
   },
   flower: {
-    col: "pink", face: { at: [50, 56, 1.1] },
+    col: "pink",
     body: () => {
       let s = "";
       for (let i = 0; i < 6; i++) {
@@ -747,13 +764,13 @@ function blobSVG(kind, mood = 8, opts = {}) {
     inner = f.draw(id);
   } else {
     const p = PALETTE[f.col];
-    // a low mood takes the smile off the mascot
-    const face = mood <= 4 ? { ...f.face, eyes: "sad", mouth: "frown" } : f.face;
+    // only the bear has a face; a low mood takes its smile off
+    const face = f.face && (mood <= 4 ? { ...f.face, eyes: "sad", mouth: "frown" } : f.face);
     inner = `<defs>${grad(id, p)}</defs>
       ${f.under ? f.under(p) : ""}
       <g fill="url(#${id})" stroke="url(#${id})" filter="url(#clay)">${f.body()}</g>
       ${f.extra ? f.extra(p) : ""}
-      ${faceSVG(face)}`;
+      ${face ? faceSVG(face) : ""}`;
   }
   return wrap(inner + (opts.decor === false || !f.decor ? "" : f.decor()));
 }
@@ -776,14 +793,12 @@ function moodBlobSVG(v) {
   const m = MOODS[v || 0];
   const p = PALETTE[m.col];
   const id = "mb" + (blobSeq++);
-  const sag = v ? Math.max(0, 4 - v) * 1.5 : 1;    // low moods flatten a little
-  const lift = v ? Math.max(0, v - 6) * 1 : 0;      // high moods puff up
-  const top = 20 + sag * 2 - lift;
-  const body = `<path d="M${10 - sag} 76 C ${8 - sag} 54, 28 ${top}, 50 ${top} C 74 ${top}, ${94 + sag} 50, ${92 + sag} 74 C ${91 + sag} 88, 72 91, 50 91 C 28 91, ${11 - sag} 90, ${10 - sag} 76 Z"/>`;
+  // one soft, round mochi shape for every mood; only colour and face change
+  const body = `<path d="M8 68 C 8 40, 26 24, 50 24 C 74 24, 92 40, 92 68 C 92 86, 76 91, 50 91 C 24 91, 8 86, 8 68 Z"/>`;
   return wrap(`<defs>${grad(id, p)}</defs>
     <g fill="url(#${id})" filter="url(#clay)">${body}</g>
-    ${faceSVG({ at: [50, 60 + sag * 0.8 - lift * 0.4, 1.3], eyes: m.eyes, mouth: m.mouth, tear: m.tear })}
-    ${m.decor ? m.decor() : ""}`, 30 + sag);
+    ${faceSVG({ at: [50, 60, 1.3], eyes: m.eyes, mouth: m.mouth, tear: m.tear })}
+    ${m.decor ? m.decor() : ""}`, 32);
 }
 const CHECK = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 12.5l4 4 8-9" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 
@@ -1075,8 +1090,8 @@ const sheetRoot = document.getElementById("sheet-root");
 const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const reducedMotion = () => matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-const KIND_BY_ICON = { place: "map", food: "bao", book: "book" };
-const EXTRA_KINDS = ["star", "bear", "jelly", "cloud", "flower"];
+const KIND_BY_ICON = { place: "map", food: "ramen", book: "book" };
+const EXTRA_KINDS = ["star", "bear", "heart", "cloud", "flower"];
 function kindFor(g) {
   if (KIND_BY_ICON[g.icon]) return KIND_BY_ICON[g.icon];
   const i = state.goals.filter(x => !KIND_BY_ICON[x.icon]).indexOf(g);
@@ -1670,7 +1685,7 @@ function addSheetHTML() {
   const ideas = GOAL_IDEAS.filter(i => !existing.has(i.title.toLowerCase()));
   return `
     <div class="sheet-hero" style="background:var(--grad-soft)">
-      <div class="blob-trio">${blobSVG("jelly", 8)}${blobSVG("bear", 9)}${blobSVG("star", 8)}</div>
+      <div class="blob-trio">${blobSVG("heart", 8)}${blobSVG("bear", 9)}${blobSVG("star", 8)}</div>
       <h2 style="margin-top:6px">Add a goal</h2>
       <div class="card-sub">Something small you'd like to do again and again</div>
     </div>

@@ -9,11 +9,11 @@ Built as a single self-contained page — no accounts, no server, no tracking. E
 - **Streaks**: a badge at the top shows how many days in a row you've checked in (morning *or* evening counts), and a *this week* card ticks off each day
 - **Autosave**: every tap and keystroke is saved immediately — no more losing a check-in because you forgot to press a button
 - **Up next**: a gradient card points you at the goal with the least time left
-- **Goals**: small adventures with their own streaks, shown as a grid of cards with a character for each (a folded map, a steamed bao, a book…) — tap one to log it — *go somewhere new* (weekly), *eat something new* (weekly, ordered or cooked), and *read a book* (monthly, with a "currently reading" note). Log what you did, see your collection grow, and add your own goals or pick from ideas
+- **Goals**: small adventures with their own streaks, shown as a grid of cards with a character for each (a folded map, a bowl of ramen, a book…) — tap one to log it — *go somewhere new* (weekly), *eat something new* (weekly, ordered or cooked), and *read a book* (monthly, with a "currently reading" note). Log what you did, see your collection grow, and add your own goals or pick from ideas
 - **Morning**: sleep / mood / body on a 1–10 scale — tap or slide across to set a value — plus an intention for the day
 - **Evening**: how you feel now, boundary tracking (held / slipped), gym (went / rest day / skipped), "what happened", and "one honest thing"
 - **Yesterday / today toggle** on the evening tab — for when you close the day after midnight. Before 5am the app opens on the evening tab already set to yesterday, and a small dot marks days you've already saved
-- **Mood character**: a little matte-clay mochi next to the mood scale changes colour and expression as you slide — sleepy before you pick, teary blue at 1, grumpy green at 2, up to a laughing pink with hearts at 10, with a word for each (drained → radiant)
+- **Mood character**: a little matte-clay mochi next to the mood scale changes colour and expression as you slide — one round shape that changes colour and face: sleepy before you pick, teary blue at 1, grumpy green at 2, up to a laughing pink with hearts at 10, with a word for each (drained → radiant)
 - **Progress**: your streak and record, the last 7 days, averages vs the period before, a sleep/mood/body chart, boundary hold rates, and mood after better vs worse sleep over 7, 14, or 30 days
 - **Editable boundaries**: add or remove your own boundaries from the evening tab
 - **Copy daily note as markdown** — paste the day into your journal or notes app
