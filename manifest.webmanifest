@@ -1,7 +1,7 @@
 {
   "name": "daily check-in",
   "short_name": "check-in",
-  "description": "morning and evening check-ins: sleep, mood, body, boundaries, and trends",
+  "description": "morning and evening check-ins, streaks, small weekly and monthly goals, and trends",
   "start_url": ".",
   "scope": ".",
   "display": "standalone",
