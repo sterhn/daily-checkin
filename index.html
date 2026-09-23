@@ -37,6 +37,7 @@
     --lav-t: #f1edff;
     --mint-t: #e7f7ee;
     --blue-t: #ebf2ff;
+    --yellow-t: #fff7dc;
 
     --grad:
       radial-gradient(at 12% 18%, #ffdcbd 0, transparent 55%),
@@ -68,6 +69,7 @@
       --lav-t: #221e33;
       --mint-t: #1a2a21;
       --blue-t: #1b2233;
+      --yellow-t: #2b2615;
       --grad:
         radial-gradient(at 12% 18%, rgba(255, 170, 110, 0.35) 0, transparent 55%),
         radial-gradient(at 88% 12%, rgba(245, 130, 180, 0.32) 0, transparent 50%),
@@ -204,31 +206,17 @@
   .segments:focus-visible { outline: 2px solid var(--c); outline-offset: 3px; border-radius: 12px; }
   .seg-ends { display: flex; justify-content: space-between; margin-top: 5px; font-size: 0.72rem; color: var(--muted); }
 
-  .face-row { display: flex; gap: 2px; margin-top: 10px; align-items: center; }
-  .face-row button {
-    flex: 1;
-    aspect-ratio: 1;
-    max-width: 36px;
-    margin: 0 auto;
-    background: none;
-    border: none;
-    border-radius: 50%;
-    padding: 4px;
-    line-height: 0;
-    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.2s;
+  .mood-head { justify-content: flex-start; align-items: center; gap: 12px; }
+  .mood-blob { width: 64px; height: 64px; flex: none; display: block; }
+  .mood-blob .blob { width: 100%; height: 100%; }
+  .mood-blob.squish { animation: squish 0.45s cubic-bezier(0.34, 1.56, 0.64, 1); }
+  @keyframes squish {
+    0% { transform: scale(1.12, 0.86); }
+    55% { transform: scale(0.95, 1.07); }
+    100% { transform: none; }
   }
-  .face-row button.on { transform: scale(1.18); background: var(--pink-t); }
-  .face-row svg { width: 100%; height: auto; }
-  .face-row .face-stroke { stroke: var(--faint); transition: stroke 0.2s; }
-  .face-row .face-fill { fill: var(--faint); transition: fill 0.2s; }
-  .face-row button.on .face-stroke { stroke: #d9588f; }
-  .face-row button.on .face-fill { fill: #d9588f; }
-  .mood-word { margin-top: 6px; font-size: 0.85rem; font-weight: 600; color: #d9588f; min-height: 1.3em; text-align: right; }
-  @media (prefers-color-scheme: dark) {
-    .face-row button.on .face-stroke { stroke: var(--pink); }
-    .face-row button.on .face-fill { fill: var(--pink); }
-    .mood-word { color: var(--pink); }
-  }
+  .mood-text { flex: 1; display: flex; flex-direction: column; }
+  .mood-word { font-size: 0.85rem; font-weight: 600; color: var(--muted); }
   .mood-word.wisp { animation: wisp 0.35s ease; }
   @keyframes wisp { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
   .scale-val.bump { animation: bump 0.28s cubic-bezier(0.34, 1.56, 0.64, 1); }
@@ -361,7 +349,7 @@
     transition: transform 0.15s ease;
   }
   .gcard:active { transform: scale(0.97); }
-  .gcard .blob { width: 46px; height: 46px; margin-bottom: auto; }
+  .gcard .blob { width: 60px; height: 60px; margin-bottom: auto; }
   .gtitle { font-weight: 700; font-size: 0.92rem; line-height: 1.25; margin-top: 14px; }
   .gmeta { font-size: 0.74rem; color: var(--muted); margin-top: 2px; }
   .gcheck {
@@ -379,11 +367,12 @@
     color: var(--muted); font-weight: 600; font-size: 0.88rem;
   }
   .gadd span { font-size: 1.6rem; line-height: 1; font-weight: 400; }
-  .t-cloud { background: var(--peach-t); }
-  .t-flower { background: var(--pink-t); }
-  .t-round { background: var(--lav-t); }
-  .t-square { background: var(--mint-t); }
-  .t-bear { background: var(--blue-t); }
+  .t-pin { background: var(--peach-t); }
+  .t-bao { background: var(--yellow-t); }
+  .t-book, .t-round { background: var(--lav-t); }
+  .t-star, .t-square { background: var(--mint-t); }
+  .t-bear, .t-cloud { background: var(--blue-t); }
+  .t-jelly, .t-flower { background: var(--pink-t); }
   .section-label { font-weight: 700; font-size: 0.95rem; margin: 22px 2px 0; }
 
   .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
@@ -526,64 +515,157 @@ const MOOD_WORDS = ["drained","rough","low","meh","okay","fine","good","bright",
 const STREAK_MILESTONES = [3, 7, 14, 21, 30, 50, 75, 100, 150, 200, 365];
 const GOAL_ICONS = new Set(["place", "food", "book", "star"]);
 
-// minimal line-drawn face: mouth curves from frown (1) to smile (10)
-function faceSVG(v) {
-  const t = (v - 5.5) / 4.5;              // -1 .. 1
-  const bend = t * 11;                     // mouth curvature
-  const my = 31 - t * 1.5;                 // mouth drifts up slightly as it smiles
-  return `<svg viewBox="0 0 48 48" aria-hidden="true">
-    <g class="face-stroke" fill="none" stroke-width="2.6" stroke-linecap="round">
-      <circle cx="24" cy="24" r="20"/>
-      <path d="M15 ${my} Q 24 ${my + bend} 33 ${my}"/>
-    </g>
-    <g class="face-fill">
-      <circle cx="17.5" cy="19" r="2.1"/>
-      <circle cx="30.5" cy="19" r="2.1"/>
-    </g>
+// soft clay-like characters: shaded fill, a highlight, a ground shadow, and a face whose smile follows the mood
+const PALETTE = {
+  peach:  { hi: "#ffe3cb", c: "#ffb57d", lo: "#ec8744" },
+  pink:   { hi: "#ffd6e8", c: "#f59ac0", lo: "#dd6399" },
+  lav:    { hi: "#e2daff", c: "#a996ff", lo: "#7a5ff0" },
+  mint:   { hi: "#cff4de", c: "#7fd6a4", lo: "#46b276" },
+  blue:   { hi: "#d8e6ff", c: "#8db4ff", lo: "#5a86ea" },
+  yellow: { hi: "#fff3c4", c: "#ffd66e", lo: "#f0ab2e" },
+  grey:   { hi: "#f4f2f6", c: "#d8d4dd", lo: "#aaa4b2" }
+};
+// each kind: colour, body, extra details drawn on top, where the face and highlight sit
+const FIGURES = {
+  // go somewhere new: a little map pin
+  pin: {
+    col: "peach", face: [50, 39, 1.3], shine: [36, 24],
+    body: () => `<path d="M50 90 C 40 76, 18 60, 18 38 A 32 32 0 1 1 82 38 C 82 60, 60 76, 50 90 Z"/>`
+  },
+  // eat something new: a steamed bao
+  bao: {
+    col: "yellow", face: [50, 60, 1.3], shine: [32, 44],
+    body: () => `<path d="M10 70 C 10 42, 28 26, 50 26 C 72 26, 90 42, 90 70 C 90 81, 78 85, 50 85 C 22 85, 10 81, 10 70 Z"/>`,
+    extra: p => `<g fill="none" stroke="${p.lo}" stroke-width="2.4" stroke-linecap="round" opacity="0.55">
+        <path d="M50 29 Q 43 35 36 34"/><path d="M50 29 Q 57 35 64 34"/><path d="M50 29 Q 49 35 50 38"/>
+      </g>
+      <g fill="none" stroke="${p.lo}" stroke-width="2.4" stroke-linecap="round" opacity="0.3">
+        <path d="M40 19 q -5 -5 0 -10 q 4 -4 0 -8"/><path d="M60 17 q 5 -5 0 -10 q -4 -4 0 -8"/>
+      </g>`
+  },
+  // read a book: a book with pages and a ribbon
+  book: {
+    col: "lav", face: [51, 50, 1.2], shine: [36, 26],
+    under: () => `<rect x="25" y="19" width="60" height="72" rx="9" fill="#fbf8ff"/>
+      <path d="M31 85 H80 M31 80 H80" stroke="#d9d2f2" stroke-width="1.6"/>`,
+    body: () => `<rect x="17" y="12" width="62" height="74" rx="11"/>`,
+    extra: p => `<rect x="17" y="12" width="11" height="74" rx="6" fill="${p.lo}" opacity="0.35"/>
+      <path d="M62 8 h9 v22 l-4.5 -4.5 l-4.5 4.5 z" fill="#ff7aa8"/>`
+  },
+  star: {
+    col: "mint", face: [50, 57, 1.05], shine: [40, 34],
+    body: () => {
+      let d = "";
+      for (let i = 0; i < 10; i++) {
+        const r = i % 2 ? 17 : 36, a = (i * 36 - 90) * Math.PI / 180;
+        d += (i ? "L" : "M") + (50 + Math.cos(a) * r).toFixed(1) + " " + (56 + Math.sin(a) * r).toFixed(1);
+      }
+      return `<path d="${d}Z" stroke-width="12" stroke-linejoin="round"/>`;
+    }
+  },
+  bear: {
+    col: "blue", face: [50, 58, 1.3], shine: [36, 38],
+    body: () => `<circle cx="26" cy="30" r="12"/><circle cx="74" cy="30" r="12"/><circle cx="50" cy="57" r="32"/>`,
+    extra: () => `<circle cx="26" cy="30" r="5" fill="#ff8fb4" opacity="0.5"/><circle cx="74" cy="30" r="5" fill="#ff8fb4" opacity="0.5"/>`
+  },
+  jelly: {
+    col: "pink", face: [50, 47, 1.3], shine: [34, 30],
+    body: () => `<path d="M18 42 C 18 24, 30 16, 50 16 C 70 16, 82 24, 82 42 V 72 C 82 79, 76 81, 72 76 C 68 71, 64 82, 57 82 C 51 82, 50 73, 44 76 C 39 79, 35 86, 29 80 C 24 75, 18 80, 18 71 Z"/>`
+  },
+  cloud: {
+    col: "blue", face: [52, 58, 1.25], shine: [44, 32],
+    body: () => `<circle cx="32" cy="58" r="19"/><circle cx="54" cy="44" r="25"/><circle cx="74" cy="60" r="17"/><rect x="14" y="52" width="76" height="28" rx="14"/>`
+  },
+  flower: {
+    col: "pink", face: [50, 52, 1.25], shine: [37, 30],
+    body: () => {
+      let s = "";
+      for (let i = 0; i < 6; i++) {
+        const a = (i * 60 - 90) * Math.PI / 180;
+        s += `<circle cx="${(50 + Math.cos(a) * 22).toFixed(1)}" cy="${(52 + Math.sin(a) * 22).toFixed(1)}" r="18"/>`;
+      }
+      return s + `<circle cx="50" cy="52" r="24"/>`;
+    }
+  }
+};
+let blobSeq = 0;
+function gradDef(id, p) {
+  return `<radialGradient id="${id}" gradientUnits="userSpaceOnUse" cx="36" cy="30" r="74">
+    <stop offset="0" stop-color="${p.hi}"/><stop offset="0.5" stop-color="${p.c}"/><stop offset="1" stop-color="${p.lo}"/>
+  </radialGradient>`;
+}
+function simpleFace(cx, cy, s, mood) {
+  const t = Math.max(-1, Math.min(1, (mood - 5.5) / 4.5));
+  const k = n => (n * s).toFixed(1);
+  return `<ellipse cx="${cx - 13 * s}" cy="${cy + 8 * s}" rx="${k(4.5)}" ry="${k(2.6)}" fill="#ff5c93" opacity="0.22"/>
+    <ellipse cx="${cx + 13 * s}" cy="${cy + 8 * s}" rx="${k(4.5)}" ry="${k(2.6)}" fill="#ff5c93" opacity="0.22"/>
+    <ellipse cx="${cx - 7 * s}" cy="${cy}" rx="${k(3.1)}" ry="${k(3.6)}" fill="#2b1e2a"/>
+    <ellipse cx="${cx + 7 * s}" cy="${cy}" rx="${k(3.1)}" ry="${k(3.6)}" fill="#2b1e2a"/>
+    <circle cx="${cx - 6 * s}" cy="${cy - 1.3 * s}" r="${k(1)}" fill="#fff"/>
+    <circle cx="${cx + 8 * s}" cy="${cy - 1.3 * s}" r="${k(1)}" fill="#fff"/>
+    <path d="M${cx - 5.5 * s} ${cy + 9 * s - t} Q ${cx} ${cy + 9 * s + t * 6 * s} ${cx + 5.5 * s} ${cy + 9 * s - t}" fill="none" stroke="#2b1e2a" stroke-width="${k(2.4)}" stroke-linecap="round"/>`;
+}
+function blobSVG(kind, mood = 8) {
+  const f = FIGURES[kind] || FIGURES.flower;
+  const p = PALETTE[f.col];
+  const id = "bg" + (blobSeq++);
+  const [fx, fy, fs] = f.face, [sx, sy] = f.shine;
+  return `<svg class="blob" viewBox="0 0 100 100" aria-hidden="true">
+    <defs>${gradDef(id, p)}</defs>
+    <ellipse cx="50" cy="95" rx="24" ry="3.5" fill="#2b1e2a" opacity="0.08"/>
+    ${f.under ? f.under(p) : ""}
+    <g fill="url(#${id})" stroke="url(#${id})">${f.body()}</g>
+    ${f.extra ? f.extra(p) : ""}
+    <ellipse cx="${sx}" cy="${sy}" rx="9" ry="5" fill="#fff" opacity="0.5" transform="rotate(-30 ${sx} ${sy})"/>
+    ${simpleFace(fx, fy, fs, mood)}
   </svg>`;
 }
 
-// soft clay-like blob characters: shaded fill, a highlight, and a face whose smile follows the mood
-const BLOBS = {
-  flower: { hi: "#ffd6e8", c: "#f59ac0", lo: "#dd6399" },
-  cloud:  { hi: "#ffe3cb", c: "#ffb57d", lo: "#ec8744" },
-  round:  { hi: "#e2daff", c: "#a996ff", lo: "#7a5ff0" },
-  square: { hi: "#cff4de", c: "#7fd6a4", lo: "#46b276" },
-  bear:   { hi: "#d8e6ff", c: "#8db4ff", lo: "#5a86ea" }
-};
-let blobSeq = 0;
-function blobSVG(kind, mood = 8) {
-  const b = BLOBS[kind] || BLOBS.round;
-  const id = "bg" + (blobSeq++);
-  let shape;
-  if (kind === "flower") {
-    shape = "";
-    for (let i = 0; i < 6; i++) {
-      const a = (i * 60 - 90) * Math.PI / 180;
-      shape += `<circle cx="${(50 + Math.cos(a) * 22).toFixed(1)}" cy="${(52 + Math.sin(a) * 22).toFixed(1)}" r="18"/>`;
-    }
-    shape += `<circle cx="50" cy="52" r="24"/>`;
-  } else if (kind === "cloud") {
-    shape = `<circle cx="34" cy="56" r="20"/><circle cx="55" cy="42" r="25"/><circle cx="74" cy="58" r="18"/><rect x="16" y="50" width="74" height="30" rx="15"/>`;
-  } else if (kind === "square") {
-    shape = `<rect x="16" y="18" width="68" height="66" rx="24"/>`;
-  } else if (kind === "bear") {
-    shape = `<circle cx="27" cy="28" r="12"/><circle cx="73" cy="28" r="12"/><circle cx="50" cy="55" r="33"/>`;
+// the mood character: one blob whose colour and expression follow the 1–10 value
+const MOOD_COLS = ["blue", "blue", "lav", "lav", "peach", "peach", "pink", "pink", "yellow", "yellow"];
+function moodBlobSVG(v) {
+  const p = PALETTE[v ? MOOD_COLS[v - 1] : "grey"];
+  const id = "mb" + (blobSeq++);
+  const ink = "#2b1e2a";
+  const droop = v ? Math.max(0, 5 - v) * 1.2 : 1;   // low moods sag a little
+  const lift = v ? Math.max(0, v - 6) * 0.8 : 0;     // high moods stand taller
+  const body = `<path d="M${16 - droop} ${70} C ${16 - droop} ${40 - lift}, ${30} ${20 - lift}, 50 ${20 - lift} C 70 ${20 - lift}, ${84 + droop} ${40 - lift}, ${84 + droop} 70 C ${84 + droop} 84, 70 88, 50 88 C 30 88, ${16 - droop} 84, ${16 - droop} 70 Z"/>`;
+  let eyes, mouth, brows = "", extra = "";
+  const cheek = !v ? 0 : v <= 4 ? 0 : v <= 6 ? 0.2 : v <= 8 ? 0.35 : 0.5;
+  if (!v) {
+    // not picked yet: sleepy
+    eyes = `<path d="M36 56 h9 M55 56 h9" stroke="${ink}" stroke-width="2.6" stroke-linecap="round"/>`;
+    mouth = `<ellipse cx="50" cy="67" rx="3" ry="2.4" fill="${ink}"/>`;
+  } else if (v >= 9) {
+    eyes = `<path d="M35 57 Q 40.5 50 46 57 M54 57 Q 59.5 50 65 57" fill="none" stroke="${ink}" stroke-width="2.8" stroke-linecap="round"/>`;
+    mouth = `<path d="M41 63 Q 50 77 59 63 Z" fill="${ink}"/><ellipse cx="50" cy="69.5" rx="4" ry="2.4" fill="#ff7aa8"/>`;
+    if (v === 10) extra = `<path d="M18 22 l2 -6 l2 6 l6 2 l-6 2 l-2 6 l-2 -6 l-6 -2 z M82 16 l1.5 -4.5 l1.5 4.5 l4.5 1.5 l-4.5 1.5 l-1.5 4.5 l-1.5 -4.5 l-4.5 -1.5 z" fill="${p.lo}"/>`;
   } else {
-    shape = `<ellipse cx="50" cy="53" rx="35" ry="33"/>`;
+    const big = v >= 7 ? 1.15 : 1;
+    eyes = `<ellipse cx="41" cy="56" rx="${3.2 * big}" ry="${3.8 * big}" fill="${ink}"/><ellipse cx="59" cy="56" rx="${3.2 * big}" ry="${3.8 * big}" fill="${ink}"/>
+      <circle cx="42.2" cy="54.4" r="1.1" fill="#fff"/><circle cx="60.2" cy="54.4" r="1.1" fill="#fff"/>`;
+    if (v <= 4) {
+      const lift2 = v <= 2 ? 4 : 2.5;
+      brows = `<path d="M34 ${48} L45 ${48 - lift2} M66 ${48} L55 ${48 - lift2}" stroke="${ink}" stroke-width="2.4" stroke-linecap="round"/>`;
+    }
+    if (v === 1) {
+      mouth = `<path d="M42 70 Q 46 65 50 68 Q 54 65 58 70" fill="none" stroke="${ink}" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>`;
+      extra = `<path d="M37 62 q -3.5 6 0 8 q 3.5 -2 0 -8 z" fill="#6fa8ff"/>`;
+    } else if (v === 5) {
+      mouth = `<path d="M44 68 H56" stroke="${ink}" stroke-width="2.6" stroke-linecap="round"/>`;
+    } else {
+      const t = (v - 5.5) / 3.5; // -1 .. 0.7
+      mouth = `<path d="M43 ${68 - t} Q 50 ${68 + t * 8} 57 ${68 - t}" fill="none" stroke="${ink}" stroke-width="2.6" stroke-linecap="round"/>`;
+    }
   }
-  const t = Math.max(-1, Math.min(1, (mood - 5.5) / 4.5));
   return `<svg class="blob" viewBox="0 0 100 100" aria-hidden="true">
-    <defs><radialGradient id="${id}" gradientUnits="userSpaceOnUse" cx="36" cy="32" r="72">
-      <stop offset="0" stop-color="${b.hi}"/><stop offset="0.5" stop-color="${b.c}"/><stop offset="1" stop-color="${b.lo}"/>
-    </radialGradient></defs>
-    <g fill="url(#${id})">${shape}</g>
-    <ellipse cx="36" cy="33" rx="9" ry="5" fill="#fff" opacity="0.45" transform="rotate(-30 36 33)"/>
-    <ellipse cx="37" cy="61" rx="4.5" ry="2.6" fill="#ff5c93" opacity="0.22"/>
-    <ellipse cx="63" cy="61" rx="4.5" ry="2.6" fill="#ff5c93" opacity="0.22"/>
-    <ellipse cx="43" cy="52" rx="3.1" ry="3.6" fill="#2b1e2a"/>
-    <ellipse cx="57" cy="52" rx="3.1" ry="3.6" fill="#2b1e2a"/>
-    <path d="M44.5 ${61 - t} Q 50 ${61 + t * 6} 55.5 ${61 - t}" fill="none" stroke="#2b1e2a" stroke-width="2.4" stroke-linecap="round"/>
+    <defs>${gradDef(id, p)}</defs>
+    <ellipse cx="50" cy="94" rx="${26 + droop}" ry="3.5" fill="#2b1e2a" opacity="0.08"/>
+    <g fill="url(#${id})">${body}</g>
+    <ellipse cx="34" cy="${36 - lift}" rx="9" ry="5" fill="#fff" opacity="0.5" transform="rotate(-30 34 ${36 - lift})"/>
+    <ellipse cx="34" cy="65" rx="5" ry="3" fill="#ff5c93" opacity="${cheek}"/>
+    <ellipse cx="66" cy="65" rx="5" ry="3" fill="#ff5c93" opacity="${cheek}"/>
+    ${brows}${eyes}${mouth}${extra}
   </svg>`;
 }
 const CHECK = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 12.5l4 4 8-9" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
@@ -876,8 +958,8 @@ const sheetRoot = document.getElementById("sheet-root");
 const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const reducedMotion = () => matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-const KIND_BY_ICON = { place: "cloud", food: "flower", book: "round" };
-const EXTRA_KINDS = ["square", "bear", "round", "cloud", "flower"];
+const KIND_BY_ICON = { place: "pin", food: "bao", book: "book" };
+const EXTRA_KINDS = ["star", "bear", "jelly", "cloud", "flower"];
 function kindFor(g) {
   if (KIND_BY_ICON[g.icon]) return KIND_BY_ICON[g.icon];
   const i = state.goals.filter(x => !KIND_BY_ICON[x.icon]).indexOf(g);
@@ -891,28 +973,27 @@ function todaysMood() {
 
 const SCALE_VARS = { sleep: "--lav", mood: "--pink", body: "--mint" };
 
-function scaleHTML(id, label, value, withFaces, ends) {
+function scaleHTML(id, label, value, withMood, ends) {
   if (value == null) value = null; // treat undefined the same as null
   let segs = "";
   for (let i = 1; i <= 10; i++) {
     const cls = value === null || i > value ? "" : i === value ? "on tip" : "on";
     segs += `<button tabindex="-1" data-v="${i}" class="${cls}" aria-hidden="true"></button>`;
   }
-  let faces = "";
-  if (withFaces) {
-    faces = `<div class="face-row">` + MOOD_WORDS.map((w, i) =>
-      `<button data-v="${i + 1}" class="${value === i + 1 ? "on" : ""}" aria-label="${label} ${i + 1} — ${w}">${faceSVG(i + 1)}</button>`
-    ).join("") + `</div>
-    <div class="mood-word">${value ? moodWord(value) : ""}</div>`;
-  }
+  const head = withMood
+    ? `<div class="scale-head mood-head">
+        <span class="mood-blob">${moodBlobSVG(value)}</span>
+        <span class="mood-text"><span class="scale-label">${label}</span><span class="mood-word">${value ? moodWord(value) : "slide to pick"}</span></span>
+        <span class="scale-val ${value === null ? "empty" : ""}">${value === null ? "–" : value}</span>
+      </div>`
+    : `<div class="scale-head">
+        <span class="scale-label">${label}</span>
+        <span class="scale-val ${value === null ? "empty" : ""}">${value === null ? "–" : value}</span>
+      </div>`;
   return `<div class="scale" data-scale-id="${id}">
-    <div class="scale-head">
-      <span class="scale-label">${label}</span>
-      <span class="scale-val ${value === null ? "empty" : ""}">${value === null ? "–" : value}</span>
-    </div>
-    <div class="segments" role="slider" tabindex="0" style="--c:var(${SCALE_VARS[id]})" aria-label="${label}" aria-valuemin="1" aria-valuemax="10" aria-valuenow="${value ?? 0}">${segs}</div>
-    ${ends && !withFaces ? `<div class="seg-ends"><span>${ends[0]}</span><span>${ends[1]}</span></div>` : ""}
-    ${faces}
+    ${head}
+    <div class="segments" role="slider" tabindex="0" style="--c:var(${SCALE_VARS[id]})" aria-label="${label}" aria-valuemin="1" aria-valuemax="10" aria-valuenow="${value ?? 0}" aria-valuetext="${value ? (withMood ? `${value} — ${moodWord(value)}` : value) : "not set"}">${segs}</div>
+    ${ends ? `<div class="seg-ends"><span>${ends[0]}</span><span>${ends[1]}</span></div>` : ""}
   </div>`;
 }
 
@@ -933,17 +1014,20 @@ function paintScale(root, id, value) {
     void val.offsetWidth;
     val.classList.add("bump");
   }
-  root.querySelector(".segments").setAttribute("aria-valuenow", value ?? 0);
-  root.querySelectorAll(".face-row button").forEach(b => b.classList.toggle("on", Number(b.dataset.v) === value));
-  const word = root.querySelector(".mood-word");
-  if (word) {
-    const w = value ? moodWord(value) : "";
-    if (word.textContent !== w) {
-      word.textContent = w;
-      word.classList.remove("wisp");
-      void word.offsetWidth;
-      if (w) word.classList.add("wisp");
-    }
+  const blob = root.querySelector(".mood-blob");
+  const seg = root.querySelector(".segments");
+  seg.setAttribute("aria-valuenow", value ?? 0);
+  seg.setAttribute("aria-valuetext", value ? (blob ? `${value} — ${moodWord(value)}` : String(value)) : "not set");
+  if (blob && changed) {
+    blob.innerHTML = moodBlobSVG(value);
+    blob.classList.remove("squish");
+    void blob.offsetWidth;
+    blob.classList.add("squish");
+    const word = root.querySelector(".mood-word");
+    word.textContent = value ? moodWord(value) : "slide to pick";
+    word.classList.remove("wisp");
+    void word.offsetWidth;
+    word.classList.add("wisp");
   }
 }
 
@@ -974,10 +1058,6 @@ function wireScales(model, onChange) {
     seg.addEventListener("pointerup", () => {
       // a plain tap on the already-selected value clears it
       if (!slid && startVal !== null && model[id] === startVal) set(null);
-    });
-    root.querySelectorAll(".face-row button").forEach(b => b.onclick = () => {
-      const v = Number(b.dataset.v);
-      set(model[id] === v ? null : v);
     });
     seg.addEventListener("keydown", e => {
       const cur = model[id];
@@ -1473,7 +1553,7 @@ function addSheetHTML() {
   const ideas = GOAL_IDEAS.filter(i => !existing.has(i.title.toLowerCase()));
   return `
     <div class="sheet-hero" style="background:var(--grad-soft)">
-      <div class="blob-trio">${blobSVG("square", 8)}${blobSVG("bear", 9)}${blobSVG("cloud", 8)}</div>
+      <div class="blob-trio">${blobSVG("jelly", 8)}${blobSVG("bear", 9)}${blobSVG("star", 8)}</div>
       <h2 style="margin-top:6px">Add a goal</h2>
       <div class="card-sub">Something small you'd like to do again and again</div>
     </div>
@@ -1653,7 +1733,7 @@ function renderProgress() {
       <div><div class="date">How it's going</div><h1>Progress</h1></div>
     </header>
     <div class="hero">
-      <div class="blob-trio floaty">${blobSVG("cloud", 8)}${blobSVG("flower", todaysMood())}${blobSVG("round", 7)}</div>
+      <div class="blob-trio floaty">${blobSVG("pin", 8)}${blobSVG("flower", todaysMood())}${blobSVG("book", 7)}</div>
       <div class="big">${cur}</div>
       <div class="big-label">${cur === 1 ? "day" : "days"} in a row</div>
       <p>${dayFilled(todayKey()) ? "Today's in. " : "Check in today to keep it growing. "}Your record is ${best}.</p>
