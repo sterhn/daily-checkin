@@ -1,19 +1,19 @@
 # daily check-in
 
-A small, private daily check-in app with a soft pastel look and a little hoodie-wearing character: rate your **sleep, mood, and body** in the morning, set an intention, then close the day in the evening with boundaries, gym, and a couple of honest notes. A **goals** tab holds small weekly and monthly adventures, and a **progress** tab shows your streak and how the last 7/14/30 days went.
+A small, private daily check-in app that looks like a graph-paper notebook, with cards stuck on a little crooked and a hand-drawn hoodie-wearing character: rate your **sleep, mood, and body** in the morning, set an intention, then close the day in the evening with boundaries, gym, and a couple of honest notes. A **goals** tab holds small weekly and monthly adventures, and a **progress** tab shows your streak and how the last 7/14/30 days went.
 
 Built as a single self-contained page — no accounts, no server, no tracking. Everything is stored in your browser's local storage, on your device only.
 
 ## Features
 
-- **Streaks**: a badge at the top shows how many days in a row you've checked in (morning *or* evening counts), and a *this week* card ticks off each day
+- **Streaks**: a rubber stamp at the top shows how many days in a row you've checked in (morning *or* evening counts) — fresh ink once today is in, faded before — and a *this week* card ticks off each day
 - **Autosave**: every tap and keystroke is saved immediately — no more losing a check-in because you forgot to press a button
 - **Up next**: a gradient card points you at the goal with the least time left
-- **Goals**: small adventures with their own streaks, shown as a grid of cards with a character for each (a folded map, a bowl of ramen, a book…) — tap one to log it — *go somewhere new* (weekly), *eat something new* (weekly, ordered or cooked), and *read a book* (monthly, with a "currently reading" note). Log what you did, see your collection grow, and add your own goals or pick from ideas
+- **Goals**: small adventures with their own streaks, shown as a grid of cards with an ink doodle for each (a folded map, a bowl of ramen, a book…) — tap one to log it — *go somewhere new* (weekly), *eat something new* (weekly, ordered or cooked), and *read a book* (monthly, with a "currently reading" note). Log what you did, see your collection grow, and add your own goals or pick from ideas
 - **Morning**: sleep / mood / body on a 1–10 scale — tap or slide across to set a value — plus an intention for the day
 - **Evening**: the morning's intention read back to you, how you feel now, boundary tracking (held / slipped), gym (went / rest day / skipped), a rough "spent today", "what happened", and "one honest thing"
 - **Yesterday / today toggle** on the evening tab — for when you close the day after midnight. Before 5am the app opens on the evening tab already set to yesterday, and a small dot marks days you've already saved
-- **The character**: your own hand-drawn character — messy pale-blue hair, tired eyes, a black hoodie — sits right next to the mood slider and changes face as you slide: pouting at 3–4, hiding in its sleeves at 1–2, ecstatic at 9–10. Before you pick a mood it's drinking coffee in the morning and cozy in the evening, and sleepy in the small hours. It sighs when you skip the gym or slip on a boundary, does finger guns when you hold one, and gets annoyed at a blank check-in. The stickers live in `chars/` and are cached on the phone, so faces swap instantly. The mood word (drained → radiant) shows live under the slider
+- **The character**: your own hand-drawn character — messy pale-blue hair, tired eyes, a black hoodie — sits on top of the sleep / mood / body card and changes face as you slide: pouting at 3–4, hiding in its sleeves at 1–2, ecstatic at 9–10. Before you pick a mood it's drinking coffee in the morning and cozy in the evening, and sleepy in the small hours. It sighs when you skip the gym or slip on a boundary, does finger guns when you hold one, and gets annoyed at a blank check-in. The stickers live in `chars/` and are cached on the phone, so faces swap instantly. The mood word (drained → radiant) shows live under the slider
 - **Toasts with a bit of personality**: dry, warm one-liners when you finish a check-in, with special lines for late nights and streak milestones
 - **Journal**: scroll back through every intention, "what happened" and "one honest thing", newest first
 - **This week's story**: the week stitched together day by day like a short diary — intentions, notes, boundaries, gym, spending, mood — with a *copy week* button for your weekly review

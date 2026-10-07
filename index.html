@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#f6f4f1" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#121115" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f6f7f3" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#121724" media="(prefers-color-scheme: dark)">
 <title>daily check-in</title>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icons/icon-192.png">
@@ -13,74 +13,81 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@700&family=Gaegu:wght@400;700&family=Nunito:wght@400;600;700;800&display=swap">
 <style>
+  /* graph paper: a blue grid page, cards cut from white paper and stuck on a little crooked,
+     outlined in the same navy ink as the character's line art */
   :root {
-    --bg: #f6f4f1;
-    --card: #ffffff;
-    --line: #ece8e3;
-    --text: #17161b;
-    --muted: #85818c;
-    --faint: #bdb9c2;
-    --seg: #f1eee9;
-    --ink: #17161b;
-    --on-ink: #ffffff;
-    --shadow: 0 1px 2px rgba(23, 22, 27, 0.04), 0 8px 24px rgba(23, 22, 27, 0.05);
+    --paper: #f6f7f3;
+    /* one 56px graph-paper tile: fine lines every 14px, a stronger line every 56px */
+    --grid: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='56'%3E%3Cpath d='M14 0V56M28 0V56M42 0V56M0 14H56M0 28H56M0 42H56' stroke='%236c92be' stroke-opacity='.11'/%3E%3Cpath d='M0 .5H56M.5 0V56' stroke='%236c92be' stroke-opacity='.26'/%3E%3C/svg%3E");
+    --card: #fffefb;
+    --outline: #2b3550;
+    --ink: #2b3550;
+    --on-ink: #fffefb;
+    --text: #26304a;
+    --muted: #6f7a95;
+    --faint: #b5bdcf;
+    --line: rgba(43, 53, 80, 0.2);
+    --seg-line: rgba(43, 53, 80, 0.7);
+    --chip-bg: rgba(43, 53, 80, 0.07);
+    --pill-bg: rgba(255, 255, 255, 0.8);
+    --shadow: 3px 3px 0 rgba(43, 53, 80, 0.14);
+    --border: 1.6px solid var(--outline);
 
-    --peach: #ffb57d;
-    --pink: #f59ac0;
-    --lav: #a996ff;
-    --mint: #7fd6a4;
-    --blue: #8db4ff;
-    --peach-t: #fff1e6;
-    --pink-t: #ffecf4;
-    --lav-t: #f1edff;
-    --mint-t: #e7f7ee;
-    --blue-t: #ebf2ff;
-    --yellow-t: #fff7dc;
+    --peach: #f4a36d;
+    --pink: #f08aa6;
+    --lav: #a99be3;
+    --mint: #78c49a;
+    --blue: #8db4e8;
+    --peach-t: #fde3cf;
+    --pink-t: #fbd8e2;
+    --lav-t: #e4ddf8;
+    --mint-t: #d3efdf;
+    --blue-t: #dceaf8;
+    --yellow-t: #fbefc4;
+    --note: #dceaf8;
+    --note-soft: #fbe3ea;
+    --tape: repeating-linear-gradient(-45deg, #bcd5ef 0 5px, #d9e8f7 5px 10px);
+    --stamp: #d9536f;
+    --good: #3b8f62;
 
-    --grad:
-      radial-gradient(at 12% 18%, #ffdcbd 0, transparent 55%),
-      radial-gradient(at 88% 12%, #ffcfe3 0, transparent 50%),
-      radial-gradient(at 85% 92%, #d7cbff 0, transparent 55%),
-      radial-gradient(at 8% 95%, #caeedb 0, transparent 50%),
-      #fbe8ef;
-    --grad-soft:
-      radial-gradient(at 0% 0%, #ffe6d2 0, transparent 60%),
-      radial-gradient(at 100% 100%, #e3dbff 0, transparent 60%),
-      #fdf0f5;
-    --font: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-
+    --font: "Nunito", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --hand: "Gaegu", "Nunito", cursive;
     color-scheme: light;
   }
   @media (prefers-color-scheme: dark) {
     :root {
-      --bg: #121115;
-      --card: #1b1a20;
-      --line: #2a2830;
-      --text: #f3f1f5;
-      --muted: #9a96a3;
-      --faint: #5c5864;
-      --seg: #26242c;
-      --ink: #f3f1f5;
-      --on-ink: #121115;
-      --shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-      --peach-t: #2b211a;
-      --pink-t: #2c1c24;
-      --lav-t: #221e33;
-      --mint-t: #1a2a21;
-      --blue-t: #1b2233;
-      --yellow-t: #2b2615;
-      --grad:
-        radial-gradient(at 12% 18%, rgba(255, 170, 110, 0.35) 0, transparent 55%),
-        radial-gradient(at 88% 12%, rgba(245, 130, 180, 0.32) 0, transparent 50%),
-        radial-gradient(at 85% 92%, rgba(150, 125, 255, 0.35) 0, transparent 55%),
-        radial-gradient(at 8% 95%, rgba(110, 210, 160, 0.28) 0, transparent 50%),
-        #221c25;
-      --grad-soft:
-        radial-gradient(at 0% 0%, rgba(255, 170, 110, 0.22) 0, transparent 60%),
-        radial-gradient(at 100% 100%, rgba(150, 125, 255, 0.25) 0, transparent 60%),
-        #201b23;
+      --paper: #121724;
+      --grid: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='56'%3E%3Cpath d='M14 0V56M28 0V56M42 0V56M0 14H56M0 28H56M0 42H56' stroke='%238caad7' stroke-opacity='.065'/%3E%3Cpath d='M0 .5H56M.5 0V56' stroke='%238caad7' stroke-opacity='.15'/%3E%3C/svg%3E");
+      --card: #192032;
+      --outline: #6f82a8;
+      --ink: #e6edf8;
+      --on-ink: #121724;
+      --text: #e6edf8;
+      --muted: #93a0bb;
+      --faint: #4d5a76;
+      --line: rgba(200, 215, 240, 0.16);
+      --seg-line: rgba(200, 215, 240, 0.42);
+      --chip-bg: rgba(255, 255, 255, 0.08);
+      --pill-bg: rgba(255, 255, 255, 0.12);
+      --shadow: 3px 3px 0 rgba(0, 0, 0, 0.4);
+      --peach: #f0a06a;
+      --pink: #ef86a3;
+      --lav: #9d8fe6;
+      --mint: #6fc293;
+      --blue: #7ea7dd;
+      --peach-t: #45301f;
+      --pink-t: #4a2535;
+      --lav-t: #2e2a52;
+      --mint-t: #1f3e31;
+      --blue-t: #22304a;
+      --yellow-t: #3d3620;
+      --note: #22304a;
+      --note-soft: #3a2533;
+      --tape: repeating-linear-gradient(-45deg, #4a6a94 0 5px, #3a5478 5px 10px);
+      --stamp: #f07a93;
+      --good: #7fd6a4;
       color-scheme: dark;
     }
   }
@@ -88,13 +95,15 @@
   * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   html, body { min-height: 100%; }
   body {
-    background: var(--bg);
+    background-color: var(--paper);
     color: var(--text);
     font-family: var(--font);
     font-size: 15px;
     line-height: 1.45;
     -webkit-font-smoothing: antialiased;
   }
+  /* the grid lives on its own fixed layer, so scrolling never has to repaint it */
+  body::before { content: ""; position: fixed; inset: 0; z-index: -1; background: var(--grid) 0 0 / 56px 56px; pointer-events: none; }
   button, input, textarea, select { font: inherit; color: inherit; }
   button { cursor: pointer; }
 
@@ -103,108 +112,105 @@
 
   /* ---- header ---- */
   .top { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin: 4px 2px 16px; }
-  .date { color: var(--muted); font-size: 0.82rem; font-weight: 500; }
-  h1 { font-size: 1.7rem; font-weight: 800; letter-spacing: -0.02em; line-height: 1.15; margin-top: 2px; }
+  .date { color: var(--muted); font-size: 0.82rem; font-weight: 600; }
+  h1 { font-family: var(--hand); font-size: 2.3rem; font-weight: 700; line-height: 1; margin-top: 4px; }
   .saved-note { transition: color 0.3s; }
-  .saved-note.fresh { color: #3fa56b; }
-  .streak-pill {
-    display: inline-flex; align-items: center; gap: 4px;
-    background: var(--card);
-    border: 1px solid var(--line);
-    border-radius: 999px;
-    padding: 4px 12px 4px 4px;
-    box-shadow: var(--shadow);
-    flex: none;
-  }
-  .streak-pill .blob { width: 36px; height: 36px; margin: -3px -2px; }
-  .streak-pill b { font-size: 1rem; font-weight: 800; }
-  .streak-pill:not(.lit) .blob { filter: grayscale(0.9) opacity(0.55); }
-  .streak-pill.pop .blob { animation: boing 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); }
-  @keyframes boing {
-    0% { transform: scale(0.6) rotate(-12deg); }
-    60% { transform: scale(1.25) rotate(6deg); }
+  .saved-note.fresh { color: var(--good); }
+  /* the streak is a rubber stamp: fresh ink once today is in, faded before */
+  .streak-stamp { background: none; border: none; padding: 0; width: 56px; height: 56px; flex: none; margin: -4px -4px 0 0; }
+  .stamp { width: 100%; height: 100%; overflow: visible; display: block; }
+  .streak-stamp:not(.lit) .stamp { opacity: 0.38; filter: grayscale(1); }
+  .streak-stamp.pop .stamp { animation: thunk 0.5s cubic-bezier(0.34, 1.4, 0.64, 1); }
+  @keyframes thunk {
+    0% { transform: scale(1.6) rotate(-14deg); opacity: 0; }
+    55% { transform: scale(0.92); opacity: 1; }
     100% { transform: none; }
   }
 
-  /* ---- cards ---- */
+  /* ---- cards: paper stuck on a little crooked ---- */
   .card {
+    position: relative;
     background: var(--card);
-    border: 1px solid var(--line);
-    border-radius: 22px;
+    border: var(--border);
+    border-radius: 12px;
     padding: 18px;
-    margin-top: 12px;
+    margin-top: 14px;
     box-shadow: var(--shadow);
   }
+  .card, .nudge, .gcard, .stat, .hero, .read-link, .intent { will-change: transform; }
+  .card:nth-of-type(odd) { rotate: -0.5deg; }
+  .card:nth-of-type(even) { rotate: 0.45deg; }
+  .tape { position: absolute; top: -9px; left: 50%; width: 62px; height: 17px; margin-left: -31px; rotate: -3deg; background: var(--tape); opacity: 0.92; pointer-events: none; }
   .card-head { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
-  .card-title { font-weight: 700; font-size: 0.95rem; }
+  .card-title { font-family: var(--hand); font-weight: 700; font-size: 1.35rem; line-height: 1.1; }
   .card-sub { color: var(--muted); font-size: 0.8rem; }
   .hint { color: var(--muted); font-size: 0.8rem; margin-top: 12px; text-align: center; }
 
   /* week circles */
-  .week { display: flex; justify-content: space-between; margin-top: 12px; }
+  .week { display: flex; justify-content: space-between; margin-top: 10px; }
   .wd { display: flex; flex-direction: column; align-items: center; gap: 6px; flex: 1; }
-  .wd span { font-size: 0.7rem; color: var(--muted); font-weight: 600; }
+  .wd span { font-size: 0.7rem; color: var(--muted); font-weight: 700; }
   .wd.today span { color: var(--text); }
   .circle {
     width: 30px; height: 30px; border-radius: 50%;
-    background: var(--seg);
+    border: 1.5px dashed var(--faint);
     display: flex; align-items: center; justify-content: center;
     color: var(--on-ink);
   }
   .circle svg { width: 15px; height: 15px; }
-  .circle.done { background: var(--ink); }
-  .wd.today .circle:not(.done) { background: transparent; border: 2px solid var(--ink); }
-  .wd.future .circle { opacity: 0.5; }
+  .circle.done { background: var(--ink); border: none; }
+  .wd.today .circle:not(.done) { border: 2px solid var(--ink); }
+  .wd.future .circle { opacity: 0.6; }
 
-  /* gradient "up next" card */
+  /* "up next": a blue note pinned on the page */
   .nudge {
     display: flex; align-items: center; gap: 12px;
     width: 100%;
     text-align: left;
-    border: none;
-    border-radius: 22px;
-    padding: 16px 16px 16px 18px;
-    margin-top: 12px;
-    background: var(--grad);
+    border: var(--border);
+    border-radius: 14px;
+    padding: 15px 14px 15px 16px;
+    margin-top: 14px;
+    background: var(--note);
+    box-shadow: var(--shadow);
+    rotate: 0.7deg;
   }
   .nudge-main { flex: 1; min-width: 0; }
   .badge {
     display: inline-block;
-    background: rgba(255, 255, 255, 0.7);
+    background: var(--pill-bg);
     border-radius: 999px;
     padding: 3px 9px;
     font-size: 0.66rem;
-    font-weight: 700;
+    font-weight: 800;
     letter-spacing: 0.06em;
     text-transform: uppercase;
   }
-  @media (prefers-color-scheme: dark) { .badge { background: rgba(255, 255, 255, 0.12); } }
-  .nudge-title { font-size: 1.15rem; font-weight: 800; letter-spacing: -0.01em; margin-top: 8px; }
-  .nudge-sub { font-size: 0.8rem; color: var(--muted); margin-top: 1px; }
-  .nudge .blob { width: 84px; height: 84px; flex: none; margin: -10px -6px -10px 0; }
-  .bar { height: 5px; border-radius: 999px; background: rgba(23, 22, 27, 0.1); margin-top: 12px; overflow: hidden; }
+  .nudge-title { font-family: var(--hand); font-size: 1.5rem; font-weight: 700; line-height: 1.05; margin-top: 6px; }
+  .nudge-sub { font-size: 0.8rem; color: var(--muted); margin-top: 2px; }
+  .nudge .blob { width: 68px; height: 68px; flex: none; }
+  .bar { height: 5px; border-radius: 999px; background: var(--line); margin-top: 11px; overflow: hidden; }
   .bar i { display: block; height: 100%; border-radius: 999px; background: var(--ink); transition: width 0.6s cubic-bezier(0.22, 1, 0.36, 1); }
-  @media (prefers-color-scheme: dark) { .bar { background: rgba(255, 255, 255, 0.14); } }
 
-  /* ---- scales ---- */
-  .scale + .scale { margin-top: 22px; padding-top: 18px; border-top: 1px solid var(--line); }
-  .scale-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 10px; }
-  .scale-label { font-weight: 600; font-size: 0.92rem; }
-  .scale-val { font-size: 1.5rem; font-weight: 800; letter-spacing: -0.02em; line-height: 1; min-width: 1.2em; text-align: right; }
-  .scale-val.empty { color: var(--faint); font-weight: 500; }
+  /* ---- scales: little grid boxes you colour in ---- */
+  .scale + .scale { margin-top: 18px; padding-top: 16px; border-top: 1.5px dashed var(--line); }
+  .scale-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 9px; }
+  .scale-label { font-weight: 700; font-size: 0.95rem; }
+  .scale-val { font-family: var(--hand); font-size: 1.9rem; font-weight: 700; line-height: 0.8; min-width: 1.2em; text-align: right; }
+  .scale-val.empty { color: var(--faint); }
   .segments { display: flex; gap: 4px; touch-action: pan-y; cursor: pointer; }
   .segments button {
     flex: 1;
-    height: 40px;
-    border: none;
-    border-radius: 10px;
-    background: var(--seg);
+    height: 36px;
+    border: 1.5px solid var(--seg-line);
+    border-radius: 6px;
+    background: transparent;
     pointer-events: none; /* slide is handled on the row */
     transition: background-color 0.16s ease, transform 0.2s cubic-bezier(0.34, 1.4, 0.64, 1);
   }
-  .segments button.on { background: color-mix(in srgb, var(--c) 40%, var(--seg)); }
-  .segments button.tip { background: var(--c); transform: scaleY(1.12); }
-  .segments:focus-visible { outline: 2px solid var(--c); outline-offset: 3px; border-radius: 12px; }
+  .segments button.on { background: color-mix(in srgb, var(--c) 38%, var(--card)); }
+  .segments button.tip { background: var(--c); border-color: var(--outline); transform: scaleY(1.1); }
+  .segments:focus-visible { outline: 2px solid var(--c); outline-offset: 3px; border-radius: 8px; }
   .seg-ends { display: flex; justify-content: space-between; margin-top: 5px; font-size: 0.72rem; color: var(--muted); }
 
   @keyframes squish {
@@ -212,16 +218,15 @@
     55% { transform: scale(0.95, 1.07); }
     100% { transform: none; }
   }
-  /* the character sits by the mood slider and reacts as you slide */
-  .mood-head { justify-content: flex-start; align-items: center; gap: 10px; }
-  .mood-head .scale-label { flex: 1; }
-  .mood-slot { flex: none; width: 84px; height: 84px; margin: -16px -2px -12px -10px; }
-  .mood-slot .blob { width: 100%; height: 100%; }
-  .mood-slot.squish { animation: squish 0.45s cubic-bezier(0.34, 1.56, 0.64, 1); }
+  /* the character sits on top of the sleep / mood / body card, like a sticker on its edge */
+  .card.has-perch { margin-top: 96px; }
+  .perch { position: absolute; top: -95px; right: 4px; width: 116px; height: 116px; pointer-events: none; z-index: 1; transform-origin: 50% 100%; }
+  .perch .blob { width: 100%; height: 100%; }
+  .perch.squish { animation: squish 0.45s cubic-bezier(0.34, 1.56, 0.64, 1); }
   /* the live mood word sits under the slider, between the two ends */
   .mood-ends { align-items: baseline; }
-  .mood-word { font-size: 0.85rem; font-weight: 700; color: var(--text); }
-  .mood-word.empty { font-weight: 600; color: var(--muted); }
+  .mood-word { font-family: var(--hand); font-size: 1.2rem; font-weight: 700; line-height: 1; color: var(--text); }
+  .mood-word.empty { font-family: var(--font); font-size: 0.8rem; font-weight: 600; color: var(--muted); }
   .mood-word.wisp { animation: wisp 0.35s ease; }
   @keyframes wisp { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
   .scale-val.bump { animation: bump 0.28s cubic-bezier(0.34, 1.56, 0.64, 1); }
@@ -230,87 +235,83 @@
   /* ---- inputs ---- */
   textarea, .field {
     width: 100%;
-    background: var(--seg);
-    border: 1px solid transparent;
-    border-radius: 14px;
-    padding: 12px 14px;
+    background: transparent;
+    border: 1.5px dashed var(--seg-line);
+    border-radius: 10px;
+    padding: 11px 13px;
     font-size: 0.95rem;
   }
   textarea { min-height: 76px; resize: vertical; margin-top: 10px; }
   textarea.short { min-height: 0; resize: none; }
-  textarea:focus, .field:focus { outline: none; border-color: var(--faint); background: var(--card); }
+  textarea:focus, .field:focus { outline: none; border-style: solid; border-color: var(--outline); background: var(--card); }
   textarea::placeholder, .field::placeholder { color: var(--muted); }
-  .field-label { font-weight: 600; font-size: 0.92rem; }
+  .field-label { font-family: var(--hand); font-weight: 700; font-size: 1.3rem; line-height: 1.1; }
   .field-label + .field-label, textarea + .field-label { margin-top: 16px; display: block; }
 
   .btn-primary {
     display: flex; align-items: center; justify-content: center; gap: 8px;
     width: 100%;
-    margin-top: 18px;
+    margin-top: 20px;
     background: var(--ink);
     color: var(--on-ink);
-    border: none;
-    border-radius: 999px;
-    padding: 15px;
-    font-weight: 700;
+    border: var(--border);
+    border-radius: 14px;
+    padding: 14px;
+    font-weight: 800;
     font-size: 0.95rem;
-    transition: transform 0.12s ease, opacity 0.12s ease;
+    box-shadow: var(--shadow);
+    transition: transform 0.12s ease, box-shadow 0.12s ease;
   }
-  .btn-primary:active { transform: scale(0.97); opacity: 0.9; }
+  .btn-primary:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 transparent; }
   .btn-primary.pulse { animation: pulse 0.45s ease; }
-  @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(169, 150, 255, 0.55); } 100% { box-shadow: 0 0 0 14px rgba(169, 150, 255, 0); } }
+  @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(240, 138, 166, 0.55); } 100% { box-shadow: 0 0 0 14px rgba(240, 138, 166, 0); } }
   .btn-ghost {
     width: 100%;
     margin-top: 10px;
     background: none;
-    border: 1px solid var(--line);
-    border-radius: 999px;
+    border: 1.5px dashed var(--seg-line);
+    border-radius: 14px;
     color: var(--muted);
-    padding: 13px;
+    padding: 12px;
     font-size: 0.88rem;
-    font-weight: 600;
+    font-weight: 700;
   }
-  .link-btn { background: none; border: none; color: var(--muted); font-size: 0.82rem; font-weight: 600; padding: 6px 2px; }
+  .link-btn { background: none; border: none; color: var(--muted); font-size: 0.82rem; font-weight: 700; padding: 6px 2px; text-decoration: underline dashed; text-underline-offset: 3px; }
 
   /* chips / pills */
   .chips { display: flex; gap: 6px; flex-wrap: wrap; }
   .chip {
-    background: var(--seg);
-    border: 1px solid transparent;
+    background: var(--card);
+    border: 1.5px solid var(--seg-line);
     border-radius: 999px;
-    padding: 9px 15px;
+    padding: 8px 14px;
     min-height: 40px;
     font-size: 0.85rem;
-    font-weight: 600;
+    font-weight: 700;
     color: var(--muted);
     transition: background-color 0.18s, color 0.18s, transform 0.12s;
   }
   .chip:active { transform: scale(0.95); }
-  .chip.on { background: var(--ink); color: var(--on-ink); }
-  .chip.held-on { background: var(--mint-t); color: #2f8f59; border-color: var(--mint); }
-  .chip.slipped-on { background: var(--peach-t); color: #c8642a; border-color: var(--peach); }
-  .chip.rest-on { background: var(--lav-t); color: #6d55e0; border-color: var(--lav); }
-  @media (prefers-color-scheme: dark) {
-    .chip.held-on { color: var(--mint); }
-    .chip.slipped-on { color: var(--peach); }
-    .chip.rest-on { color: var(--lav); }
-  }
-  .seg-toggle { display: inline-flex; background: var(--seg); border-radius: 999px; padding: 3px; }
+  .chip.on { background: var(--ink); color: var(--on-ink); border-color: var(--outline); }
+  .chip.held-on { background: var(--mint-t); color: var(--text); border-color: var(--outline); }
+  .chip.slipped-on { background: var(--peach-t); color: var(--text); border-color: var(--outline); }
+  .chip.rest-on { background: var(--lav-t); color: var(--text); border-color: var(--outline); }
+  .seg-toggle { display: inline-flex; background: var(--card); border: var(--border); border-radius: 999px; padding: 3px; box-shadow: var(--shadow); }
   .seg-toggle button {
     background: none; border: none; border-radius: 999px;
-    padding: 7px 14px; font-size: 0.82rem; font-weight: 600; color: var(--muted);
+    padding: 6px 14px; font-size: 0.82rem; font-weight: 700; color: var(--muted);
   }
-  .seg-toggle button.on { background: var(--card); color: var(--text); box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); }
-  .seg-toggle .mark { display: inline-block; width: 5px; height: 5px; border-radius: 50%; background: #3fa56b; margin-left: 5px; vertical-align: 2px; }
+  .seg-toggle button.on { background: var(--ink); color: var(--on-ink); }
+  .seg-toggle .mark { display: inline-block; width: 5px; height: 5px; border-radius: 50%; background: var(--good); margin-left: 5px; vertical-align: 2px; }
 
   .row {
     display: flex; align-items: center; justify-content: space-between; gap: 8px;
     padding: 10px 0;
-    border-top: 1px solid var(--line);
+    border-top: 1.5px dashed var(--line);
   }
   .card-head + .row { margin-top: 8px; }
-  .row .name { flex: 1; font-size: 0.92rem; font-weight: 500; }
-  .row .chip { padding: 7px 12px; min-height: 38px; font-size: 0.8rem; }
+  .row .name { flex: 1; font-size: 0.92rem; font-weight: 600; }
+  .row .chip { padding: 6px 12px; min-height: 38px; font-size: 0.8rem; }
   .remove {
     background: none; border: none; color: var(--muted);
     font-size: 0.9rem;
@@ -321,25 +322,25 @@
   .add-row { display: flex; gap: 6px; margin-top: 12px; }
   .add-row .field { flex: 1; min-width: 0; padding: 10px 14px; }
   .add-row button, .add-row select {
-    background: var(--seg); border: none; border-radius: 14px; padding: 0 14px; font-weight: 600;
+    background: var(--card); border: 1.5px solid var(--seg-line); border-radius: 10px; padding: 0 14px; font-weight: 700;
   }
 
   /* morning summary in the evening */
   .summary { display: flex; gap: 8px; margin-top: 12px; }
-  .summary .tile { flex: 1; border-radius: 16px; padding: 10px 12px; }
-  .tile b { display: block; font-size: 1.3rem; font-weight: 800; letter-spacing: -0.02em; }
-  .tile span { font-size: 0.72rem; color: var(--muted); font-weight: 600; }
-  /* the morning's intention, read back in the evening */
-  .intent { margin-top: 12px; background: var(--grad-soft); border-radius: 16px; padding: 13px 15px 14px; }
-  .intent-label { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
-  .intent-text { font-size: 1.12rem; font-weight: 700; letter-spacing: -0.01em; line-height: 1.3; margin-top: 3px; white-space: pre-wrap; overflow-wrap: anywhere; }
+  .summary .tile { flex: 1; border-radius: 10px; padding: 9px 11px; border: 1.5px solid var(--outline); }
+  .tile b { display: block; font-family: var(--hand); font-size: 1.7rem; font-weight: 700; line-height: 1; }
+  .tile span { font-size: 0.72rem; color: var(--muted); font-weight: 700; }
+  /* the morning's intention, read back in the evening: a pink note taped into the card */
+  .intent { position: relative; margin-top: 16px; background: var(--note-soft); border: 1.5px solid var(--outline); border-radius: 10px; padding: 14px 15px 13px; rotate: -0.8deg; }
+  .intent::before { content: ""; position: absolute; top: -9px; left: 18px; width: 48px; height: 16px; rotate: -6deg; background: var(--tape); opacity: 0.92; }
+  .intent-label { font-size: 0.68rem; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+  .intent-text { font-family: var(--hand); font-size: 1.55rem; font-weight: 700; line-height: 1.1; margin-top: 2px; white-space: pre-wrap; overflow-wrap: anywhere; }
 
-  /* ---- blobs ---- */
+  /* ---- doodles + character ---- */
   .blob { display: block; overflow: visible; }
   .floaty .blob { animation: floaty 4s ease-in-out infinite; }
   @keyframes floaty { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
-
-  /* ---- the mascot: hand-drawn stickers with a white edge, so they read on light and dark ---- */
+  /* the character: hand-drawn stickers with a white edge, so they read on light and dark */
   img.char { object-fit: contain; user-select: none; -webkit-user-drag: none; }
   .ch-hop { animation: hop 0.9s ease-in-out 3; }
   @keyframes hop { 0%, 100% { transform: none; } 45% { transform: translateY(-6px); } }
@@ -347,21 +348,24 @@
   .hero-char .blob { width: 116px; height: 116px; margin: -10px 0 -6px; }
 
   /* ---- goals ---- */
-  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px; }
   .gcard {
     position: relative;
     text-align: left;
-    border: none;
-    border-radius: 20px;
+    border: var(--border);
+    border-radius: 14px;
     padding: 14px;
     min-height: 150px;
     display: flex; flex-direction: column;
+    box-shadow: var(--shadow);
     transition: transform 0.15s ease;
   }
+  .gcard:nth-child(odd) { rotate: -0.7deg; }
+  .gcard:nth-child(even) { rotate: 0.6deg; }
   .gcard:active { transform: scale(0.97); }
-  .gcard .blob { width: 76px; height: 76px; margin: -8px 0 auto -8px; }
-  .gtitle { font-weight: 700; font-size: 0.92rem; line-height: 1.25; margin-top: 14px; }
-  .gmeta { font-size: 0.74rem; color: var(--muted); margin-top: 2px; }
+  .gcard .blob { width: 60px; height: 60px; margin-bottom: auto; }
+  .gtitle { font-family: var(--hand); font-weight: 700; font-size: 1.25rem; line-height: 1.05; margin-top: 12px; }
+  .gmeta { font-size: 0.74rem; color: var(--muted); margin-top: 3px; }
   .gcheck {
     position: absolute; top: 12px; right: 12px;
     width: 24px; height: 24px; border-radius: 50%;
@@ -369,12 +373,13 @@
     display: flex; align-items: center; justify-content: center;
   }
   .gcheck svg { width: 13px; height: 13px; }
-  .gstreak { font-size: 0.72rem; font-weight: 700; margin-top: 6px; }
+  .gstreak { font-size: 0.72rem; font-weight: 800; margin-top: 6px; }
   .gadd {
-    border: 1.5px dashed var(--faint);
+    border: 1.6px dashed var(--seg-line);
     background: none;
+    box-shadow: none;
     align-items: center; justify-content: center;
-    color: var(--muted); font-weight: 600; font-size: 0.88rem;
+    color: var(--muted); font-weight: 700; font-size: 0.88rem;
   }
   .gadd span { font-size: 1.6rem; line-height: 1; font-weight: 400; }
   .t-map { background: var(--mint-t); }
@@ -383,89 +388,93 @@
   .t-star, .t-square { background: var(--mint-t); }
   .t-bear, .t-cloud { background: var(--blue-t); }
   .t-heart, .t-flower { background: var(--pink-t); }
-  .section-label { font-weight: 700; font-size: 0.95rem; margin: 22px 2px 0; }
+  .section-label { font-family: var(--hand); font-weight: 700; font-size: 1.35rem; margin: 22px 2px 0; }
 
-  .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
-  .stat { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 14px; box-shadow: var(--shadow); }
-  .stat b { display: block; font-size: 1.5rem; font-weight: 800; letter-spacing: -0.02em; }
-  .stat span { font-size: 0.75rem; color: var(--muted); font-weight: 500; }
-  .delta { font-size: 0.75rem; font-weight: 700; margin-left: 4px; }
-  .delta.up { color: #3fa56b; }
-  .delta.down { color: #d9588f; }
+  .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px; }
+  .stat { background: var(--card); border: var(--border); border-radius: 12px; padding: 12px 14px; box-shadow: var(--shadow); }
+  .stat:nth-child(odd) { rotate: -0.5deg; }
+  .stat:nth-child(even) { rotate: 0.5deg; }
+  .stat b { display: block; font-family: var(--hand); font-size: 2rem; font-weight: 700; line-height: 1; }
+  .stat span { font-size: 0.75rem; color: var(--muted); font-weight: 600; }
+  .delta { font-family: var(--font); font-size: 0.75rem; font-weight: 800; margin-left: 4px; }
+  .delta.up { color: var(--good); }
+  .delta.down { color: var(--stamp); }
 
   /* ---- bottom sheet ---- */
   .sheet-back {
     position: fixed; inset: 0; z-index: 20;
-    background: rgba(18, 16, 24, 0.35);
+    background: rgba(18, 22, 36, 0.4);
     animation: fade 0.2s ease;
   }
   .sheet {
     position: fixed; left: 0; right: 0; bottom: 0; z-index: 21;
     max-width: 480px; margin: 0 auto;
     max-height: 88vh; overflow-y: auto;
-    background: var(--bg);
-    border-radius: 28px 28px 0 0;
+    background: var(--paper) var(--grid) 0 0 / 56px 56px;
+    border: var(--border); border-bottom: none;
+    border-radius: 22px 22px 0 0;
     padding: 10px 16px calc(24px + env(safe-area-inset-bottom));
     animation: up 0.32s cubic-bezier(0.22, 1, 0.36, 1);
     overscroll-behavior: contain;
   }
   .grab { width: 40px; height: 5px; border-radius: 999px; background: var(--faint); margin: 0 auto 12px; }
-  .sheet-hero { border-radius: 22px; padding: 18px; text-align: center; }
+  .sheet-hero { border-radius: 14px; padding: 18px; text-align: center; border: var(--border); box-shadow: var(--shadow); }
   .sheet-hero .blob { width: 96px; height: 96px; margin: -6px auto 2px; }
-  .sheet-hero h2 { font-size: 1.35rem; font-weight: 800; letter-spacing: -0.02em; }
+  .sheet-hero h2 { font-family: var(--hand); font-size: 1.9rem; font-weight: 700; line-height: 1.05; }
   .sheet-hero .bar { max-width: 220px; margin: 12px auto 0; }
   .entries { list-style: none; }
-  .entries li { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-top: 1px solid var(--line); }
+  .entries li { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-top: 1.5px dashed var(--line); }
   .entries li:first-child { border-top: none; }
-  .e-date { font-size: 0.72rem; color: var(--muted); font-weight: 600; min-width: 50px; }
+  .e-date { font-size: 0.72rem; color: var(--muted); font-weight: 700; min-width: 50px; }
   .e-text { flex: 1; min-width: 0; font-size: 0.9rem; overflow-wrap: anywhere; }
-  .tag { font-size: 0.68rem; font-weight: 700; border-radius: 999px; padding: 3px 8px; background: var(--seg); color: var(--muted); }
-  .danger { color: #d9588f; }
+  .tag { font-size: 0.68rem; font-weight: 800; border-radius: 999px; padding: 3px 8px; background: var(--chip-bg); color: var(--muted); }
+  .danger { color: var(--stamp); }
   @keyframes fade { from { opacity: 0; } }
   @keyframes up { from { transform: translateY(100%); } }
 
   /* ---- progress ---- */
-  .hero { border-radius: 24px; padding: 22px 18px 20px; text-align: center; background: var(--grad); margin-top: 12px; }
-  .hero .big { font-size: 3.4rem; font-weight: 800; letter-spacing: -0.04em; line-height: 1; margin-top: 8px; }
-  .hero .big-label { font-weight: 700; margin-top: 2px; }
+  .hero { border-radius: 14px; padding: 22px 18px 20px; text-align: center; background: var(--note); border: var(--border); box-shadow: var(--shadow); margin-top: 14px; rotate: -0.4deg; }
+  .hero .big { font-family: var(--hand); font-size: 4rem; font-weight: 700; line-height: 0.8; margin-top: 10px; }
+  .hero .big-label { font-weight: 800; margin-top: 4px; }
   .hero p { font-size: 0.8rem; color: var(--muted); max-width: 260px; margin: 6px auto 0; }
-  .chart-legend { display: flex; justify-content: center; gap: 16px; font-size: 0.75rem; color: var(--muted); font-weight: 600; margin-top: 6px; }
+  .chart-legend { display: flex; justify-content: center; gap: 16px; font-size: 0.75rem; color: var(--muted); font-weight: 700; margin-top: 6px; }
   .chart-legend i { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 5px; }
   .bar-row { display: flex; align-items: center; gap: 12px; padding: 9px 0; }
   .bar-row .name { flex: 1; font-size: 0.88rem; }
-  .bar-track { flex: 1; height: 8px; background: var(--seg); border-radius: 999px; overflow: hidden; }
+  .bar-track { flex: 1; height: 10px; background: transparent; border: 1.5px solid var(--seg-line); border-radius: 999px; overflow: hidden; }
   .bar-fill { display: block; height: 100%; border-radius: 999px; background: var(--mint); transition: width 0.8s cubic-bezier(0.22, 1, 0.36, 1); }
   .bar-fill.pink { background: var(--pink); }
-  .bar-fill.pink-lo { background: color-mix(in srgb, var(--pink) 45%, var(--seg)); }
-  .bar-row .pct { width: 42px; text-align: right; font-size: 0.85rem; font-weight: 700; }
+  .bar-fill.pink-lo { background: color-mix(in srgb, var(--pink) 45%, var(--card)); }
+  .bar-row .pct { width: 42px; text-align: right; font-size: 0.85rem; font-weight: 800; }
   .empty-note { color: var(--muted); font-size: 0.85rem; margin-top: 10px; }
 
   /* ---- reading back: journal + week story ---- */
-  .read-links { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+  .read-links { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 14px; }
   .read-link {
     text-align: left;
-    background: var(--card); border: 1px solid var(--line); border-radius: 18px;
-    padding: 14px; box-shadow: var(--shadow);
+    background: var(--card); border: var(--border); border-radius: 12px;
+    padding: 12px 14px; box-shadow: var(--shadow);
     transition: transform 0.12s ease;
   }
+  .read-link:first-child { rotate: 0.6deg; }
+  .read-link:last-child { rotate: -0.5deg; }
   .read-link:active { transform: scale(0.97); }
-  .read-link b { display: block; font-size: 0.92rem; font-weight: 700; }
-  .read-link span { font-size: 0.75rem; color: var(--muted); font-weight: 500; }
-  .story-day + .story-day { margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--line); }
+  .read-link b { display: block; font-family: var(--hand); font-size: 1.25rem; font-weight: 700; line-height: 1.1; }
+  .read-link span { font-size: 0.75rem; color: var(--muted); font-weight: 600; }
+  .story-day + .story-day { margin-top: 14px; padding-top: 14px; border-top: 1.5px dashed var(--line); }
   .story-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; flex-wrap: wrap; }
-  .story-date { font-weight: 700; font-size: 0.92rem; }
-  .story-scores { font-size: 0.7rem; font-weight: 700; color: var(--muted); background: var(--seg); border-radius: 999px; padding: 3px 9px; }
+  .story-date { font-family: var(--hand); font-weight: 700; font-size: 1.25rem; line-height: 1.1; }
+  .story-scores { font-size: 0.7rem; font-weight: 800; color: var(--muted); background: var(--chip-bg); border-radius: 999px; padding: 3px 9px; }
   .story-line { margin-top: 8px; }
-  .story-label { display: block; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--text); opacity: 0.7; }
+  .story-label { display: block; font-size: 0.68rem; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; color: var(--text); opacity: 0.7; }
   .story-text { display: block; font-size: 0.86rem; color: var(--muted); white-space: pre-wrap; overflow-wrap: anywhere; }
-  .story-gap .story-date { color: var(--muted); font-weight: 600; }
+  .story-gap .story-date { color: var(--muted); }
   .week-nav { display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: 4px; }
   .week-nav button {
-    background: rgba(255, 255, 255, 0.6); border: none; border-radius: 50%;
-    width: 36px; height: 36px; font-size: 1.1rem; font-weight: 700;
+    background: var(--card); border: 1.5px solid var(--outline); border-radius: 50%;
+    width: 36px; height: 36px; font-size: 1.1rem; font-weight: 800;
   }
   .week-nav button:disabled { opacity: 0.3; cursor: default; }
-  @media (prefers-color-scheme: dark) { .week-nav button { background: rgba(255, 255, 255, 0.1); } }
 
   /* ---- nav ---- */
   nav {
@@ -476,23 +485,23 @@
     display: flex; gap: 2px;
     width: calc(100% - 32px); max-width: 420px;
     background: var(--card);
-    border: 1px solid var(--line);
+    border: var(--border);
     border-radius: 999px;
-    padding: 5px;
-    box-shadow: 0 8px 30px rgba(23, 22, 27, 0.12);
+    padding: 4px;
+    box-shadow: var(--shadow);
   }
   nav button {
     flex: 1;
     background: none; border: none;
     border-radius: 999px;
-    padding: 11px 4px;
-    font-size: 0.8rem; font-weight: 600;
+    padding: 10px 4px;
+    font-size: 0.8rem; font-weight: 700;
     color: var(--muted);
     white-space: nowrap;
     transition: background-color 0.2s, color 0.2s;
   }
   nav button.on { background: var(--ink); color: var(--on-ink); }
-  .nav-dot { display: inline-block; width: 5px; height: 5px; border-radius: 50%; background: #3fa56b; margin-left: 4px; vertical-align: 2px; }
+  .nav-dot { display: inline-block; width: 5px; height: 5px; border-radius: 50%; background: var(--good); margin-left: 4px; vertical-align: 2px; }
 
   .toast {
     position: fixed;
@@ -502,10 +511,11 @@
     max-width: calc(100vw - 32px);
     background: var(--ink); color: var(--on-ink);
     padding: 10px 18px;
-    border-radius: 999px;
-    font-size: 0.85rem; font-weight: 600;
+    border-radius: 14px;
+    font-size: 0.85rem; font-weight: 700;
     text-align: center;
     text-wrap: balance;
+    box-shadow: var(--shadow);
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.25s, transform 0.25s cubic-bezier(0.34, 1.4, 0.64, 1);
@@ -526,7 +536,7 @@
   #view.enter { animation: rise 0.34s cubic-bezier(0.22, 1, 0.36, 1); }
   @keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
 
-  :focus-visible { outline: 2px solid var(--lav); outline-offset: 2px; }
+  :focus-visible { outline: 2px solid var(--pink); outline-offset: 2px; }
 
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { animation: none !important; transition: none !important; }
@@ -534,41 +544,6 @@
 </style>
 </head>
 <body>
-<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
-  <defs>
-    <!-- matte clay: shade along the bottom edge, light along the top, fine grain -->
-    <filter id="clay" x="-15%" y="-15%" width="130%" height="130%" color-interpolation-filters="sRGB">
-      <feOffset in="SourceAlpha" dx="-2" dy="-6" result="o1"/>
-      <feGaussianBlur in="o1" stdDeviation="5" result="b1"/>
-      <feComposite in="SourceAlpha" in2="b1" operator="out" result="rim1"/>
-      <feFlood flood-color="#3a2340" flood-opacity="0.2"/>
-      <feComposite in2="rim1" operator="in" result="shade"/>
-      <feOffset in="SourceAlpha" dx="2" dy="5" result="o2"/>
-      <feGaussianBlur in="o2" stdDeviation="4" result="b2"/>
-      <feComposite in="SourceAlpha" in2="b2" operator="out" result="rim2"/>
-      <feFlood flood-color="#ffffff" flood-opacity="0.5"/>
-      <feComposite in2="rim2" operator="in" result="light"/>
-      <feTurbulence type="fractalNoise" baseFrequency="1.4" numOctaves="2" seed="4" result="n"/>
-      <feColorMatrix in="n" type="matrix" values="0 0 0 0 0.3  0 0 0 0 0.25  0 0 0 0 0.2  0 0 0 0.07 0" result="nc"/>
-      <feComposite in="nc" in2="SourceAlpha" operator="in" result="grain"/>
-      <feMerge><feMergeNode in="SourceGraphic"/><feMergeNode in="shade"/><feMergeNode in="light"/><feMergeNode in="grain"/></feMerge>
-    </filter>
-    <filter id="clay-sm" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB">
-      <feOffset in="SourceAlpha" dx="-1" dy="-2.5" result="o1"/>
-      <feGaussianBlur in="o1" stdDeviation="2" result="b1"/>
-      <feComposite in="SourceAlpha" in2="b1" operator="out" result="rim1"/>
-      <feFlood flood-color="#3a2340" flood-opacity="0.22"/>
-      <feComposite in2="rim1" operator="in" result="shade"/>
-      <feOffset in="SourceAlpha" dx="1" dy="2" result="o2"/>
-      <feGaussianBlur in="o2" stdDeviation="1.6" result="b2"/>
-      <feComposite in="SourceAlpha" in2="b2" operator="out" result="rim2"/>
-      <feFlood flood-color="#ffffff" flood-opacity="0.5"/>
-      <feComposite in2="rim2" operator="in" result="light"/>
-      <feMerge><feMergeNode in="SourceGraphic"/><feMergeNode in="shade"/><feMergeNode in="light"/></feMerge>
-    </filter>
-    <filter id="clay-soft" x="-30%" y="-200%" width="160%" height="500%"><feGaussianBlur stdDeviation="3"/></filter>
-  </defs>
-</svg>
 <div id="app"><main id="view"></main></div>
 <nav>
   <button data-tab="morning">Morning</button>
@@ -588,225 +563,56 @@ const MOOD_WORDS = ["drained","rough","low","meh","okay","fine","good","bright",
 const STREAK_MILESTONES = [3, 7, 14, 21, 30, 50, 75, 100, 150, 200, 365];
 const GOAL_ICONS = new Set(["place", "food", "book", "star"]);
 
-// matte clay characters: soft shading and grain come from the shared #clay filter,
-// faces are small and simple, drawn crisp on top
-const PALETTE = {
-  lav:    { hi: "#c6bcf2", c: "#a99be3", lo: "#8e7fd0" },
-  purple: { hi: "#bfb2f0", c: "#a393e0", lo: "#8a78cf" },
-  yellow: { hi: "#fbe39a", c: "#f3cd69", lo: "#e2b24c" },
-  pink:   { hi: "#f8b7b5", c: "#ee9294", lo: "#dc7679" },
-  blue:   { hi: "#b9d0f3", c: "#95b5e6", lo: "#7897d4" },
-  green:  { hi: "#addbb8", c: "#8cc39c", lo: "#6fab82" },
-  orange: { hi: "#fbc39a", c: "#f4a46d", lo: "#e48952" },
-  cream:  { hi: "#fffdf8", c: "#f6f0e6", lo: "#e5dccd" },
-  mint:   { hi: "#b9e6c9", c: "#95d2ad", lo: "#75ba90" }
-};
-const INK = "#3b2b2e";
-const BLUSH = "#f2939f";
-const DECOR = { yellow: "#f5c84a", pink: "#f28a98", green: "#7fbf95", purple: "#9d8be0", blue: "#86b3ec" };
-
-const f1 = n => (+n).toFixed(1);
-// rounded dashes radiating from a point
-function burst(x, y, angles, color, r1 = 10, r2 = 18) {
-  return angles.map(a => {
-    const t = a * Math.PI / 180;
-    return `<path d="M${f1(x + Math.cos(t) * r1)} ${f1(y + Math.sin(t) * r1)} L${f1(x + Math.cos(t) * r2)} ${f1(y + Math.sin(t) * r2)}" stroke="${color}" stroke-width="4.5" stroke-linecap="round"/>`;
-  }).join("");
-}
-function heart(x, y, s, color) {
-  return `<path d="M${f1(x)} ${f1(y + s * 0.9)} C${f1(x - s * 1.3)} ${f1(y + s * 0.05)} ${f1(x - s * 0.75)} ${f1(y - s * 0.95)} ${f1(x)} ${f1(y - s * 0.25)} C${f1(x + s * 0.75)} ${f1(y - s * 0.95)} ${f1(x + s * 1.3)} ${f1(y + s * 0.05)} ${f1(x)} ${f1(y + s * 0.9)} Z" fill="${color}" filter="url(#clay-sm)"/>`;
-}
-function star5(x, y, r, color) {
-  let d = "";
-  for (let i = 0; i < 10; i++) {
-    const rr = i % 2 ? r * 0.48 : r, a = (i * 36 - 90) * Math.PI / 180;
-    d += (i ? "L" : "M") + f1(x + Math.cos(a) * rr) + " " + f1(y + Math.sin(a) * rr);
-  }
-  return `<path d="${d}Z" fill="${color}" stroke="${color}" stroke-width="${f1(r * 0.3)}" stroke-linejoin="round" filter="url(#clay-sm)"/>`;
-}
-function sparkle(x, y, r, color) {
-  return `<path d="M${f1(x)} ${f1(y - r)} Q${f1(x)} ${f1(y)} ${f1(x + r)} ${f1(y)} Q${f1(x)} ${f1(y)} ${f1(x)} ${f1(y + r)} Q${f1(x)} ${f1(y)} ${f1(x - r)} ${f1(y)} Q${f1(x)} ${f1(y)} ${f1(x)} ${f1(y - r)} Z" fill="${color}"/>`;
-}
-function tearDrop(x, y, s) {
-  return `<path d="M${f1(x)} ${f1(y - s)} Q${f1(x + s * 0.9)} ${f1(y + s * 0.3)} ${f1(x)} ${f1(y + s * 0.8)} Q${f1(x - s * 0.9)} ${f1(y + s * 0.3)} ${f1(x)} ${f1(y - s)} Z" fill="#8cc4f5"/>
-    <circle cx="${f1(x - s * 0.25)}" cy="${f1(y + s * 0.1)}" r="${f1(s * 0.2)}" fill="#fff" opacity="0.8"/>`;
-}
-
-// ---- faces: small, simple, widely spaced ----
-function faceSVG(o) {
-  const [cx, cy, s] = o.at;
-  const dx = 12 * s;
-  const S = n => f1(n * s);
-  const line = d => `<path d="${d}" fill="none" stroke="${INK}" stroke-width="${S(2.4)}" stroke-linecap="round" stroke-linejoin="round"/>`;
-  const dot = x => `<ellipse cx="${f1(x)}" cy="${f1(cy)}" rx="${S(2.6)}" ry="${S(3.4)}" fill="${INK}"/><circle cx="${f1(x - 0.8 * s)}" cy="${f1(cy - 1.2 * s)}" r="${S(0.8)}" fill="#fff" opacity="0.8"/>`;
-  const happy = x => line(`M${f1(x - 3.6 * s)} ${f1(cy + 1.2 * s)} Q${f1(x)} ${f1(cy - 3.8 * s)} ${f1(x + 3.6 * s)} ${f1(cy + 1.2 * s)}`);
-  const closed = x => line(`M${f1(x - 3.6 * s)} ${f1(cy - 0.6 * s)} Q${f1(x)} ${f1(cy + 3 * s)} ${f1(x + 3.6 * s)} ${f1(cy - 0.6 * s)}`);
-  const L = cx - dx, R = cx + dx;
-  let eyes;
-  switch (o.eyes) {
-    case "happy":  eyes = happy(L) + happy(R); break;
-    case "closed": eyes = closed(L) + closed(R); break;
-    case "wink":   eyes = dot(L) + line(`M${f1(R + 3.4 * s)} ${f1(cy - 3.2 * s)} L${f1(R - 2.6 * s)} ${f1(cy)} L${f1(R + 3.4 * s)} ${f1(cy + 3.2 * s)}`); break;
-    case "angry":  eyes = dot(L) + dot(R) + line(`M${f1(L - 4 * s)} ${f1(cy - 7 * s)} L${f1(L + 3.5 * s)} ${f1(cy - 4.5 * s)} M${f1(R + 4 * s)} ${f1(cy - 7 * s)} L${f1(R - 3.5 * s)} ${f1(cy - 4.5 * s)}`); break;
-    case "sad":    eyes = dot(L) + dot(R) + line(`M${f1(L - 3.5 * s)} ${f1(cy - 5 * s)} L${f1(L + 3 * s)} ${f1(cy - 7 * s)} M${f1(R + 3.5 * s)} ${f1(cy - 5 * s)} L${f1(R - 3 * s)} ${f1(cy - 7 * s)}`); break;
-    case "meh":    eyes = line(`M${f1(L - 3.4 * s)} ${f1(cy)} H${f1(L + 3.4 * s)} M${f1(R - 3.4 * s)} ${f1(cy)} H${f1(R + 3.4 * s)}`); break;
-    default:       eyes = dot(L) + dot(R);
-  }
-  const my = cy + 5 * s;
-  let mouth;
-  switch (o.mouth) {
-    case "open":
-      mouth = `<path d="M${f1(cx - 5 * s)} ${f1(my - 0.5 * s)} Q${f1(cx)} ${f1(my + 9 * s)} ${f1(cx + 5 * s)} ${f1(my - 0.5 * s)} Z" fill="#b8434c" stroke="${INK}" stroke-width="${S(1.6)}" stroke-linejoin="round"/>
-        <ellipse cx="${f1(cx)}" cy="${f1(my + 3.8 * s)}" rx="${S(2.6)}" ry="${S(1.6)}" fill="#f28a98"/>`;
-      break;
-    case "frown":  mouth = line(`M${f1(cx - 3.8 * s)} ${f1(my + 2.6 * s)} Q${f1(cx)} ${f1(my - 1.4 * s)} ${f1(cx + 3.8 * s)} ${f1(my + 2.6 * s)}`); break;
-    case "flat":   mouth = line(`M${f1(cx - 3 * s)} ${f1(my + 1 * s)} H${f1(cx + 3 * s)}`); break;
-    case "o":      mouth = `<ellipse cx="${f1(cx)}" cy="${f1(my + 1.2 * s)}" rx="${S(1.8)}" ry="${S(2.2)}" fill="${INK}"/>`; break;
-    default:       mouth = line(`M${f1(cx - 3.8 * s)} ${f1(my)} Q${f1(cx)} ${f1(my + 4 * s)} ${f1(cx + 3.8 * s)} ${f1(my)}`);
-  }
-  const blush = `<circle cx="${f1(cx - 19 * s)}" cy="${f1(cy + 5 * s)}" r="${S(4.6)}" fill="${BLUSH}" opacity="0.8"/>
-    <circle cx="${f1(cx + 19 * s)}" cy="${f1(cy + 5 * s)}" r="${S(4.6)}" fill="${BLUSH}" opacity="0.8"/>`;
-  return blush + eyes + mouth + (o.tear ? tearDrop(cx + 13 * s, cy + 8 * s, 5 * s) : "");
-}
-
-// ---- characters ----
-let blobSeq = 0;
-function grad(id, p) {
-  return `<radialGradient id="${id}" gradientUnits="userSpaceOnUse" cx="40" cy="30" r="80">
-    <stop offset="0" stop-color="${p.hi}"/><stop offset="0.55" stop-color="${p.c}"/><stop offset="1" stop-color="${p.lo}"/>
-  </radialGradient>`;
-}
-const FIGURES = {
-  // go somewhere new: a folded map with a route and a pin
-  map: {
-    face: null,
-    draw: id => {
-      const panels = "M8 26 L38 16 L64 28 L94 18 L94 80 L64 90 L38 78 L8 88 Z";
-      const inner = "M15 31 L38 23 L64 35 L87 27 L87 75 L64 83 L38 71 L15 81 Z";
-      return `<defs><clipPath id="${id}m"><path d="${inner}"/></clipPath></defs>
-        <g filter="url(#clay)">
-          <path d="${panels}" fill="#f5eee2" stroke="#f5eee2" stroke-width="6" stroke-linejoin="round"/>
-          <g clip-path="url(#${id}m)">
-            <rect x="0" y="0" width="100" height="100" fill="#8ec3e6"/>
-            <path d="M10 20 C 30 30, 40 44, 30 58 C 24 68, 34 76, 46 72 C 58 68, 62 52, 76 50 C 88 48, 96 40, 96 20 Z" fill="#94cc88"/>
-            <path d="M52 100 C 56 86, 70 80, 84 82 C 92 84, 98 90, 98 100 Z" fill="#94cc88"/>
-          </g>
-          <path d="M38 16 L38 78 M64 28 L64 90" stroke="#000" stroke-opacity="0.08" stroke-width="2"/>
-        </g>
-        <path d="M22 70 C 30 60, 44 66, 50 56 C 55 48, 62 46, 68 44" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-dasharray="4 5"/>
-        <g filter="url(#clay-sm)">
-          <path d="M70 46 C 64 38, 60 33, 60 28 A 10 10 0 1 1 80 28 C 80 33, 76 38, 70 46 Z" fill="#ec6f67"/>
-        </g>
-        <circle cx="70" cy="27.5" r="3.6" fill="#fff5ee"/>`;
-    },
-    decor: () => burst(90, 10, [-95, -45, 5], DECOR.yellow, 7, 15)
-  },
+// ---- goal doodles: flat ink drawings in the same navy as the character's line art ----
+const DOODLE_ART = {
+  // go somewhere new: a folded map with a dotted route and a pin
+  map: `<path d="M5 17 L23 11 L41 17 L59 11 L59 49 L41 55 L23 49 L5 55 Z" fill="var(--card)"/>
+    <path d="M23 11 V49 M41 17 V55"/>
+    <path d="M11 45 C17 37, 25 43, 31 35 C35 30, 40 31, 44 27" stroke-dasharray="3 4"/>
+    <path d="M49 29 C45 24, 43 21, 43 18 A6 6 0 1 1 55 18 C55 21, 53 24, 49 29 Z" fill="var(--pink)"/>
+    <circle cx="49" cy="18" r="2" fill="var(--outline)" stroke="none"/>`,
   // eat something new: a bowl of ramen with an egg and chopsticks
-  ramen: {
-    draw: id => `<defs>${grad(id, PALETTE.pink)}</defs>
-      <g filter="url(#clay-sm)">
-        <rect x="54" y="-2" width="6" height="58" rx="3" fill="#e8c48e" transform="rotate(38 57 27)"/>
-        <rect x="64" y="0" width="6" height="58" rx="3" fill="#dfb87f" transform="rotate(46 67 29)"/>
-      </g>
-      <g filter="url(#clay)">
-        <ellipse cx="50" cy="50" rx="42" ry="13" fill="#f6dc93"/>
-      </g>
-      <g fill="none" stroke="#e7c066" stroke-width="2.2" stroke-linecap="round">
-        <path d="M18 50 q 5 -5 10 0 t 10 0 t 10 0"/><path d="M52 54 q 5 -5 10 0 t 10 0"/><path d="M30 44 q 5 -4 10 0 t 10 0"/>
-      </g>
-      <g filter="url(#clay-sm)">
-        <ellipse cx="37" cy="47" rx="10" ry="6.5" fill="#fffaf0"/>
-        <circle cx="68" cy="45" r="7" fill="#fff4f4"/>
-      </g>
-      <circle cx="37" cy="47" r="4" fill="#f5b53f"/>
-      <path d="M68 45 m -3 0 a 3 3 0 1 1 3 3" fill="none" stroke="#f28a98" stroke-width="1.8" stroke-linecap="round"/>
-      <g fill="#8cc39c"><circle cx="54" cy="45" r="2.4"/><circle cx="58" cy="50" r="2"/><circle cx="26" cy="53" r="2"/></g>
-      <g filter="url(#clay)">
-        <path d="M6 50 C 6 78, 26 94, 50 94 C 74 94, 94 78, 94 50 Z" fill="url(#${id})"/>
-      </g>
-      <path d="M12 64 C 26 70, 74 70, 88 64" fill="none" stroke="#fff" stroke-opacity="0.45" stroke-width="3" stroke-linecap="round"/>`,
-    decor: () => `<g fill="none" stroke="#cfc3b0" stroke-width="3.2" stroke-linecap="round">
-        <path d="M30 32 q -5 -5 0 -10 q 4 -4 0 -9"/><path d="M44 28 q -5 -5 0 -10 q 4 -4 0 -9"/>
-      </g>`
-  },
-  // read a book: cover, spine grooves, pages and a ribbon
-  book: {
-    col: "purple",
-    under: () => `<g filter="url(#clay-sm)"><rect x="20" y="16" width="70" height="80" rx="11" fill="#f7f0e2"/></g>
-      <path d="M26 88 H84 M26 84 H84" stroke="#e2d8c4" stroke-width="1.6"/>
-      <g filter="url(#clay-sm)"><path d="M58 86 h10 v16 l-5 -4 l-5 4 z" fill="#f3c24c"/></g>`,
-    body: () => `<rect x="12" y="6" width="74" height="80" rx="12"/>`,
-    extra: () => `<g fill="none" stroke="#fff" stroke-opacity="0.35" stroke-width="2.4" stroke-linecap="round">
-        <path d="M18 24 q 5 3 0 7"/><path d="M18 44 q 5 3 0 7"/><path d="M18 64 q 5 3 0 7"/>
-      </g><path d="M26 8 V84" stroke="#000" stroke-opacity="0.08" stroke-width="2"/>`,
-    decor: () => burst(10, 8, [175, 225, 275], DECOR.yellow, 7, 15)
-  },
-  cloud: {
-    col: "cream",
-    body: () => `<circle cx="30" cy="62" r="20"/><circle cx="54" cy="46" r="27"/><circle cx="77" cy="62" r="18"/><rect x="10" y="56" width="84" height="30" rx="15"/>`,
-    decor: () => burst(92, 30, [-85, -35, 15], DECOR.yellow, 7, 15)
-  },
-  star: {
-    col: "mint",
-    body: () => {
-      let d = "";
-      for (let i = 0; i < 10; i++) {
-        const r = i % 2 ? 19 : 38, a = (i * 36 - 90) * Math.PI / 180;
-        d += (i ? "L" : "M") + f1(50 + Math.cos(a) * r) + " " + f1(56 + Math.sin(a) * r);
-      }
-      return `<path d="${d}Z" stroke-width="13" stroke-linejoin="round"/>`;
-    },
-    decor: () => burst(88, 22, [-80, -20], DECOR.yellow, 7, 15)
-  },
-  bear: {
-    col: "cream", face: { at: [50, 60, 1.2], eyes: "happy" },
-    body: () => `<circle cx="24" cy="32" r="13"/><circle cx="76" cy="32" r="13"/><circle cx="50" cy="60" r="33"/>`,
-    extra: () => `<circle cx="24" cy="32" r="6" fill="${BLUSH}" opacity="0.55"/><circle cx="76" cy="32" r="6" fill="${BLUSH}" opacity="0.55"/>`,
-    decor: () => heart(98, 14, 7, DECOR.pink)
-  },
-  heart: {
-    col: "pink",
-    body: () => `<path d="M50 90 C 28 74, 8 58, 8 38 C 8 22, 20 12, 33 12 C 42 12, 48 18, 50 24 C 52 18, 58 12, 67 12 C 80 12, 92 22, 92 38 C 92 58, 72 74, 50 90 Z" stroke-width="4" stroke-linejoin="round"/>`,
-    decor: () => sparkle(100, 14, 6, DECOR.yellow) + sparkle(-2, 30, 4, DECOR.yellow)
-  },
-  flower: {
-    col: "pink",
-    body: () => {
-      let s = "";
-      for (let i = 0; i < 6; i++) {
-        const a = (i * 60 - 90) * Math.PI / 180;
-        s += `<circle cx="${f1(50 + Math.cos(a) * 23)}" cy="${f1(56 + Math.sin(a) * 23)}" r="19"/>`;
-      }
-      return s + `<circle cx="50" cy="56" r="25"/>`;
-    },
-    decor: () => star5(100, 10, 7, DECOR.yellow)
-  }
+  ramen: `<path d="M36 4 L52 30 M43 3 L57 27"/>
+    <path d="M6 31 H58 C58 46, 47 57, 32 57 C17 57, 6 46, 6 31 Z" fill="var(--pink-t)"/>
+    <ellipse cx="32" cy="31" rx="26" ry="5" fill="var(--yellow-t)"/>
+    <ellipse cx="22" cy="30" rx="6" ry="3.4" fill="var(--card)"/>
+    <circle cx="22" cy="30" r="1.8" fill="var(--peach)" stroke="none"/>
+    <path d="M31 31 q3 -3 6 0 t6 0"/>
+    <path d="M14 43 H50" stroke-dasharray="2 4" opacity="0.6"/>
+    <path d="M18 21 q-3 -4 0 -8 M26 19 q-3 -4 0 -8" stroke-width="1.8" opacity="0.55"/>`,
+  // read a book: cover, spine, page edge and a ribbon
+  book: `<path d="M14 11 H50 A4 4 0 0 1 54 15 V51 A4 4 0 0 1 50 55 H14 Z" fill="var(--card)"/>
+    <rect x="10" y="7" width="40" height="46" rx="4" fill="var(--lav-t)"/>
+    <path d="M17 8 V52"/>
+    <rect x="24" y="17" width="19" height="8" rx="2" fill="var(--card)"/>
+    <path d="M38 53 V61 L41 58 L44 61 V53" fill="var(--pink)"/>`,
+  star: `<path d="M32 8 L38.5 22.6 L54.4 24.2 L42.4 34.8 L45.9 50.4 L32 42.4 L18.1 50.4 L21.6 34.8 L9.6 24.2 L25.5 22.6 Z" fill="var(--yellow-t)"/>
+    <path d="M44 9 l2 -4 M51 15 l4 -2" opacity="0.7"/>`,
+  heart: `<path d="M32 54 C15 43, 7 33, 10 23 C13 13, 27 12, 32 22 C37 12, 51 13, 54 23 C57 33, 49 43, 32 54 Z" fill="var(--pink-t)"/>
+    <path d="M18 24 Q19 19 24 18" opacity="0.6"/>`,
+  cloud: `<path d="M16 46 C8 46, 6 36, 13 33 C12 24, 22 19, 28 24 C31 15, 45 15, 47 25 C55 24, 59 33, 54 38 C59 42, 55 48, 49 46 Z" fill="var(--blue-t)"/>
+    <path d="M22 55 l-2 4 M32 55 l-2 4 M42 55 l-2 4" opacity="0.6"/>`,
+  flower: `<path d="M32 40 V60 M32 52 Q40 48 44 52" />
+    <g fill="var(--pink-t)"><circle cx="32" cy="14" r="8"/><circle cx="45" cy="23" r="8"/><circle cx="40" cy="37" r="8"/><circle cx="24" cy="37" r="8"/><circle cx="19" cy="23" r="8"/></g>
+    <circle cx="32" cy="27" r="7" fill="var(--yellow-t)"/>`,
+  bear: `<circle cx="17" cy="19" r="7" fill="var(--peach-t)"/><circle cx="47" cy="19" r="7" fill="var(--peach-t)"/>
+    <circle cx="32" cy="35" r="20" fill="var(--peach-t)"/>
+    <ellipse cx="32" cy="42" rx="7" ry="5" fill="var(--card)"/>
+    <ellipse cx="32" cy="40" rx="2.2" ry="1.6" fill="var(--outline)" stroke="none"/>
+    <circle cx="24.5" cy="32" r="1.9" fill="var(--outline)" stroke="none"/><circle cx="39.5" cy="32" r="1.9" fill="var(--outline)" stroke="none"/>`
 };
-
-function wrap(inner, shadowRx = 28) {
-  return `<svg class="blob" viewBox="-12 -12 124 124" aria-hidden="true">
-    <ellipse cx="50" cy="99" rx="${shadowRx}" ry="4.5" fill="#3a2a20" opacity="0.1" filter="url(#clay-soft)"/>
-    ${inner}
-  </svg>`;
+function doodleSVG(kind) {
+  return `<svg class="blob doodle" viewBox="0 0 64 64" aria-hidden="true" fill="none" stroke="var(--outline)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">${DOODLE_ART[kind] || DOODLE_ART.star}</svg>`;
 }
-// opts.decor = false leaves off the flourish (for tiny sizes)
-function blobSVG(kind, mood = 8, opts = {}) {
-  const f = FIGURES[kind] || FIGURES.flower;
-  const id = "cl" + (blobSeq++);
-  let inner;
-  if (f.draw) {
-    inner = f.draw(id);
-  } else {
-    const p = PALETTE[f.col];
-    // only the bear has a face; a low mood takes its smile off
-    const face = f.face && (mood <= 4 ? { ...f.face, eyes: "sad", mouth: "frown" } : f.face);
-    inner = `<defs>${grad(id, p)}</defs>
-      ${f.under ? f.under(p) : ""}
-      <g fill="url(#${id})" stroke="url(#${id})" filter="url(#clay)">${f.body()}</g>
-      ${f.extra ? f.extra(p) : ""}
-      ${face ? faceSVG(face) : ""}`;
-  }
-  return wrap(inner + (opts.decor === false || !f.decor ? "" : f.decor()));
+
+// the streak as a rubber stamp (faded until today is in, via CSS)
+function stampSVG(n) {
+  const size = n > 99 ? 12 : n > 9 ? 15 : 17;
+  return `<svg class="stamp" viewBox="0 0 48 48" aria-hidden="true"><g transform="rotate(-10 24 24)" fill="none" stroke="var(--stamp)" stroke-width="2.4">
+    <circle cx="24" cy="24" r="21"/><circle cx="24" cy="24" r="16.5" stroke-width="1.1" stroke-dasharray="2 2.6"/>
+    <text x="24" y="28.5" text-anchor="middle" fill="var(--stamp)" stroke="none" font-family="'Courier Prime', 'Courier New', monospace" font-weight="700" font-size="${size}">${n}</text>
+    <text x="24" y="36.5" text-anchor="middle" fill="var(--stamp)" stroke="none" font-family="'Courier Prime', 'Courier New', monospace" font-weight="700" font-size="5.4" letter-spacing="1">${n === 1 ? "DAY" : "DAYS"}</text>
+  </g></svg>`;
 }
 
 // ---- the mascot: one character, drawn as a sticker sheet (chars/*.webp) ----
@@ -1215,10 +1021,8 @@ function scaleHTML(id, label, value, withMood, ends) {
   const below = withMood
     ? `<div class="seg-ends mood-ends"><span>Drained</span><span class="mood-word ${value ? "" : "empty"}">${value ? moodWord(value) : "slide to pick"}</span><span>Radiant</span></div>`
     : ends ? `<div class="seg-ends"><span>${ends[0]}</span><span>${ends[1]}</span></div>` : "";
-  const face = withMood ? moodFace() : "";
   return `<div class="scale" data-scale-id="${id}">
-    <div class="scale-head${withMood ? " mood-head" : ""}">
-      ${withMood ? `<span class="mood-slot" data-expr="${face}">${charHTML(face)}</span>` : ""}
+    <div class="scale-head">
       <span class="scale-label">${label}</span>
       <span class="scale-val ${value === null ? "empty" : ""}">${value === null ? "–" : value}</span>
     </div>
@@ -1312,9 +1116,13 @@ function moodFace() {
   const m = state.days[todayKey()]?.morning;
   return exprFor(m?.mood, { idle: "coffee", tired: smallHours() || (m?.sleep != null && m.sleep < 4) });
 }
+function perchHTML() {
+  const face = moodFace();
+  return `<span class="perch" data-expr="${face}">${charHTML(face)}</span>`;
+}
 // swap the face in place, with a little squish, only when it actually changes
 function paintFace() {
-  const slot = view.querySelector(".mood-slot");
+  const slot = view.querySelector(".perch");
   if (!slot) return;
   const face = moodFace();
   if (slot.dataset.expr === face) return;
@@ -1329,7 +1137,7 @@ const pillSig = () => `${currentStreak()}|${dayFilled(todayKey())}`;
 function pillHTML(pop) {
   const cur = currentStreak();
   const done = dayFilled(todayKey());
-  return `<button class="streak-pill ${done ? "lit" : ""} ${pop ? "pop" : ""}" data-goto="progress" aria-label="${cur} day streak">${blobSVG("flower", 5, { decor: false })}<b>${cur}</b></button>`;
+  return `<button class="streak-stamp ${done ? "lit" : ""} ${pop ? "pop" : ""}" data-goto="progress" aria-label="${cur} day streak${done ? "" : ", not checked in today"}">${stampSVG(cur)}</button>`;
 }
 // repaint the header pill only when the streak changed
 function paintPill(pop) {
@@ -1356,7 +1164,7 @@ function weekHTML() {
   }
   const cur = currentStreak();
   const hint = dayFilled(today) ? "" : cur ? `Check in today to keep your ${cur}-day streak` : "Check in today to start a streak";
-  return `<section class="card">
+  return `<section class="card"><span class="tape" aria-hidden="true"></span>
     <div class="card-head"><span class="card-title">This week</span><span class="card-sub">${n} of 7</span></div>
     <div class="week">${cells}</div>
     ${hint ? `<div class="hint">${hint}</div>` : ""}
@@ -1397,7 +1205,7 @@ function nudgeHTML() {
       <div class="nudge-sub">${n} of ${g.target} this ${g.period}${more ? ` · ${more} more goal${more > 1 ? "s" : ""} to go` : ""}</div>
       <div class="bar"><i style="width:${Math.round(100 * n / g.target)}%"></i></div>
     </div>
-    ${blobSVG(kindFor(g), 7)}
+    ${doodleSVG(kindFor(g))}
   </button>`;
 }
 
@@ -1443,7 +1251,7 @@ function renderMorning() {
     ${topHTML("Good morning", prettyDate(key), !!m.savedAt)}
     <div id="week-slot">${weekHTML()}</div>
     ${nudgeHTML()}
-    <section class="card">
+    <section class="card has-perch">${perchHTML()}
       ${scaleHTML("sleep", "Sleep", m.sleep, false, ["Restless", "Deep"])}
       ${scaleHTML("mood", "Mood", m.mood, true)}
       ${scaleHTML("body", "Body", m.body, false, ["Aching", "Strong"])}
@@ -1512,7 +1320,7 @@ function renderEvening() {
     <div id="week-slot">${weekHTML()}</div>
     ${nudgeHTML()}
     ${summary}
-    <section class="card">
+    <section class="card has-perch">${perchHTML()}
       <div class="card-head" style="margin-bottom:12px"><span class="card-title">How are you now?</span></div>
       ${scaleHTML("mood", "Mood", ev.mood, true)}
       ${scaleHTML("body", "Body", ev.body, false, ["Aching", "Strong"])}
@@ -1666,7 +1474,7 @@ function renderGoals() {
     const kind = kindFor(g);
     return `<button class="gcard t-${kind}" data-open="${esc(g.id)}">
       ${met ? `<span class="gcheck">${CHECK}</span>` : ""}
-      ${blobSVG(kind, met ? 10 : 7)}
+      ${doodleSVG(kind)}
       <div class="gtitle">${esc(cap(g.title))}</div>
       <div class="gmeta">${met ? `Done this ${g.period}` : `${n} of ${g.target} · ${periodLeft(g)}`}</div>
       ${streak ? `<div class="gstreak">${streak}-${unit(g, 1)} streak</div>` : ""}
@@ -1756,7 +1564,7 @@ function goalSheetHTML() {
 
   return `
     <div class="sheet-hero t-${kind}">
-      ${blobSVG(kind, met ? 10 : 7)}
+      ${doodleSVG(kind)}
       <h2>${esc(cap(g.title))}</h2>
       <div class="card-sub">${g.period === "month" ? "Monthly" : "Weekly"}${g.target > 1 ? ` · ${g.target} times` : ""} · ${met ? `done this ${g.period}` : periodLeft(g)} · ${streakTxt}</div>
       <div class="bar"><i style="width:${Math.min(100, Math.round(100 * n / g.target))}%"></i></div>
@@ -1844,7 +1652,7 @@ function addSheetHTML() {
   const existing = new Set(state.goals.map(g => g.title.toLowerCase()));
   const ideas = GOAL_IDEAS.filter(i => !existing.has(i.title.toLowerCase()));
   return `
-    <div class="sheet-hero" style="background:var(--grad-soft)">
+    <div class="sheet-hero" style="background:var(--note-soft)">
       ${charHTML("thinking")}
       <h2>Add a goal</h2>
       <div class="card-sub">Something small you'd like to do again and again</div>
@@ -1964,7 +1772,7 @@ function journalSheetHTML() {
   const keys = journalKeys();
   const shown = keys.slice(0, sheet.limit);
   return `
-    <div class="sheet-hero" style="background:var(--grad-soft)">
+    <div class="sheet-hero" style="background:var(--note-soft)">
       ${charHTML(keys.length ? "flustered" : "away")}
       <h2>Journal</h2>
       <div class="card-sub">${keys.length ? `${keys.length} ${keys.length === 1 ? "day" : "days"} in your own words` : "Nothing written yet"}</div>
@@ -1998,7 +1806,7 @@ function weekSheetHTML() {
   const face = moods.length ? exprFor(Math.round(avg(moods))) : written.length ? "thinking" : "away";
   const range = `${shortDate(start, true)} – ${shortDate(end, true)}`;
   return `
-    <div class="sheet-hero" style="background:var(--grad-soft)">
+    <div class="sheet-hero" style="background:var(--note-soft)">
       ${charHTML(face)}
       <h2>${sheet.offset === 0 ? "This week's story" : sheet.offset === -1 ? "Last week's story" : "Week in review"}</h2>
       <div class="week-nav">
