@@ -116,11 +116,10 @@
     box-shadow: var(--shadow);
     flex: none;
   }
-  .streak-pill .blob { width: 54px; height: 54px; margin: -12px -2px -9px -6px; }
+  .streak-pill .blob { width: 36px; height: 36px; margin: -3px -2px; }
   .streak-pill b { font-size: 1rem; font-weight: 800; }
-  .streak-pill:not(.lit) b { color: var(--muted); }
+  .streak-pill:not(.lit) .blob { filter: grayscale(0.9) opacity(0.55); }
   .streak-pill.pop .blob { animation: boing 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); }
-  .streak-pill.squish .blob { animation: squish 0.45s cubic-bezier(0.34, 1.56, 0.64, 1); }
   @keyframes boing {
     0% { transform: scale(0.6) rotate(-12deg); }
     60% { transform: scale(1.25) rotate(6deg); }
@@ -213,6 +212,12 @@
     55% { transform: scale(0.95, 1.07); }
     100% { transform: none; }
   }
+  /* the character sits by the mood slider and reacts as you slide */
+  .mood-head { justify-content: flex-start; align-items: center; gap: 10px; }
+  .mood-head .scale-label { flex: 1; }
+  .mood-slot { flex: none; width: 84px; height: 84px; margin: -16px -2px -12px -10px; }
+  .mood-slot .blob { width: 100%; height: 100%; }
+  .mood-slot.squish { animation: squish 0.45s cubic-bezier(0.34, 1.56, 0.64, 1); }
   /* the live mood word sits under the slider, between the two ends */
   .mood-ends { align-items: baseline; }
   .mood-word { font-size: 0.85rem; font-weight: 700; color: var(--text); }
@@ -828,12 +833,12 @@ function exprFor(mood, { idle = "neutral", tired = false } = {}) {
 // after midnight and before 7am
 const smallHours = () => new Date().getHours() < 7;
 
-// a short-lived face after something happens (a slip, a milestone, a goal done)
+// a short-lived face after something happens (a slip, a milestone, a blank check-in)
 let reaction = null;
 function react(expr, ms = 1800) {
   reaction = expr;
   clearTimeout(react._t);
-  react._t = setTimeout(() => { reaction = null; paintPill(); }, ms);
+  react._t = setTimeout(() => { reaction = null; paintFace(); }, ms);
 }
 const CHECK = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 12.5l4 4 8-9" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 
@@ -1210,8 +1215,10 @@ function scaleHTML(id, label, value, withMood, ends) {
   const below = withMood
     ? `<div class="seg-ends mood-ends"><span>Drained</span><span class="mood-word ${value ? "" : "empty"}">${value ? moodWord(value) : "slide to pick"}</span><span>Radiant</span></div>`
     : ends ? `<div class="seg-ends"><span>${ends[0]}</span><span>${ends[1]}</span></div>` : "";
+  const face = withMood ? moodFace() : "";
   return `<div class="scale" data-scale-id="${id}">
-    <div class="scale-head">
+    <div class="scale-head${withMood ? " mood-head" : ""}">
+      ${withMood ? `<span class="mood-slot" data-expr="${face}">${charHTML(face)}</span>` : ""}
       <span class="scale-label">${label}</span>
       <span class="scale-val ${value === null ? "empty" : ""}">${value === null ? "–" : value}</span>
     </div>
@@ -1295,9 +1302,9 @@ function wireScales(model, onChange) {
 function moodWord(v) { return v ? MOOD_WORDS[v - 1] : ""; }
 
 // ---------- shared pieces: header pill, week card, up-next card ----------
-// the header character: coffee in the morning, cozy in the evening, then
-// whatever the mood slider says
-function headerExpression() {
+// the character by the mood slider: coffee in the morning, cozy in the evening,
+// then whatever the slider says (or a short reaction to what you just tapped)
+function moodFace() {
   if (reaction) return reaction;
   if (tab === "evening") {
     return exprFor(state.days[eveningKey()]?.evening?.mood, { idle: "cozy", tired: smallHours() });
@@ -1305,24 +1312,34 @@ function headerExpression() {
   const m = state.days[todayKey()]?.morning;
   return exprFor(m?.mood, { idle: "coffee", tired: smallHours() || (m?.sleep != null && m.sleep < 4) });
 }
-const pillSig = () => `${currentStreak()}|${dayFilled(todayKey())}|${headerExpression()}`;
+// swap the face in place, with a little squish, only when it actually changes
+function paintFace() {
+  const slot = view.querySelector(".mood-slot");
+  if (!slot) return;
+  const face = moodFace();
+  if (slot.dataset.expr === face) return;
+  slot.dataset.expr = face;
+  slot.innerHTML = charHTML(face);
+  slot.classList.remove("squish");
+  void slot.offsetWidth;
+  slot.classList.add("squish");
+}
+
+const pillSig = () => `${currentStreak()}|${dayFilled(todayKey())}`;
 function pillHTML(pop) {
   const cur = currentStreak();
   const done = dayFilled(todayKey());
-  return `<button class="streak-pill ${done ? "lit" : ""} ${pop ? "pop" : ""}" data-goto="progress" aria-label="${cur} day streak">${charHTML(headerExpression())}<b>${cur}</b></button>`;
+  return `<button class="streak-pill ${done ? "lit" : ""} ${pop ? "pop" : ""}" data-goto="progress" aria-label="${cur} day streak">${blobSVG("flower", 5, { decor: false })}<b>${cur}</b></button>`;
 }
-// repaint the header pill only when something on it changed; returns whether it did
+// repaint the header pill only when the streak changed
 function paintPill(pop) {
   const slot = view.querySelector("#pill-slot");
-  if (!slot) return false;
+  if (!slot) return;
   const sig = pillSig();
-  if (!pop && slot.dataset.sig === sig) return false;
-  const prevExpr = (slot.dataset.sig || "").split("|")[2];
+  if (!pop && slot.dataset.sig === sig) return;
   slot.innerHTML = pillHTML(pop);
   slot.dataset.sig = sig;
-  if (!pop && prevExpr && prevExpr !== sig.split("|")[2]) slot.firstElementChild.classList.add("squish");
   wireShared(slot);
-  return true;
 }
 
 function weekHTML() {
@@ -1394,6 +1411,7 @@ function wireShared(root) {
 function refreshChrome(pop) {
   updateNavDots();
   paintPill(pop);
+  paintFace();
   const week = view.querySelector("#week-slot");
   if (week) week.innerHTML = weekHTML();
 }
@@ -1441,7 +1459,7 @@ function renderMorning() {
   view.querySelector("#intention").oninput = e => { m.intention = e.target.value; onChange(); };
   view.querySelector("#done-morning").onclick = e => {
     pulse(e.currentTarget);
-    if (!morningFilled(m)) { react("annoyed"); paintPill(); toast(pick(EMPTY_TOASTS)); return; }
+    if (!morningFilled(m)) { react("annoyed"); paintFace(); toast(pick(EMPTY_TOASTS)); return; }
     tick();
     doneToast("morning");
   };
@@ -1585,7 +1603,7 @@ function renderEvening() {
   view.querySelector("#honest").oninput = e => { ev.honest = e.target.value; onChange(); };
   view.querySelector("#done-evening").onclick = e => {
     pulse(e.currentTarget);
-    if (!eveningFilled(ev)) { react("annoyed"); paintPill(); toast(pick(EMPTY_TOASTS)); return; }
+    if (!eveningFilled(ev)) { react("annoyed"); paintFace(); toast(pick(EMPTY_TOASTS)); return; }
     // the day toggle marks days that already have an evening saved
     const tabBtn = view.querySelector(`[data-day="${eveningOffset}"]`);
     if (tabBtn && !tabBtn.querySelector(".mark")) tabBtn.insertAdjacentHTML("beforeend", `<span class="mark"></span>`);
@@ -2338,6 +2356,10 @@ if (hour < 5) {
 } else {
   setTab(hour >= 17 ? "evening" : "morning");
 }
+
+// warm up every face once the first screen is drawn, so swapping is instant
+const facePreload = [];
+setTimeout(() => CHAR_FACES.forEach(n => { const i = new Image(); i.src = `chars/${n}.webp`; facePreload.push(i); }), 300);
 
 const isSecureHost = location.protocol === "https:" || location.hostname === "localhost" || location.hostname === "127.0.0.1";
 if ("serviceWorker" in navigator && isSecureHost) {
