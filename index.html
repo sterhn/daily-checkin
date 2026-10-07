@@ -130,6 +130,31 @@
   .polaroid .ph .blob { width: 124px; height: 124px; margin-bottom: -7px; flex: none; transform-origin: 50% 100%; }
   .polaroid .ph.squish .blob { animation: squish 0.45s cubic-bezier(0.34, 1.56, 0.64, 1); }
   .polaroid .cap { font-family: var(--hand); font-weight: 700; font-size: 1.35rem; line-height: 1.2; min-height: 1.2em; text-align: center; color: #26304a; padding-top: 3px; }
+  .polaroid .cap.wisp { animation: wisp 0.35s ease; }
+  .polaroid[data-poke] { cursor: pointer; }
+  /* poke him: the photo wiggles */
+  .polaroid.wiggle { animation: wiggle 0.5s ease; }
+  @keyframes wiggle { 25% { transform: rotate(-5deg) scale(1.03); } 50% { transform: rotate(4deg); } 75% { transform: rotate(-2deg); } }
+  /* instant film: the photo develops out of white the first time it shows up */
+  .polaroid .ph.develop { animation: develop-bg 1.8s ease-out both; }
+  .polaroid .ph.develop .blob { animation: develop 1.8s ease-out both; }
+  @keyframes develop-bg { from { background-color: #f4f1ea; } }
+  @keyframes develop {
+    from { opacity: 0.15; filter: brightness(1.9) saturate(0) blur(2px); }
+    55% { opacity: 0.8; filter: brightness(1.25) saturate(0.5) blur(0.5px); }
+    to { opacity: 1; filter: none; }
+  }
+  /* a small copy that peeks in when the real one is scrolled away */
+  .polaroid.peek {
+    position: fixed; z-index: 25; right: 18px; bottom: calc(140px + env(safe-area-inset-bottom));
+    width: 106px; margin: 0; padding: 6px 6px 2px; rotate: 6deg;
+    transform: translateY(170%); opacity: 0; pointer-events: none;
+    transition: transform 0.4s cubic-bezier(0.34, 1.4, 0.64, 1), opacity 0.2s;
+  }
+  .polaroid.peek.show { transform: none; opacity: 1; }
+  .polaroid.peek .ph { height: 84px; }
+  .polaroid.peek .ph .blob { width: 96px; height: 96px; margin-bottom: -5px; }
+  .polaroid.peek .cap { font-size: 1.05rem; }
   .wdots { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 10px; }
   .wdot {
     width: 22px; height: 22px; border-radius: 50%; flex: none;
@@ -427,6 +452,12 @@
   .hero { border-radius: 14px; padding: 22px 18px 20px; text-align: center; background: var(--note); border: var(--border); box-shadow: var(--shadow); margin-top: 14px; rotate: -0.4deg; }
   .hero .stamp { display: block; width: 120px; height: 120px; margin: 0 auto; overflow: visible; }
   .hero:not(.lit) .stamp { opacity: 0.38; filter: grayscale(1); }
+  .hero.slam .stamp { animation: slam 0.55s cubic-bezier(0.3, 1.5, 0.6, 1) 0.18s both; }
+  @keyframes slam {
+    from { transform: scale(2.4) rotate(-28deg); opacity: 0; }
+    55% { transform: scale(0.88) rotate(2deg); opacity: 1; }
+    to { transform: none; opacity: 1; }
+  }
   .hero .big-label { font-weight: 800; margin-top: 6px; }
   .hero p { font-size: 0.8rem; color: var(--muted); max-width: 260px; margin: 6px auto 0; }
   .chart-legend { display: flex; justify-content: center; gap: 16px; font-size: 0.75rem; color: var(--muted); font-weight: 700; margin-top: 6px; }
@@ -453,10 +484,19 @@
   .read-link:active { transform: scale(0.97); }
   .read-link b { display: block; font-family: var(--hand); font-size: 1.25rem; font-weight: 700; line-height: 1.1; }
   .read-link span { font-size: 0.75rem; color: var(--muted); font-weight: 600; }
+  .story-day { display: flex; gap: 14px; align-items: flex-start; }
   .story-day + .story-day { margin-top: 14px; padding-top: 14px; border-top: 1.5px dashed var(--line); }
+  .story-body { flex: 1; min-width: 0; }
   .story-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; flex-wrap: wrap; }
-  .story-date { font-family: var(--hand); font-weight: 700; font-size: 1.25rem; line-height: 1.1; }
-  .story-scores { font-size: 0.7rem; font-weight: 800; color: var(--muted); background: var(--chip-bg); border-radius: 999px; padding: 3px 9px; }
+  .story-date { font-family: var(--hand); font-weight: 700; font-size: 1.3rem; line-height: 1.1; }
+  .story-scores { display: inline-block; margin-top: 4px; font-size: 0.7rem; font-weight: 800; color: var(--muted); background: var(--chip-bg); border-radius: 999px; padding: 3px 9px; }
+  .mini-pol { flex: none; width: 66px; background: var(--polaroid); border: 1.4px solid var(--outline); box-shadow: 2px 2px 0 rgba(43, 53, 80, 0.12); padding: 4px 4px 1px; rotate: -3deg; margin-top: 2px; }
+  .story-day:nth-child(even) .mini-pol, .card:nth-of-type(even) .mini-pol { rotate: 2.5deg; }
+  .mini-pol .ph { height: 54px; background: var(--photo); display: flex; align-items: flex-end; justify-content: center; overflow: hidden; }
+  .mini-pol .ph .blob { width: 62px; height: 62px; margin-bottom: -4px; flex: none; }
+  .mini-pol .cap { font-family: var(--hand); font-weight: 700; font-size: 0.9rem; line-height: 1.25; text-align: center; color: #26304a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .jmonth { font-family: var(--hand); font-weight: 700; font-size: 1.5rem; margin: 22px 4px -2px; }
+  .sheet-hero .hero-pol { margin: 6px auto 12px; }
   .story-line { margin-top: 8px; }
   .story-label { display: block; font-size: 0.68rem; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; color: var(--text); opacity: 0.7; }
   .story-text { display: block; font-size: 0.86rem; color: var(--muted); white-space: pre-wrap; overflow-wrap: anywhere; }
@@ -525,8 +565,14 @@
     to { transform: translate(var(--dx), var(--dy)) rotate(260deg); opacity: 0; }
   }
 
-  #view.enter { animation: rise 0.34s cubic-bezier(0.22, 1, 0.36, 1); }
-  @keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+  #view.enter > * { animation: deal 0.42s cubic-bezier(0.22, 1, 0.36, 1) both; }
+  #view.enter > :nth-child(2) { animation-delay: 0.04s; }
+  #view.enter > :nth-child(3) { animation-delay: 0.08s; }
+  #view.enter > :nth-child(4) { animation-delay: 0.12s; }
+  #view.enter > :nth-child(5) { animation-delay: 0.16s; }
+  #view.enter > :nth-child(6) { animation-delay: 0.2s; }
+  #view.enter > :nth-child(n+7) { animation-delay: 0.24s; }
+  @keyframes deal { from { opacity: 0; transform: translateY(18px) scale(0.98); } to { opacity: 1; transform: none; } }
 
   :focus-visible { outline: 2px solid var(--pink); outline-offset: 2px; }
 
@@ -632,11 +678,14 @@ function exprFor(mood, { idle = "neutral", tired = false } = {}) {
 const smallHours = () => new Date().getHours() < 7;
 
 // a short-lived face after something happens (a slip, a milestone, a blank check-in)
-let reaction = null;
-function react(expr, ms = 1800) {
+let reaction = null, reactionCaption = null;
+function react(expr, ms = 1800, caption) {
   reaction = expr;
+  reactionCaption = caption || null;
   clearTimeout(react._t);
-  react._t = setTimeout(() => { reaction = null; paintFace(); }, ms);
+  react._t = setTimeout(() => { reaction = reactionCaption = null; paintFace(); }, ms);
+  // after whatever re-render this tap causes, make sure the reaction is actually seen
+  requestAnimationFrame(() => peekFace(ms));
 }
 const CHECK = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 12.5l4 4 8-9" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 
@@ -1114,14 +1163,18 @@ const FACE_CAPTIONS = {
   annoyed: "hey.", surprised: "whoa", great: "yay!", proud: "did it"
 };
 function moodCaption() {
-  if (reaction) return FACE_CAPTIONS[reaction] || "";
+  if (reaction) return reactionCaption || FACE_CAPTIONS[reaction] || "";
   const mood = tab === "evening" ? state.days[eveningKey()]?.evening?.mood : state.days[todayKey()]?.morning?.mood;
   return mood != null ? moodWord(mood) : FACE_CAPTIONS[moodFace()] || "";
 }
+// the photo develops like instant film the first time it appears after opening the app
+let developed = false;
 function polaroidHTML() {
   const face = moodFace();
-  return `<div class="polaroid" data-face="${face}"><span class="tape" aria-hidden="true"></span>
-    <div class="ph">${charHTML(face)}</div><div class="cap">${esc(moodCaption())}</div></div>`;
+  const develop = developed ? "" : " develop";
+  developed = true;
+  return `<div class="polaroid" data-face="${face}" data-poke role="button" tabindex="0" aria-label="poke him"><span class="tape" aria-hidden="true"></span>
+    <div class="ph${develop}">${charHTML(face)}</div><div class="cap">${esc(moodCaption())}</div></div>`;
 }
 // swap the face in place, with a little squish, only when it actually changes
 function paintFace() {
@@ -1129,15 +1182,57 @@ function paintFace() {
   if (!pol) return;
   const caption = moodCaption();
   const capEl = pol.querySelector(".cap");
-  if (capEl.textContent !== caption) capEl.textContent = caption;
+  if (capEl.textContent !== caption) {
+    capEl.textContent = caption;
+    restart(capEl, "wisp");
+  }
   const face = moodFace();
   if (pol.dataset.face === face) return;
   pol.dataset.face = face;
   const ph = pol.querySelector(".ph");
+  ph.classList.remove("develop");
   ph.innerHTML = charHTML(face);
-  ph.classList.remove("squish");
-  void ph.offsetWidth;
-  ph.classList.add("squish");
+  restart(ph, "squish");
+}
+// replay a one-shot CSS animation
+function restart(el, cls) {
+  el.classList.remove(cls);
+  void el.offsetWidth;
+  el.classList.add(cls);
+}
+
+// when the polaroid is scrolled away (or covered by a sheet), a little copy of it
+// slides in at the bottom corner for a moment, so a reaction is never missed
+function peekFace(ms = 1800) {
+  if (!reaction) return;
+  const pol = view.querySelector(".polaroid");
+  if (pol && !sheet) {
+    const r = pol.getBoundingClientRect();
+    if (r.bottom > 60 && r.top < innerHeight - 140) return;
+  }
+  let el = document.getElementById("peek");
+  if (!el) {
+    el = document.createElement("div");
+    el.id = "peek";
+    el.className = "polaroid peek";
+    el.setAttribute("aria-hidden", "true");
+    document.body.appendChild(el);
+  }
+  el.innerHTML = `<div class="ph">${charHTML(reaction)}</div><div class="cap">${esc(moodCaption())}</div>`;
+  restart(el, "show");
+  clearTimeout(peekFace._t);
+  peekFace._t = setTimeout(() => el.classList.remove("show"), Math.max(1400, ms - 200));
+}
+
+// tap the polaroid and he reacts
+const POKES = [["nice", "hey you"], ["surprised", "boop!"], ["great", "hi hi"], ["flustered", "stop it"], ["happy", "hehe"]];
+function poke() {
+  const [face, caption] = pick(POKES);
+  react(face, 1500, caption);
+  paintFace();
+  const pol = view.querySelector(".polaroid");
+  if (pol) restart(pol, "wiggle");
+  tick();
 }
 
 // this week as a row of dots under the greeting; `pop` bounces today's dot when it fills
@@ -1191,6 +1286,10 @@ function nudgeHTML() {
 function wireShared(root) {
   root.querySelectorAll("[data-goto]").forEach(b => b.onclick = () => setTab(b.dataset.goto));
   root.querySelectorAll("[data-open]").forEach(b => b.onclick = () => openSheet({ type: "goal", id: b.dataset.open }));
+  root.querySelectorAll("[data-poke]").forEach(p => {
+    p.onclick = poke;
+    p.onkeydown = e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); poke(); } };
+  });
 }
 
 // after a save: update the streak bits without re-rendering the form
@@ -1233,8 +1332,8 @@ function renderMorning() {
     ${topHTML("Good morning", prettyDate(key), !!m.savedAt)}
     <section class="card">
       ${scaleHTML("sleep", "Sleep", m.sleep, false, ["Restless", "Deep"])}
-      ${scaleHTML("mood", "Mood", m.mood, true)}
       ${scaleHTML("body", "Body", m.body, false, ["Aching", "Strong"])}
+      ${scaleHTML("mood", "Mood", m.mood, true)}
     </section>
     <section class="card">
       <label class="field-label" for="intention">Intention for today</label>
@@ -1250,6 +1349,8 @@ function renderMorning() {
     pulse(e.currentTarget);
     if (!morningFilled(m)) { react("annoyed"); paintFace(); toast(pick(EMPTY_TOASTS)); return; }
     tick();
+    react("nice", 1700, "saved!");
+    paintFace();
     doneToast("morning");
   };
 }
@@ -1272,8 +1373,8 @@ function renderEvening() {
       </div>` : ""}
       ${hasScores ? `<div class="summary">
         <div class="tile t-round"><b>${m.sleep ?? "–"}</b><span>Sleep</span></div>
-        <div class="tile t-flower"><b>${m.mood ?? "–"}</b><span>Mood${m.mood ? ` · ${moodWord(m.mood)}` : ""}</span></div>
         <div class="tile t-square"><b>${m.body ?? "–"}</b><span>Body</span></div>
+        <div class="tile t-flower"><b>${m.mood ?? "–"}</b><span>Mood${m.mood ? ` · ${moodWord(m.mood)}` : ""}</span></div>
       </div>` : ""}
     </section>` : "";
 
@@ -1300,8 +1401,8 @@ function renderEvening() {
     <div class="seg-toggle" role="group" aria-label="which day">${dayTabs}</div>
     <section class="card">
       <div class="card-head" style="margin-bottom:12px"><span class="card-title">How are you now?</span></div>
-      ${scaleHTML("mood", "Mood", ev.mood, true)}
       ${scaleHTML("body", "Body", ev.body, false, ["Aching", "Strong"])}
+      ${scaleHTML("mood", "Mood", ev.mood, true)}
     </section>
     ${summary}
     <section class="card">
@@ -1396,6 +1497,8 @@ function renderEvening() {
     const tabBtn = view.querySelector(`[data-day="${eveningOffset}"]`);
     if (tabBtn && !tabBtn.querySelector(".mark")) tabBtn.insertAdjacentHTML("beforeend", `<span class="mark"></span>`);
     tick();
+    react("nice", 1700, "saved!");
+    paintFace();
     doneToast("evening");
   };
   view.querySelector("#copy-md").onclick = () => copyMarkdown(key, ev);
@@ -1407,15 +1510,15 @@ function copyMarkdown(key, ev) {
   if (m) {
     lines.push("## morning");
     lines.push(`- sleep: ${m.sleep ?? "–"}/10`);
-    lines.push(`- mood: ${m.mood ?? "–"}/10${m.mood ? ` (${moodWord(m.mood)})` : ""}`);
     lines.push(`- body: ${m.body ?? "–"}/10`);
+    lines.push(`- mood: ${m.mood ?? "–"}/10${m.mood ? ` (${moodWord(m.mood)})` : ""}`);
     if (m.intention) lines.push(`- intention: ${m.intention}`);
     lines.push("");
   }
   if (ev) {
     lines.push("## evening");
-    lines.push(`- mood: ${ev.mood ?? "–"}/10${ev.mood ? ` (${moodWord(ev.mood)})` : ""}`);
     lines.push(`- body: ${ev.body ?? "–"}/10`);
+    lines.push(`- mood: ${ev.mood ?? "–"}/10${ev.mood ? ` (${moodWord(ev.mood)})` : ""}`);
     const bounds = Object.entries(ev.boundaries).filter(([, s]) => s);
     if (bounds.length) {
       lines.push("- boundaries:");
@@ -1693,16 +1796,16 @@ const hasText = s => !!(s || "").trim();
 const listJoin = xs => xs.length < 2 ? xs.join("") : xs.slice(0, -1).join(", ") + " and " + xs[xs.length - 1];
 const GYM_TEXT = { went: "went", rest: "rest day", skipped: "skipped" };
 
-// "mood 5 → 7 · body 6 · sleep 4" — morning to evening when both are there
+// "sleep 4 · body 6 · mood 5 → 7" — morning to evening when both are there
 function scoreBits(key) {
   const m = state.days[key]?.morning, ev = state.days[key]?.evening;
   const arc = (a, b) => a != null && b != null && a !== b ? `${a} → ${b}` : (b ?? a);
   const bits = [];
-  const mood = arc(m?.mood, ev?.mood);
-  if (mood != null) bits.push(`mood ${mood}`);
+  if (m?.sleep != null) bits.push(`sleep ${m.sleep}`);
   const body = arc(m?.body, ev?.body);
   if (body != null) bits.push(`body ${body}`);
-  if (m?.sleep != null) bits.push(`sleep ${m.sleep}`);
+  const mood = arc(m?.mood, ev?.mood);
+  if (mood != null) bits.push(`mood ${mood}`);
   return bits;
 }
 // the day's words as [label, text] pairs; `full` adds boundaries and gym
@@ -1728,12 +1831,25 @@ function storyLines(key, full) {
   add("spent", ev?.spent);
   return out;
 }
+// how he looked that day: the day's mood (evening first) as a face and a word
+function dayPolaroid(key) {
+  const mood = collectDay(key).mood;
+  const face = mood != null ? exprFor(mood) : "thinking";
+  return `<div class="mini-pol" aria-hidden="true"><div class="ph">${charHTML(face)}</div><div class="cap">${mood != null ? moodWord(mood) : "–"}</div></div>`;
+}
+function heroPolaroid(face, caption) {
+  return `<div class="polaroid hero-pol"><span class="tape" aria-hidden="true"></span><div class="ph">${charHTML(face)}</div><div class="cap">${esc(caption)}</div></div>`;
+}
 function storyDayHTML(key, date, full) {
   const bits = scoreBits(key);
   return `<div class="story-day">
-    <div class="story-head"><span class="story-date">${date}</span>${bits.length ? `<span class="story-scores">${bits.join(" · ")}</span>` : ""}</div>
-    ${storyLines(key, full).map(([label, text]) =>
-      `<div class="story-line"><span class="story-label">${label}</span><span class="story-text">${esc(text)}</span></div>`).join("")}
+    ${dayPolaroid(key)}
+    <div class="story-body">
+      <div class="story-date">${date}</div>
+      ${bits.length ? `<span class="story-scores">${bits.join(" · ")}</span>` : ""}
+      ${storyLines(key, full).map(([label, text]) =>
+        `<div class="story-line"><span class="story-label">${label}</span><span class="story-text">${esc(text)}</span></div>`).join("")}
+    </div>
   </div>`;
 }
 
@@ -1754,11 +1870,16 @@ function journalSheetHTML() {
   const shown = keys.slice(0, sheet.limit);
   return `
     <div class="sheet-hero" style="background:var(--note-soft)">
-      ${charHTML(keys.length ? "flustered" : "away")}
+      ${keys.length ? heroPolaroid("flustered", "don't read this") : heroPolaroid("away", "nothing yet")}
       <h2>Journal</h2>
       <div class="card-sub">${keys.length ? `${keys.length} ${keys.length === 1 ? "day" : "days"} in your own words` : "Nothing written yet"}</div>
     </div>
-    ${shown.length ? shown.map(k => `<section class="card">${storyDayHTML(k, journalDate(k), false)}</section>`).join("")
+    ${shown.length ? shown.map((k, i) => {
+      // a handwritten month heading whenever the month changes
+      const month = k.slice(0, 7) !== (shown[i - 1] || "").slice(0, 7)
+        ? `<div class="jmonth">${parseKey(k).toLocaleDateString("en-GB", { month: "long", year: "numeric" })}</div>` : "";
+      return `${month}<section class="card">${storyDayHTML(k, journalDate(k), false)}</section>`;
+    }).join("")
       : `<section class="card"><div class="empty-note" style="margin-top:0">Intentions, “what happened” and “one honest thing” show up here once you've written a few.</div></section>`}
     ${keys.length > shown.length ? `<button class="btn-ghost" id="journal-more">Show more</button>` : ""}
   `;
@@ -1788,7 +1909,7 @@ function weekSheetHTML() {
   const range = `${shortDate(start, true)} – ${shortDate(end, true)}`;
   return `
     <div class="sheet-hero" style="background:var(--note-soft)">
-      ${charHTML(face)}
+      ${heroPolaroid(face, moods.length ? moodWord(Math.round(avg(moods))) : written.length ? "hmm" : "nothing yet")}
       <h2>${sheet.offset === 0 ? "This week's story" : sheet.offset === -1 ? "Last week's story" : "Week in review"}</h2>
       <div class="week-nav">
         <button data-week="-1" aria-label="previous week">‹</button>
@@ -1890,6 +2011,18 @@ function chartSVG(days) {
   return `<svg class="chart" viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="sleep, mood and body over time" style="font-family:var(--font)">${g}</svg>`;
 }
 
+// once per day: the first look at Progress after checking in stamps the day
+const STAMP_KEY = "daily-checkin-stamped";
+function stampSlam() {
+  if (!dayFilled(todayKey()) || reducedMotion()) return false;
+  try {
+    if (localStorage.getItem(STAMP_KEY) === todayKey()) return false;
+    localStorage.setItem(STAMP_KEY, todayKey());
+  } catch (e) { return false; }
+  setTimeout(tick, 420);
+  return true;
+}
+
 function renderProgress() {
   const days = collectWindow(range);
   const prevDays = collectWindow(range, range);
@@ -1963,7 +2096,7 @@ function renderProgress() {
     <header class="top">
       <div><div class="date">How it's going</div><h1>Progress</h1></div>
     </header>
-    <div class="hero ${dayFilled(todayKey()) ? "lit" : ""}" role="img" aria-label="${cur} ${cur === 1 ? "day" : "days"} in a row">
+    <div class="hero ${dayFilled(todayKey()) ? "lit" : ""} ${stampSlam() ? "slam" : ""}" role="img" aria-label="${cur} ${cur === 1 ? "day" : "days"} in a row">
       ${stampSVG(cur)}
       <div class="big-label">in a row</div>
       <p>${dayFilled(todayKey()) ? "Today's in. " : "Check in today to keep it growing. "}Your record is ${best}.</p>
@@ -1989,11 +2122,11 @@ function renderProgress() {
       <div class="card-head"><span class="card-title">Averages</span><span class="card-sub">vs the ${range} days before</span></div>
       <div class="summary">
         ${avgTile("Sleep", "sleep", "t-round")}
-        ${avgTile("Mood", "mood", "t-flower")}
         ${avgTile("Body", "body", "t-square")}
+        ${avgTile("Mood", "mood", "t-flower")}
       </div>
       ${hasData ? `<div style="margin-top:14px">${chartSVG(days)}</div>
-        <div class="chart-legend"><span><i style="background:var(--lav)"></i>Sleep</span><span><i style="background:var(--pink)"></i>Mood</span><span><i style="background:var(--mint)"></i>Body</span></div>`
+        <div class="chart-legend"><span><i style="background:var(--lav)"></i>Sleep</span><span><i style="background:var(--mint)"></i>Body</span><span><i style="background:var(--pink)"></i>Mood</span></div>`
       : `<div class="empty-note">Your chart appears after a few check-ins.</div>`}
     </section>
     <section class="card">
@@ -2118,9 +2251,10 @@ function setTab(name) {
   });
   updateNavDots();
   renderers[name]();
-  view.classList.remove("enter");
-  void view.offsetWidth;
-  view.classList.add("enter");
+  restart(view, "enter");
+  // only the first render of a tab deals the cards in; later re-renders stay still
+  clearTimeout(setTab._t);
+  setTab._t = setTimeout(() => view.classList.remove("enter"), 800);
   window.scrollTo(0, 0);
 }
 document.querySelectorAll("nav button").forEach(b => b.onclick = () => setTab(b.dataset.tab));

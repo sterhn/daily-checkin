@@ -1,4 +1,4 @@
-const CACHE = "daily-checkin-v16";
+const CACHE = "daily-checkin-v17";
 const ASSETS = ["./", "index.html", "manifest.webmanifest", "icons/icon-192.png", "icons/icon-512.png", "icons/icon-512-maskable.png",
   "chars/neutral.webp", "chars/happy.webp", "chars/great.webp", "chars/low.webp", "chars/rough.webp", "chars/sleepy.webp", "chars/proud.webp", "chars/coffee.webp", "chars/thinking.webp", "chars/cozy.webp", "chars/sigh.webp", "chars/nice.webp", "chars/annoyed.webp", "chars/surprised.webp", "chars/flustered.webp", "chars/away.webp"];
 const NETWORK_TIMEOUT = 3500;
