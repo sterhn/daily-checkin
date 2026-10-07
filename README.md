@@ -1,6 +1,6 @@
 # daily check-in
 
-A small, private daily check-in app with a soft pastel look and a little hoodie-wearing mascot: rate your **sleep, mood, and body** in the morning, set an intention, then close the day in the evening with boundaries, gym, and a couple of honest notes. A **goals** tab holds small weekly and monthly adventures, and a **progress** tab shows your streak and how the last 7/14/30 days went.
+A small, private daily check-in app with a soft pastel look and a little hoodie-wearing character: rate your **sleep, mood, and body** in the morning, set an intention, then close the day in the evening with boundaries, gym, and a couple of honest notes. A **goals** tab holds small weekly and monthly adventures, and a **progress** tab shows your streak and how the last 7/14/30 days went.
 
 Built as a single self-contained page — no accounts, no server, no tracking. Everything is stored in your browser's local storage, on your device only.
 
@@ -13,7 +13,7 @@ Built as a single self-contained page — no accounts, no server, no tracking. E
 - **Morning**: sleep / mood / body on a 1–10 scale — tap or slide across to set a value — plus an intention for the day
 - **Evening**: the morning's intention read back to you, how you feel now, boundary tracking (held / slipped), gym (went / rest day / skipped), a rough "spent today", "what happened", and "one honest thing"
 - **Yesterday / today toggle** on the evening tab — for when you close the day after midnight. Before 5am the app opens on the evening tab already set to yesterday, and a small dot marks days you've already saved
-- **The mascot**: one small creature with messy blue hair, tired eyes and an oversized hoodie lives in the header. It holds a coffee in the morning and is wrapped up cozy in the evening, then follows your mood slider (hiding in its hood at 1–2, arms up at 9–10). It gets sleepy in the small hours, looks proud on streaks and finished goals, and reacts when you skip the gym or slip on a boundary. The mood word (drained → radiant) shows live under the slider
+- **The mascot**: one hand-drawn character — messy pale-blue hair, tired eyes, a black hoodie — shown as stickers in `chars/`. It drinks coffee in the morning and gets cozy in the evening, then follows your mood slider (pouting at 3–4, hiding in its sleeves at 1–2, ecstatic at 9–10). It's sleepy in the small hours, smug on streaks and finished goals, sighs when you skip the gym or slip on a boundary, does finger guns when you hold one, and gets annoyed at a blank check-in. The mood word (drained → radiant) shows live under the slider
 - **Toasts with a bit of personality**: dry, warm one-liners when you finish a check-in, with special lines for late nights and streak milestones
 - **Journal**: scroll back through every intention, "what happened" and "one honest thing", newest first
 - **This week's story**: the week stitched together day by day like a short diary — intentions, notes, boundaries, gym, spending, mood — with a *copy week* button for your weekly review
@@ -51,5 +51,6 @@ python3 -m http.server 8000
 ```
 
 - `index.html` — the whole app (markup, styles, logic)
+- `chars/` — the character's expression stickers
 - `sw.js` — service worker for offline use
 - `manifest.webmanifest`, `icons/` — PWA install metadata

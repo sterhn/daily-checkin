@@ -51,18 +51,6 @@
       #fdf0f5;
     --font: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 
-    /* the mascot */
-    --ch-hood: #bdb2f2;
-    --ch-hood-lo: #a194e4;
-    --ch-skin: #fde7d8;
-    --ch-hair: #7ea6ee;
-    --ch-hair-lo: #5d84d4;
-    --ch-ink: #3b2b2e;
-    --ch-bag: #c79ab4;
-    --ch-string: #fffaf2;
-    --ch-mug: #fffaf2;
-    --ch-steam: #ffffff;
-    --ch-decor: #9d8be0;
     color-scheme: light;
   }
   @media (prefers-color-scheme: dark) {
@@ -93,16 +81,6 @@
         radial-gradient(at 0% 0%, rgba(255, 170, 110, 0.22) 0, transparent 60%),
         radial-gradient(at 100% 100%, rgba(150, 125, 255, 0.25) 0, transparent 60%),
         #201b23;
-      --ch-hood: #9283da;
-      --ch-hood-lo: #7668c6;
-      --ch-skin: #f5ddcd;
-      --ch-hair: #77a0ea;
-      --ch-hair-lo: #4f76c4;
-      --ch-bag: #b88aa6;
-      --ch-string: #e9e3f5;
-      --ch-mug: #f3ece2;
-      --ch-steam: rgba(255, 255, 255, 0.85);
-      --ch-decor: #b9adf5;
       color-scheme: dark;
     }
   }
@@ -138,7 +116,7 @@
     box-shadow: var(--shadow);
     flex: none;
   }
-  .streak-pill .blob { width: 46px; height: 46px; margin: -8px -3px -6px -5px; }
+  .streak-pill .blob { width: 54px; height: 54px; margin: -12px -2px -9px -6px; }
   .streak-pill b { font-size: 1rem; font-weight: 800; }
   .streak-pill:not(.lit) b { color: var(--muted); }
   .streak-pill.pop .blob { animation: boing 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); }
@@ -356,26 +334,12 @@
   .floaty .blob { animation: floaty 4s ease-in-out infinite; }
   @keyframes floaty { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
 
-  /* ---- the mascot: colours are CSS variables so it follows light / dark ---- */
-  .ch-hood { fill: var(--ch-hood); }
-  .ch-hood-lo { fill: var(--ch-hood-lo); }
-  .ch-sleeve { fill: none; stroke: var(--ch-hood-lo); stroke-width: 11; stroke-linecap: round; stroke-linejoin: round; }
-  .ch-rim { fill: none; stroke: var(--ch-hood-lo); stroke-width: 3.2; }
-  .ch-seam { fill: none; stroke: var(--ch-hood-lo); stroke-width: 2; stroke-linecap: round; }
-  .ch-skin { fill: var(--ch-skin); }
-  .ch-hair { fill: var(--ch-hair); }
-  .ch-strand { fill: none; stroke: var(--ch-hair-lo); stroke-width: 1.8; stroke-linecap: round; }
-  .ch-ink { fill: var(--ch-ink); }
-  .ch-line { fill: none; stroke: var(--ch-ink); stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
-  .ch-bag { fill: none; stroke: var(--ch-bag); stroke-width: 1.8; stroke-linecap: round; }
-  .ch-mouth { fill: #b8434c; stroke: var(--ch-ink); stroke-width: 1.6; stroke-linejoin: round; }
-  .ch-string { fill: none; stroke: var(--ch-string); stroke-width: 1.8; stroke-linecap: round; }
-  .ch-mug { fill: var(--ch-mug); }
-  .ch-steam { fill: none; stroke: var(--ch-steam); stroke-width: 2.4; stroke-linecap: round; }
+  /* ---- the mascot: hand-drawn stickers with a white edge, so they read on light and dark ---- */
+  img.char { object-fit: contain; user-select: none; -webkit-user-drag: none; }
   .ch-hop { animation: hop 0.9s ease-in-out 3; }
   @keyframes hop { 0%, 100% { transform: none; } 45% { transform: translateY(-6px); } }
   .hero-char { display: flex; justify-content: center; }
-  .hero-char .blob { width: 96px; height: 96px; margin: -8px 0 -4px; }
+  .hero-char .blob { width: 116px; height: 116px; margin: -10px 0 -6px; }
 
   /* ---- goals ---- */
   .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
@@ -658,10 +622,6 @@ function star5(x, y, r, color) {
 function sparkle(x, y, r, color) {
   return `<path d="M${f1(x)} ${f1(y - r)} Q${f1(x)} ${f1(y)} ${f1(x + r)} ${f1(y)} Q${f1(x)} ${f1(y)} ${f1(x)} ${f1(y + r)} Q${f1(x)} ${f1(y)} ${f1(x - r)} ${f1(y)} Q${f1(x)} ${f1(y)} ${f1(x)} ${f1(y - r)} Z" fill="${color}"/>`;
 }
-function zzz(x, y, color) {
-  const z = (x0, y0, s) => `<path d="M${f1(x0)} ${f1(y0)} h${f1(s)} l${f1(-s)} ${f1(s)} h${f1(s)}" fill="none" stroke="${color}" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>`;
-  return z(x, y + 10, 7) + z(x + 10, y, 9);
-}
 function tearDrop(x, y, s) {
   return `<path d="M${f1(x)} ${f1(y - s)} Q${f1(x + s * 0.9)} ${f1(y + s * 0.3)} ${f1(x)} ${f1(y + s * 0.8)} Q${f1(x - s * 0.9)} ${f1(y + s * 0.3)} ${f1(x)} ${f1(y - s)} Z" fill="#8cc4f5"/>
     <circle cx="${f1(x - s * 0.25)}" cy="${f1(y + s * 0.1)}" r="${f1(s * 0.2)}" fill="#fff" opacity="0.8"/>`;
@@ -844,115 +804,15 @@ function blobSVG(kind, mood = 8, opts = {}) {
   return wrap(inner + (opts.decor === false || !f.decor ? "" : f.decor()));
 }
 
-// ---- the mascot: one small creature with messy blue hair, tired eyes and an
-// oversized hoodie whose sleeves swallow its hands. same character everywhere,
-// only the expression (and what it's doing with its sleeves) changes.
-const EXPRESSIONS = {
-  neutral:  { eyes: "dot",     mouth: "smile" },
-  happy:    { eyes: "arc",     mouth: "wide",  blush: 0.8 },
-  great:    { eyes: "sparkle", mouth: "grin",  blush: 0.85, arms: "up", hop: true,
-              decor: () => sparkle(6, 30, 5, DECOR.yellow) + sparkle(95, 28, 6, DECOR.yellow) + sparkle(86, 6, 3.5, DECOR.pink) },
-  low:      { eyes: "sad",     mouth: "frown", bags: 1 },
-  rough:    { eyes: "sad",     hood: "hide",   bags: 1 },
-  sleepy:   { eyes: "half",    mouth: "yawn",  bags: 1, tilt: 6, decor: () => zzz(80, -4, "var(--ch-decor)") },
-  proud:    { eyes: "content", mouth: "smirk", blush: 0.7, arms: "hips", tilt: -6,
-              decor: () => sparkle(88, 14, 5, DECOR.yellow) + sparkle(96, 30, 3, DECOR.yellow) },
-  coffee:   { eyes: "content", mouth: "small", arms: "mug" },
-  thinking: { eyes: "side",    mouth: "flat",  brows: "quirk", arms: "chin",
-              decor: () => `<g fill="var(--ch-decor)"><circle cx="88" cy="24" r="1.8"/><circle cx="94" cy="15" r="2.6"/><circle cx="101" cy="4" r="3.6"/></g>` },
-  cozy:     { eyes: "content", mouth: "small", blush: 0.75, hood: "up", arms: "hug",
-              decor: () => `<path d="M93 -2 A10 10 0 1 0 103 14 A7.5 7.5 0 0 1 93 -2 Z" fill="${DECOR.yellow}"/>` }
-};
-const SLEEVES = {
-  down: ["M28 73 C 23 80, 20 86, 21 93", "M72 73 C 77 80, 80 86, 79 93"],
-  up:   ["M28 72 C 21 67, 16 60, 13 52", "M72 72 C 79 67, 84 60, 87 52"],
-  hips: ["M28 73 C 19 78, 20 86, 30 88", "M72 73 C 81 78, 80 86, 70 88"],
-  mug:  ["M28 73 C 25 82, 30 90, 39 91", "M72 73 C 75 82, 70 90, 61 91"],
-  hug:  ["M28 73 C 27 84, 40 90, 59 86", "M72 73 C 73 84, 60 90, 41 86"],
-  chin: ["M28 73 C 23 80, 20 86, 21 93", "M73 75 C 75 83, 65 83, 61 70"]
-};
-function charSVG(expr = "neutral") {
-  const x = EXPRESSIONS[expr] || EXPRESSIONS.neutral;
-  const hood = x.hood || "down";
-  const hy = hood === "hide" ? 50 : hood === "up" ? 45 : 42; // head centre
-  const ey = hy + 5, my = ey + 10;                           // eye line, mouth line
-  const L = 40, R = 60;
-  const line = d => `<path class="ch-line" d="${d}"/>`;
-  const dot = (cx, cy, s = 1) => `<ellipse class="ch-ink" cx="${f1(cx)}" cy="${f1(cy)}" rx="${f1(2.7 * s)}" ry="${f1(3.4 * s)}"/>
-    <circle cx="${f1(cx - 0.9 * s)}" cy="${f1(cy - 1.3 * s)}" r="${f1(0.9 * s)}" fill="#fff" opacity="0.85"/>`;
-  // o = which way is "outward" for this eye: -1 left, +1 right
-  const EYES = {
-    dot:     c => dot(c, ey),
-    side:    c => dot(c + 1.8, ey - 0.6),
-    arc:     c => line(`M${c - 4} ${ey + 1.5} Q${c} ${ey - 3.5} ${c + 4} ${ey + 1.5}`),
-    content: c => line(`M${c - 4} ${ey - 0.5} Q${c} ${ey + 3} ${c + 4} ${ey - 0.5}`),
-    half:    c => `<path class="ch-ink" d="M${c - 3.4} ${ey} A3.4 3.2 0 0 0 ${c + 3.4} ${ey} Z"/>` + line(`M${c - 4.4} ${ey} H${c + 4.4}`),
-    sparkle: c => dot(c, ey, 1.2) + sparkle(c + 1.3, ey + 1.5, 1.6, "#fff"),
-    sad:     (c, o) => dot(c, ey + 0.6, 0.9) + line(`M${c + 4.5 * o} ${ey - 4.5} L${c - 3.5 * o} ${ey - 7.5}`)
-  };
-  const MOUTHS = {
-    smile: () => line(`M46 ${my} Q50 ${my + 3} 54 ${my}`),
-    small: () => line(`M47 ${my} Q50 ${my + 2.2} 53 ${my}`),
-    wide:  () => line(`M44 ${my - 1} Q50 ${my + 5} 56 ${my - 1}`),
-    grin:  () => `<path class="ch-mouth" d="M43.5 ${my - 1.5} Q50 ${my + 10} 56.5 ${my - 1.5} Z"/><ellipse cx="50" cy="${my + 2.4}" rx="2.8" ry="1.5" fill="#f28a98"/>`,
-    frown: () => line(`M46 ${my + 2} Q50 ${my - 1.5} 54 ${my + 2}`),
-    flat:  () => line(`M47.5 ${my + 1} H53`),
-    smirk: () => line(`M46 ${my + 0.5} Q51 ${my + 2.8} 55.5 ${my - 2}`),
-    yawn:  () => `<ellipse class="ch-ink" cx="50" cy="${my + 1}" rx="1.9" ry="2.5"/>`
-  };
-
-  const hoodBack = hood === "down" ? "" : `<path class="ch-hood" filter="url(#clay)" d="M50 ${hy - 31} C 69 ${hy - 31}, 82 ${hy - 17}, 82 ${hy + 2} C 82 ${hy + 16}, 76 ${hy + 24}, 70 ${hy + 28} L 30 ${hy + 28} C 24 ${hy + 24}, 18 ${hy + 16}, 18 ${hy + 2} C 18 ${hy - 17}, 31 ${hy - 31}, 50 ${hy - 31} Z"/>`;
-  const body = `<path class="ch-hood" filter="url(#clay)" d="M14 97 C 13 82, 20 70, 34 66 C 42 64, 58 64, 66 66 C 80 70, 87 82, 86 97 C 86 99.5, 84 100, 81 100 L 19 100 C 16 100, 14 99.5, 14 97 Z"/>`;
-  const arms = x.arms || "down";
-  const pocket = arms === "mug" || arms === "hug" ? "" : `<path class="ch-seam" d="M33 89 Q50 85 67 89"/>`;
-
-  // hair: a messy tuft when the hood is down, just a fringe peeking out when it's up
-  const hair = hood === "down"
-    ? `<g class="ch-hair" filter="url(#clay-sm)">
-        <path d="M24 46 C 20 28, 32 14, 50 14 C 68 14, 80 28, 76 46 C 74 40, 71 35, 68 31 C 66 35, 61 36, 58 32 C 55 36, 49 37, 47 33 C 44 37, 38 37, 36 33 C 33 37, 28 40, 24 46 Z"/>
-        <path d="M47 16 C 43 8, 49 2, 57 3 C 53 6, 53 10, 55 15 Z"/>
-        <path d="M68 19 C 74 15, 79 17, 82 12 C 83 19, 78 24, 73 25 Z"/>
-      </g>
-      <path class="ch-strand" d="M38 21 C 42 25, 44 28, 44 32 M58 19 C 61 23, 62 26, 64 29"/>`
-    : `<g class="ch-hair" filter="url(#clay-sm)" transform="translate(0 ${hy - 42})">
-        <path d="M27 42 C 30 30, 40 24, 50 24 C 60 24, 70 30, 73 42 C 70 38, 67 35, 64 33 C 62 37, 57 37, 55 33 C 52 37, 47 37, 45 33 C 42 37, 37 37, 35 34 C 32 37, 29 39, 27 42 Z"/>
-        <path d="M47 25 C 45 19, 50 16, 54 17 C 51 19, 51 22, 52 25 Z"/>
-      </g>`;
-  const faceR = hood === "down" ? 25 : 22.5;
-  const brows = x.brows === "quirk"
-    ? line(`M${L - 4} ${ey - 7} H${L + 3.5}`) + line(`M${R - 4} ${ey - 8} Q${R} ${ey - 12} ${R + 4} ${ey - 9}`)
-    : "";
-  const bags = `<path class="ch-bag" opacity="${x.bags ?? 0.75}" d="M${L - 4} ${ey + 5} Q${L} ${ey + 7.5} ${L + 4} ${ey + 5} M${R - 4} ${ey + 5} Q${R} ${ey + 7.5} ${R + 4} ${ey + 5}"/>`;
-  const blush = hood === "hide" ? "" : `<circle cx="${L - 7}" cy="${ey + 6}" r="3.6" fill="${BLUSH}" opacity="${x.blush ?? 0.5}"/><circle cx="${R + 7}" cy="${ey + 6}" r="3.6" fill="${BLUSH}" opacity="${x.blush ?? 0.5}"/>`;
-  const tilt = x.tilt ? ` transform="rotate(${x.tilt} 50 68)${x.tilt < 0 ? " translate(0 -1.5)" : ""}"` : "";
-  const head = `<g${tilt}>
-      <circle class="ch-skin" filter="url(#clay)" cx="50" cy="${hy}" r="${faceR}"/>
-      ${hair}
-      ${hood === "down" ? "" : `<circle class="ch-rim" cx="50" cy="${hy}" r="${faceR + 1.2}"/>`}
-      ${blush}${bags}
-      ${EYES[x.eyes](L, -1)}${EYES[x.eyes](R, 1)}
-      ${brows}
-      ${hood === "hide" ? "" : MOUTHS[x.mouth]()}
-    </g>`;
-
-  // collar: normally a soft ring round the neck; hiding, it's pulled up to the eyes
-  const collar = hood === "hide"
-    ? `<path class="ch-hood" filter="url(#clay)" d="M20 ${ey + 11} C 34 ${ey + 6.5}, 66 ${ey + 6.5}, 80 ${ey + 11} L 84 88 L 16 88 Z"/>
-       <path class="ch-seam" d="M26 ${ey + 13} C 38 ${ey + 10}, 62 ${ey + 10}, 74 ${ey + 13}"/>`
-    : `<path class="ch-hood-lo" d="M29 64 C 37 67, 63 67, 71 64 C 73 71, 63 75, 50 75 C 37 75, 27 71, 29 64 Z"/>
-       <path class="ch-string" d="M45.5 74 V81 M54.5 74 V81"/>
-       <circle cx="45.5" cy="82" r="1.5" fill="var(--ch-string)"/><circle cx="54.5" cy="82" r="1.5" fill="var(--ch-string)"/>`;
-  const mug = arms === "mug"
-    ? `<rect class="ch-mug" filter="url(#clay-sm)" x="40" y="83" width="20" height="14" rx="4"/><rect x="40" y="88" width="20" height="3" fill="var(--pink)" opacity="0.75"/>`
-    : "";
-  const sleeves = `<g filter="url(#clay-sm)">${SLEEVES[arms].map(d => `<path class="ch-sleeve" d="${d}"/>`).join("")}</g>`;
-  const steam = arms === "mug" ? `<path class="ch-steam" d="M46.5 80 q-2.2 -3 0 -6 q2.2 -3 0 -6 M53.5 80 q-2.2 -3 0 -6 q2.2 -3 0 -6"/>` : "";
-
-  const inner = `<g${x.hop ? ` class="ch-hop"` : ""}>${hoodBack}${body}${pocket}${head}${collar}${mug}${sleeves}${steam}</g>${x.decor ? x.decor() : ""}`;
-  return `<svg class="blob char" data-expr="${expr}" viewBox="-12 -12 124 124" aria-hidden="true">
-    <ellipse cx="50" cy="101" rx="34" ry="4.5" fill="#3a2a20" opacity="0.1" filter="url(#clay-soft)"/>
-    ${inner}
-  </svg>`;
+// ---- the mascot: one character, drawn as a sticker sheet (chars/*.webp) ----
+const CHAR_FACES = new Set([
+  "neutral", "happy", "great", "low", "rough", "sleepy", "proud", "coffee", "thinking", "cozy",
+  // reactions
+  "sigh", "nice", "annoyed", "surprised", "flustered", "away"
+]);
+function charHTML(expr = "neutral") {
+  if (!CHAR_FACES.has(expr)) expr = "neutral";
+  return `<img class="blob char${expr === "great" ? " ch-hop" : ""}" src="chars/${expr}.webp" data-expr="${expr}" alt="" draggable="false">`;
 }
 
 // which face fits a 1–10 mood. `idle` is the face before a mood is picked;
@@ -1245,7 +1105,7 @@ function commit(key, part, model) {
   const started = !wasFilled && dayFilled(today);
   const n = started ? currentStreak() : 0;
   const milestone = STREAK_MILESTONES.includes(n);
-  if (milestone) react("great", 2600);
+  if (milestone) react(n >= 100 ? "surprised" : "great", 2600);
   refreshChrome(started);
   if (started && !streakToast(n)) {
     if (milestone) toast(`${n} days in a row. look at you`);
@@ -1449,7 +1309,7 @@ const pillSig = () => `${currentStreak()}|${dayFilled(todayKey())}|${headerExpre
 function pillHTML(pop) {
   const cur = currentStreak();
   const done = dayFilled(todayKey());
-  return `<button class="streak-pill ${done ? "lit" : ""} ${pop ? "pop" : ""}" data-goto="progress" aria-label="${cur} day streak">${charSVG(headerExpression())}<b>${cur}</b></button>`;
+  return `<button class="streak-pill ${done ? "lit" : ""} ${pop ? "pop" : ""}" data-goto="progress" aria-label="${cur} day streak">${charHTML(headerExpression())}<b>${cur}</b></button>`;
 }
 // repaint the header pill only when something on it changed; returns whether it did
 function paintPill(pop) {
@@ -1508,7 +1368,7 @@ function nudgeHTML() {
       <div class="nudge-main"><span class="badge">All done</span>
         <div class="nudge-title">Every goal is ticked off</div>
         <div class="nudge-sub">Enjoy it — new ones start next week</div></div>
-      ${charSVG("proud")}
+      ${charHTML("proud")}
     </button>`;
   }
   const { g, n } = pending[0];
@@ -1581,7 +1441,7 @@ function renderMorning() {
   view.querySelector("#intention").oninput = e => { m.intention = e.target.value; onChange(); };
   view.querySelector("#done-morning").onclick = e => {
     pulse(e.currentTarget);
-    if (!morningFilled(m)) { toast(pick(EMPTY_TOASTS)); return; }
+    if (!morningFilled(m)) { react("annoyed"); paintPill(); toast(pick(EMPTY_TOASTS)); return; }
     tick();
     doneToast("morning");
   };
@@ -1684,11 +1544,11 @@ function renderEvening() {
     const next = ev.boundaries[name] === b.dataset.s ? null : b.dataset.s;
     ev.boundaries[name] = next;
     tick();
-    if (next) react(next === "slipped" ? "low" : "proud");
+    if (next) react(next === "slipped" ? "sigh" : "nice");
     onChange();
     renderEvening();
   });
-  const GYM_FACES = { went: "proud", rest: "cozy", skipped: "low" };
+  const GYM_FACES = { went: "nice", rest: "cozy", skipped: "sigh" };
   view.querySelectorAll("[data-gym]").forEach(b => b.onclick = () => {
     ev.gym = ev.gym === b.dataset.gym ? null : b.dataset.gym;
     tick();
@@ -1725,7 +1585,7 @@ function renderEvening() {
   view.querySelector("#honest").oninput = e => { ev.honest = e.target.value; onChange(); };
   view.querySelector("#done-evening").onclick = e => {
     pulse(e.currentTarget);
-    if (!eveningFilled(ev)) { toast(pick(EMPTY_TOASTS)); return; }
+    if (!eveningFilled(ev)) { react("annoyed"); paintPill(); toast(pick(EMPTY_TOASTS)); return; }
     // the day toggle marks days that already have an evening saved
     const tabBtn = view.querySelector(`[data-day="${eveningOffset}"]`);
     if (tabBtn && !tabBtn.querySelector(".mark")) tabBtn.insertAdjacentHTML("beforeend", `<span class="mark"></span>`);
@@ -1967,7 +1827,7 @@ function addSheetHTML() {
   const ideas = GOAL_IDEAS.filter(i => !existing.has(i.title.toLowerCase()));
   return `
     <div class="sheet-hero" style="background:var(--grad-soft)">
-      ${charSVG("thinking")}
+      ${charHTML("thinking")}
       <h2>Add a goal</h2>
       <div class="card-sub">Something small you'd like to do again and again</div>
     </div>
@@ -2087,7 +1947,7 @@ function journalSheetHTML() {
   const shown = keys.slice(0, sheet.limit);
   return `
     <div class="sheet-hero" style="background:var(--grad-soft)">
-      ${charSVG("thinking")}
+      ${charHTML(keys.length ? "flustered" : "away")}
       <h2>Journal</h2>
       <div class="card-sub">${keys.length ? `${keys.length} ${keys.length === 1 ? "day" : "days"} in your own words` : "Nothing written yet"}</div>
     </div>
@@ -2117,11 +1977,11 @@ function weekSheetHTML() {
   const { start, end, days } = storyWeek();
   const written = days.filter(d => d.has);
   const moods = written.map(d => collectDay(d.key).mood).filter(v => v !== null);
-  const face = moods.length ? exprFor(Math.round(avg(moods))) : "thinking";
+  const face = moods.length ? exprFor(Math.round(avg(moods))) : written.length ? "thinking" : "away";
   const range = `${shortDate(start, true)} – ${shortDate(end, true)}`;
   return `
     <div class="sheet-hero" style="background:var(--grad-soft)">
-      ${charSVG(face)}
+      ${charHTML(face)}
       <h2>${sheet.offset === 0 ? "This week's story" : sheet.offset === -1 ? "Last week's story" : "Week in review"}</h2>
       <div class="week-nav">
         <button data-week="-1" aria-label="previous week">‹</button>
@@ -2307,7 +2167,7 @@ function renderProgress() {
       <div><div class="date">How it's going</div><h1>Progress</h1></div>
     </header>
     <div class="hero">
-      <div class="hero-char floaty">${charSVG(streakExpression(cur))}</div>
+      <div class="hero-char floaty">${charHTML(streakExpression(cur))}</div>
       <div class="big">${cur}</div>
       <div class="big-label">${cur === 1 ? "day" : "days"} in a row</div>
       <p>${dayFilled(todayKey()) ? "Today's in. " : "Check in today to keep it growing. "}Your record is ${best}.</p>
