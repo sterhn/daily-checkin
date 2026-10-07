@@ -51,6 +51,8 @@
     --tape: repeating-linear-gradient(-45deg, #bcd5ef 0 5px, #d9e8f7 5px 10px);
     --stamp: #d9536f;
     --good: #3b8f62;
+    --polaroid: #ffffff;
+    --photo: #e7eff8;
 
     --font: "Nunito", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     --hand: "Gaegu", "Nunito", cursive;
@@ -88,6 +90,8 @@
       --tape: repeating-linear-gradient(-45deg, #4a6a94 0 5px, #3a5478 5px 10px);
       --stamp: #f07a93;
       --good: #7fd6a4;
+      --polaroid: #e9edf4;
+      --photo: #c9d7ea;
       color-scheme: dark;
     }
   }
@@ -116,16 +120,34 @@
   h1 { font-family: var(--hand); font-size: 2.3rem; font-weight: 700; line-height: 1; margin-top: 4px; }
   .saved-note { transition: color 0.3s; }
   .saved-note.fresh { color: var(--good); }
-  /* the streak is a rubber stamp: fresh ink once today is in, faded before */
-  .streak-stamp { background: none; border: none; padding: 0; width: 56px; height: 56px; flex: none; margin: -4px -4px 0 0; }
-  .stamp { width: 100%; height: 100%; overflow: visible; display: block; }
-  .streak-stamp:not(.lit) .stamp { opacity: 0.38; filter: grayscale(1); }
-  .streak-stamp.pop .stamp { animation: thunk 0.5s cubic-bezier(0.34, 1.4, 0.64, 1); }
-  @keyframes thunk {
-    0% { transform: scale(1.6) rotate(-14deg); opacity: 0; }
-    55% { transform: scale(0.92); opacity: 1; }
+  /* morning / evening header: a taped-in polaroid of the character, captioned with today's mood */
+  .ptop { display: flex; gap: 16px; align-items: flex-start; margin: 4px 2px 18px; }
+  .ptop-text { flex: 1; min-width: 0; padding-top: 4px; }
+  .ptop h1 { font-size: 2.2rem; text-wrap: balance; }
+  .polaroid { flex: none; position: relative; width: 136px; background: var(--polaroid); padding: 8px 8px 4px; border: 1.6px solid var(--outline); box-shadow: var(--shadow); rotate: -3deg; margin-top: 6px; }
+  .polaroid .tape { top: -10px; width: 50px; margin-left: -25px; rotate: 4deg; }
+  .polaroid .ph { height: 112px; background: var(--photo); display: flex; align-items: flex-end; justify-content: center; overflow: hidden; }
+  .polaroid .ph .blob { width: 124px; height: 124px; margin-bottom: -7px; flex: none; transform-origin: 50% 100%; }
+  .polaroid .ph.squish .blob { animation: squish 0.45s cubic-bezier(0.34, 1.56, 0.64, 1); }
+  .polaroid .cap { font-family: var(--hand); font-weight: 700; font-size: 1.35rem; line-height: 1.2; min-height: 1.2em; text-align: center; color: #26304a; padding-top: 3px; }
+  .wdots { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 10px; }
+  .wdot {
+    width: 22px; height: 22px; border-radius: 50%; flex: none;
+    border: 1.5px dashed var(--faint);
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 0.62rem; font-weight: 800; color: var(--muted);
+  }
+  .wdot svg { width: 12px; height: 12px; }
+  .wdot.done { background: var(--ink); border: none; color: var(--on-ink); }
+  .wdot.today:not(.done) { border: 2px solid var(--ink); color: var(--text); }
+  .wdot.future { opacity: 0.6; }
+  .wdot.pop { animation: boing 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); }
+  @keyframes boing {
+    0% { transform: scale(0.6) rotate(-12deg); }
+    60% { transform: scale(1.25) rotate(6deg); }
     100% { transform: none; }
   }
+  .wnote { font-size: 0.75rem; color: var(--muted); font-weight: 700; margin-top: 5px; }
 
   /* ---- cards: paper stuck on a little crooked ---- */
   .card {
@@ -137,7 +159,7 @@
     margin-top: 14px;
     box-shadow: var(--shadow);
   }
-  .card, .nudge, .gcard, .stat, .hero, .read-link, .intent { will-change: transform; }
+  .card, .strip, .goal-row, .stat, .hero, .read-link, .intent, .polaroid { will-change: transform; }
   .card:nth-of-type(odd) { rotate: -0.5deg; }
   .card:nth-of-type(even) { rotate: 0.45deg; }
   .tape { position: absolute; top: -9px; left: 50%; width: 62px; height: 17px; margin-left: -31px; rotate: -3deg; background: var(--tape); opacity: 0.92; pointer-events: none; }
@@ -162,33 +184,18 @@
   .wd.today .circle:not(.done) { border: 2px solid var(--ink); }
   .wd.future .circle { opacity: 0.6; }
 
-  /* "up next": a blue note pinned on the page */
-  .nudge {
-    display: flex; align-items: center; gap: 12px;
-    width: 100%;
-    text-align: left;
-    border: var(--border);
-    border-radius: 14px;
-    padding: 15px 14px 15px 16px;
-    margin-top: 14px;
-    background: var(--note);
-    box-shadow: var(--shadow);
-    rotate: 0.7deg;
+  /* "up next": a slim blue strip at the bottom */
+  .strip {
+    display: flex; align-items: center; gap: 10px;
+    width: 100%; text-align: left;
+    background: var(--note); border: var(--border); border-radius: 12px; box-shadow: var(--shadow);
+    padding: 8px 12px; margin-top: 16px; rotate: 0.6deg;
   }
-  .nudge-main { flex: 1; min-width: 0; }
-  .badge {
-    display: inline-block;
-    background: var(--pill-bg);
-    border-radius: 999px;
-    padding: 3px 9px;
-    font-size: 0.66rem;
-    font-weight: 800;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-  }
-  .nudge-title { font-family: var(--hand); font-size: 1.5rem; font-weight: 700; line-height: 1.05; margin-top: 6px; }
-  .nudge-sub { font-size: 0.8rem; color: var(--muted); margin-top: 2px; }
-  .nudge .blob { width: 68px; height: 68px; flex: none; }
+  .strip .blob { width: 34px; height: 34px; flex: none; }
+  .strip-text { flex: 1; min-width: 0; display: flex; flex-direction: column; line-height: 1.15; }
+  .strip-kicker { font-size: 0.64rem; font-weight: 800; letter-spacing: 0.07em; text-transform: uppercase; color: var(--muted); }
+  .strip-title { font-family: var(--hand); font-weight: 700; font-size: 1.25rem; }
+  .strip-go { font-weight: 800; color: var(--muted); font-size: 0.85rem; flex: none; }
   .bar { height: 5px; border-radius: 999px; background: var(--line); margin-top: 11px; overflow: hidden; }
   .bar i { display: block; height: 100%; border-radius: 999px; background: var(--ink); transition: width 0.6s cubic-bezier(0.22, 1, 0.36, 1); }
 
@@ -218,11 +225,6 @@
     55% { transform: scale(0.95, 1.07); }
     100% { transform: none; }
   }
-  /* the character sits on top of the sleep / mood / body card, like a sticker on its edge */
-  .card.has-perch { margin-top: 96px; }
-  .perch { position: absolute; top: -95px; right: 4px; width: 116px; height: 116px; pointer-events: none; z-index: 1; transform-origin: 50% 100%; }
-  .perch .blob { width: 100%; height: 100%; }
-  .perch.squish { animation: squish 0.45s cubic-bezier(0.34, 1.56, 0.64, 1); }
   /* the live mood word sits under the slider, between the two ends */
   .mood-ends { align-items: baseline; }
   .mood-word { font-family: var(--hand); font-size: 1.2rem; font-weight: 700; line-height: 1; color: var(--text); }
@@ -344,44 +346,33 @@
   img.char { object-fit: contain; user-select: none; -webkit-user-drag: none; }
   .ch-hop { animation: hop 0.9s ease-in-out 3; }
   @keyframes hop { 0%, 100% { transform: none; } 45% { transform: translateY(-6px); } }
-  .hero-char { display: flex; justify-content: center; }
-  .hero-char .blob { width: 116px; height: 116px; margin: -10px 0 -6px; }
-
-  /* ---- goals ---- */
-  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px; }
-  .gcard {
-    position: relative;
-    text-align: left;
-    border: var(--border);
-    border-radius: 14px;
-    padding: 14px;
-    min-height: 150px;
-    display: flex; flex-direction: column;
-    box-shadow: var(--shadow);
+  /* ---- goals: slim strips, a doodle on each ---- */
+  .goal-list { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
+  .goal-row {
+    display: flex; align-items: center; gap: 12px;
+    width: 100%; text-align: left;
+    border: var(--border); border-radius: 12px; box-shadow: var(--shadow);
+    padding: 8px 12px; min-height: 58px;
     transition: transform 0.15s ease;
   }
-  .gcard:nth-child(odd) { rotate: -0.7deg; }
-  .gcard:nth-child(even) { rotate: 0.6deg; }
-  .gcard:active { transform: scale(0.97); }
-  .gcard .blob { width: 60px; height: 60px; margin-bottom: auto; }
-  .gtitle { font-family: var(--hand); font-weight: 700; font-size: 1.25rem; line-height: 1.05; margin-top: 12px; }
-  .gmeta { font-size: 0.74rem; color: var(--muted); margin-top: 3px; }
+  .goal-row:nth-child(odd) { rotate: -0.45deg; }
+  .goal-row:nth-child(even) { rotate: 0.45deg; }
+  .goal-row:active { transform: scale(0.98); }
+  .goal-row .blob { width: 40px; height: 40px; flex: none; }
+  .goal-text { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+  .goal-title { font-family: var(--hand); font-weight: 700; font-size: 1.3rem; line-height: 1.05; }
+  .goal-meta { font-size: 0.75rem; color: var(--muted); margin-top: 1px; }
   .gcheck {
-    position: absolute; top: 12px; right: 12px;
-    width: 24px; height: 24px; border-radius: 50%;
+    width: 24px; height: 24px; border-radius: 50%; flex: none;
     background: var(--ink); color: var(--on-ink);
     display: flex; align-items: center; justify-content: center;
   }
   .gcheck svg { width: 13px; height: 13px; }
-  .gstreak { font-size: 0.72rem; font-weight: 800; margin-top: 6px; }
-  .gadd {
-    border: 1.6px dashed var(--seg-line);
-    background: none;
-    box-shadow: none;
-    align-items: center; justify-content: center;
+  .goal-row.gadd {
+    margin-top: 12px; justify-content: center; min-height: 48px;
+    border: 1.6px dashed var(--seg-line); background: none; box-shadow: none; rotate: none;
     color: var(--muted); font-weight: 700; font-size: 0.88rem;
   }
-  .gadd span { font-size: 1.6rem; line-height: 1; font-weight: 400; }
   .t-map { background: var(--mint-t); }
   .t-ramen { background: var(--yellow-t); }
   .t-book, .t-round { background: var(--lav-t); }
@@ -434,8 +425,9 @@
 
   /* ---- progress ---- */
   .hero { border-radius: 14px; padding: 22px 18px 20px; text-align: center; background: var(--note); border: var(--border); box-shadow: var(--shadow); margin-top: 14px; rotate: -0.4deg; }
-  .hero .big { font-family: var(--hand); font-size: 4rem; font-weight: 700; line-height: 0.8; margin-top: 10px; }
-  .hero .big-label { font-weight: 800; margin-top: 4px; }
+  .hero .stamp { display: block; width: 120px; height: 120px; margin: 0 auto; overflow: visible; }
+  .hero:not(.lit) .stamp { opacity: 0.38; filter: grayscale(1); }
+  .hero .big-label { font-weight: 800; margin-top: 6px; }
   .hero p { font-size: 0.8rem; color: var(--muted); max-width: 260px; margin: 6px auto 0; }
   .chart-legend { display: flex; justify-content: center; gap: 16px; font-size: 0.75rem; color: var(--muted); font-weight: 700; margin-top: 6px; }
   .chart-legend i { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 5px; }
@@ -1116,41 +1108,40 @@ function moodFace() {
   const m = state.days[todayKey()]?.morning;
   return exprFor(m?.mood, { idle: "coffee", tired: smallHours() || (m?.sleep != null && m.sleep < 4) });
 }
-function perchHTML() {
+// what's written under the polaroid: today's mood word, or a line for the moment
+const FACE_CAPTIONS = {
+  coffee: "coffee first", cozy: "cozy hours", sleepy: "so sleepy", sigh: "oh well", nice: "nice",
+  annoyed: "hey.", surprised: "whoa", great: "yay!", proud: "did it"
+};
+function moodCaption() {
+  if (reaction) return FACE_CAPTIONS[reaction] || "";
+  const mood = tab === "evening" ? state.days[eveningKey()]?.evening?.mood : state.days[todayKey()]?.morning?.mood;
+  return mood != null ? moodWord(mood) : FACE_CAPTIONS[moodFace()] || "";
+}
+function polaroidHTML() {
   const face = moodFace();
-  return `<span class="perch" data-expr="${face}">${charHTML(face)}</span>`;
+  return `<div class="polaroid" data-face="${face}"><span class="tape" aria-hidden="true"></span>
+    <div class="ph">${charHTML(face)}</div><div class="cap">${esc(moodCaption())}</div></div>`;
 }
 // swap the face in place, with a little squish, only when it actually changes
 function paintFace() {
-  const slot = view.querySelector(".perch");
-  if (!slot) return;
+  const pol = view.querySelector(".polaroid");
+  if (!pol) return;
+  const caption = moodCaption();
+  const capEl = pol.querySelector(".cap");
+  if (capEl.textContent !== caption) capEl.textContent = caption;
   const face = moodFace();
-  if (slot.dataset.expr === face) return;
-  slot.dataset.expr = face;
-  slot.innerHTML = charHTML(face);
-  slot.classList.remove("squish");
-  void slot.offsetWidth;
-  slot.classList.add("squish");
+  if (pol.dataset.face === face) return;
+  pol.dataset.face = face;
+  const ph = pol.querySelector(".ph");
+  ph.innerHTML = charHTML(face);
+  ph.classList.remove("squish");
+  void ph.offsetWidth;
+  ph.classList.add("squish");
 }
 
-const pillSig = () => `${currentStreak()}|${dayFilled(todayKey())}`;
-function pillHTML(pop) {
-  const cur = currentStreak();
-  const done = dayFilled(todayKey());
-  return `<button class="streak-stamp ${done ? "lit" : ""} ${pop ? "pop" : ""}" data-goto="progress" aria-label="${cur} day streak${done ? "" : ", not checked in today"}">${stampSVG(cur)}</button>`;
-}
-// repaint the header pill only when the streak changed
-function paintPill(pop) {
-  const slot = view.querySelector("#pill-slot");
-  if (!slot) return;
-  const sig = pillSig();
-  if (!pop && slot.dataset.sig === sig) return;
-  slot.innerHTML = pillHTML(pop);
-  slot.dataset.sig = sig;
-  wireShared(slot);
-}
-
-function weekHTML() {
+// this week as a row of dots under the greeting; `pop` bounces today's dot when it fills
+function weekHTML(pop) {
   const today = todayKey();
   const start = weekStart(today);
   let cells = "", n = 0;
@@ -1158,17 +1149,13 @@ function weekHTML() {
     const k = addDays(start, i);
     const done = dayFilled(k);
     if (done) n++;
-    const cls = k === today ? "today" : k > today ? "future" : "";
+    const cls = [done ? "done" : "", k === today ? "today" : k > today ? "future" : "", pop && done && k === today ? "pop" : ""].join(" ");
     const letter = parseKey(k).toLocaleDateString("en-GB", { weekday: "narrow" });
-    cells += `<div class="wd ${cls}" role="img" aria-label="${prettyDate(k)}: ${done ? "checked in" : "no check-in"}"><span>${letter}</span><div class="circle ${done ? "done" : ""}">${done ? CHECK : ""}</div></div>`;
+    cells += `<span class="wdot ${cls}" role="img" aria-label="${prettyDate(k)}: ${done ? "checked in" : "no check-in"}">${done ? CHECK : letter}</span>`;
   }
   const cur = currentStreak();
-  const hint = dayFilled(today) ? "" : cur ? `Check in today to keep your ${cur}-day streak` : "Check in today to start a streak";
-  return `<section class="card"><span class="tape" aria-hidden="true"></span>
-    <div class="card-head"><span class="card-title">This week</span><span class="card-sub">${n} of 7</span></div>
-    <div class="week">${cells}</div>
-    ${hint ? `<div class="hint">${hint}</div>` : ""}
-  </section>`;
+  const note = dayFilled(today) ? `${n} of 7 this week` : cur ? `check in to keep your ${cur}-day streak` : "check in to start a streak";
+  return `<div class="wdots">${cells}</div><div class="wnote">${note}</div>`;
 }
 
 function pendingGoals() {
@@ -1189,27 +1176,18 @@ function nudgeHTML() {
   if (!state.goals.length) return "";
   const pending = pendingGoals();
   if (!pending.length) {
-    return `<button class="nudge" data-goto="goals">
-      <div class="nudge-main"><span class="badge">All done</span>
-        <div class="nudge-title">Every goal is ticked off</div>
-        <div class="nudge-sub">Enjoy it — new ones start next week</div></div>
-      ${charHTML("proud")}
-    </button>`;
+    return `<button class="strip" data-goto="goals">${doodleSVG("star")}
+      <span class="strip-text"><span class="strip-kicker">All done</span><span class="strip-title">Every goal is ticked off</span></span>
+      <span class="strip-go" aria-hidden="true">›</span></button>`;
   }
   const { g, n } = pending[0];
   const more = pending.length - 1;
-  return `<button class="nudge" data-open="${esc(g.id)}">
-    <div class="nudge-main">
-      <span class="badge">Up next · ${periodLeft(g)}</span>
-      <div class="nudge-title">${esc(cap(g.title))}</div>
-      <div class="nudge-sub">${n} of ${g.target} this ${g.period}${more ? ` · ${more} more goal${more > 1 ? "s" : ""} to go` : ""}</div>
-      <div class="bar"><i style="width:${Math.round(100 * n / g.target)}%"></i></div>
-    </div>
-    ${doodleSVG(kindFor(g))}
-  </button>`;
+  return `<button class="strip" data-open="${esc(g.id)}">${doodleSVG(kindFor(g))}
+    <span class="strip-text"><span class="strip-kicker">Up next · ${periodLeft(g)}${more ? ` · ${more} more` : ""}</span><span class="strip-title">${esc(cap(g.title))}</span></span>
+    <span class="strip-go">${n}/${g.target} ›</span></button>`;
 }
 
-// wire the header pill / week / nudge links in whatever is on screen
+// wire the goal strip and any other links in whatever is on screen
 function wireShared(root) {
   root.querySelectorAll("[data-goto]").forEach(b => b.onclick = () => setTab(b.dataset.goto));
   root.querySelectorAll("[data-open]").forEach(b => b.onclick = () => openSheet({ type: "goal", id: b.dataset.open }));
@@ -1218,10 +1196,9 @@ function wireShared(root) {
 // after a save: update the streak bits without re-rendering the form
 function refreshChrome(pop) {
   updateNavDots();
-  paintPill(pop);
   paintFace();
   const week = view.querySelector("#week-slot");
-  if (week) week.innerHTML = weekHTML();
+  if (week) week.innerHTML = weekHTML(pop);
 }
 
 function updateNavDots() {
@@ -1235,10 +1212,15 @@ function updateNavDots() {
   });
 }
 
+// morning / evening header: the character's polaroid, then the greeting and this week's dots
 function topHTML(title, sub, saved) {
-  return `<header class="top">
-    <div><div class="date">${sub}${saved !== undefined ? ` · <span class="saved-note">${saved ? "Saved" : "Saves as you go"}</span>` : ""}</div><h1>${title}</h1></div>
-    <div id="pill-slot" data-sig="${pillSig()}">${pillHTML()}</div>
+  return `<header class="ptop">
+    ${polaroidHTML()}
+    <div class="ptop-text">
+      <div class="date">${sub}${saved !== undefined ? ` · <span class="saved-note">${saved ? "Saved" : "Saves as you go"}</span>` : ""}</div>
+      <h1>${title}</h1>
+      <div id="week-slot">${weekHTML()}</div>
+    </div>
   </header>`;
 }
 
@@ -1249,9 +1231,7 @@ function renderMorning() {
   const onChange = () => commit(key, "morning", m);
   view.innerHTML = `
     ${topHTML("Good morning", prettyDate(key), !!m.savedAt)}
-    <div id="week-slot">${weekHTML()}</div>
-    ${nudgeHTML()}
-    <section class="card has-perch">${perchHTML()}
+    <section class="card">
       ${scaleHTML("sleep", "Sleep", m.sleep, false, ["Restless", "Deep"])}
       ${scaleHTML("mood", "Mood", m.mood, true)}
       ${scaleHTML("body", "Body", m.body, false, ["Aching", "Strong"])}
@@ -1261,6 +1241,7 @@ function renderMorning() {
       <textarea id="intention" placeholder="What's the day for?">${esc(m.intention)}</textarea>
     </section>
     <button class="btn-primary" id="done-morning">Done <span aria-hidden="true">→</span></button>
+    ${nudgeHTML()}
   `;
   wireShared(view);
   wireScales(m, onChange);
@@ -1317,14 +1298,12 @@ function renderEvening() {
   view.innerHTML = `
     ${topHTML("Good evening", prettyDate(key), !!ev.savedAt)}
     <div class="seg-toggle" role="group" aria-label="which day">${dayTabs}</div>
-    <div id="week-slot">${weekHTML()}</div>
-    ${nudgeHTML()}
-    ${summary}
-    <section class="card has-perch">${perchHTML()}
+    <section class="card">
       <div class="card-head" style="margin-bottom:12px"><span class="card-title">How are you now?</span></div>
       ${scaleHTML("mood", "Mood", ev.mood, true)}
       ${scaleHTML("body", "Body", ev.body, false, ["Aching", "Strong"])}
     </section>
+    ${summary}
     <section class="card">
       <div class="card-head">
         <span class="card-title">Boundaries</span>
@@ -1356,6 +1335,7 @@ function renderEvening() {
     </section>
     <button class="btn-primary" id="done-evening">Done <span aria-hidden="true">→</span></button>
     <button class="btn-ghost" id="copy-md">Copy daily note as markdown</button>
+    ${nudgeHTML()}
   `;
 
   wireShared(view);
@@ -1467,19 +1447,23 @@ function copyText(text, done) {
 // ---------- goals tab ----------
 function renderGoals() {
   const today = todayKey();
-  const cards = state.goals.map(g => {
+  const row = g => {
     const n = periodCount(g, periodOf(g, today));
     const met = n >= g.target;
     const streak = goalStreak(g);
     const kind = kindFor(g);
-    return `<button class="gcard t-${kind}" data-open="${esc(g.id)}">
-      ${met ? `<span class="gcheck">${CHECK}</span>` : ""}
+    return `<button class="goal-row t-${kind}" data-open="${esc(g.id)}">
       ${doodleSVG(kind)}
-      <div class="gtitle">${esc(cap(g.title))}</div>
-      <div class="gmeta">${met ? `Done this ${g.period}` : `${n} of ${g.target} · ${periodLeft(g)}`}</div>
-      ${streak ? `<div class="gstreak">${streak}-${unit(g, 1)} streak</div>` : ""}
+      <span class="goal-text">
+        <span class="goal-title">${esc(cap(g.title))}</span>
+        <span class="goal-meta">${met ? `Done this ${g.period}` : `${n} of ${g.target} · ${periodLeft(g)}`}${streak ? ` · ${streak}-${unit(g, 1)} streak` : ""}</span>
+      </span>
+      ${met ? `<span class="gcheck">${CHECK}</span>` : ""}
     </button>`;
-  }).join("");
+  };
+  const weekly = state.goals.filter(g => g.period !== "month");
+  const monthly = state.goals.filter(g => g.period === "month");
+  const group = (label, goals) => goals.length ? `<div class="section-label">${label}</div><div class="goal-list">${goals.map(row).join("")}</div>` : "";
 
   const collectionName = g => ({ "new-place": "new places", "new-food": "new foods", "book": "books read" }[g.id] || g.title.toLowerCase());
   const counts = state.goals.map(g => ({ g, n: goalEntries(g).length })).filter(x => x.n > 0);
@@ -1488,12 +1472,9 @@ function renderGoals() {
     <header class="top">
       <div><div class="date">Small adventures, week by week</div><h1>Goals</h1></div>
     </header>
-    ${nudgeHTML()}
-    <div class="section-label">All goals</div>
-    <div class="grid">
-      ${cards}
-      <button class="gcard gadd" id="add-goal"><span>+</span>Add a goal</button>
-    </div>
+    ${group("This week", weekly)}
+    ${group("This month", monthly)}
+    <button class="goal-row gadd" id="add-goal"><span aria-hidden="true">+</span> Add a goal</button>
     ${counts.length ? `
       <div class="section-label">So far</div>
       <div class="stats">${counts.map(({ g, n }) => `<div class="stat"><b>${n}</b><span>${esc(collectionName(g))}</span></div>`).join("")}</div>
@@ -1909,16 +1890,6 @@ function chartSVG(days) {
   return `<svg class="chart" viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="sleep, mood and body over time" style="font-family:var(--font)">${g}</svg>`;
 }
 
-// the progress hero: thinking with no streak, proud once it's a habit,
-// otherwise today's mood (a rough day still shows as one)
-function streakExpression(cur) {
-  if (!cur) return "thinking";
-  const mood = collectDay(todayKey()).mood;
-  if (mood != null && mood <= 4) return exprFor(mood);
-  if (cur >= 7) return "proud";
-  return mood != null ? exprFor(mood) : "thinking";
-}
-
 function renderProgress() {
   const days = collectWindow(range);
   const prevDays = collectWindow(range, range);
@@ -1992,10 +1963,9 @@ function renderProgress() {
     <header class="top">
       <div><div class="date">How it's going</div><h1>Progress</h1></div>
     </header>
-    <div class="hero">
-      <div class="hero-char floaty">${charHTML(streakExpression(cur))}</div>
-      <div class="big">${cur}</div>
-      <div class="big-label">${cur === 1 ? "day" : "days"} in a row</div>
+    <div class="hero ${dayFilled(todayKey()) ? "lit" : ""}" role="img" aria-label="${cur} ${cur === 1 ? "day" : "days"} in a row">
+      ${stampSVG(cur)}
+      <div class="big-label">in a row</div>
       <p>${dayFilled(todayKey()) ? "Today's in. " : "Check in today to keep it growing. "}Your record is ${best}.</p>
     </div>
     <div class="read-links">
