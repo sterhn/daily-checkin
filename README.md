@@ -1,6 +1,6 @@
 # daily check-in
 
-A small, private daily check-in app with a soft pastel look and little blob characters: rate your **sleep, mood, and body** in the morning, set an intention, then close the day in the evening with boundaries, gym, and a couple of honest notes. A **goals** tab holds small weekly and monthly adventures, and a **progress** tab shows your streak and how the last 7/14/30 days went.
+A small, private daily check-in app with a soft pastel look and a little hoodie-wearing mascot: rate your **sleep, mood, and body** in the morning, set an intention, then close the day in the evening with boundaries, gym, and a couple of honest notes. A **goals** tab holds small weekly and monthly adventures, and a **progress** tab shows your streak and how the last 7/14/30 days went.
 
 Built as a single self-contained page — no accounts, no server, no tracking. Everything is stored in your browser's local storage, on your device only.
 
@@ -11,9 +11,13 @@ Built as a single self-contained page — no accounts, no server, no tracking. E
 - **Up next**: a gradient card points you at the goal with the least time left
 - **Goals**: small adventures with their own streaks, shown as a grid of cards with a character for each (a folded map, a bowl of ramen, a book…) — tap one to log it — *go somewhere new* (weekly), *eat something new* (weekly, ordered or cooked), and *read a book* (monthly, with a "currently reading" note). Log what you did, see your collection grow, and add your own goals or pick from ideas
 - **Morning**: sleep / mood / body on a 1–10 scale — tap or slide across to set a value — plus an intention for the day
-- **Evening**: how you feel now, boundary tracking (held / slipped), gym (went / rest day / skipped), "what happened", and "one honest thing"
+- **Evening**: the morning's intention read back to you, how you feel now, boundary tracking (held / slipped), gym (went / rest day / skipped), a rough "spent today", "what happened", and "one honest thing"
 - **Yesterday / today toggle** on the evening tab — for when you close the day after midnight. Before 5am the app opens on the evening tab already set to yesterday, and a small dot marks days you've already saved
-- **Mood character**: a little matte-clay mochi next to the mood scale changes colour and expression as you slide — one round shape that changes colour and face: sleepy before you pick, teary blue at 1, grumpy green at 2, up to a laughing pink with hearts at 10, with a word for each (drained → radiant)
+- **The mascot**: one small creature with messy blue hair, tired eyes and an oversized hoodie lives in the header. It holds a coffee in the morning and is wrapped up cozy in the evening, then follows your mood slider (hiding in its hood at 1–2, arms up at 9–10). It gets sleepy in the small hours, looks proud on streaks and finished goals, and reacts when you skip the gym or slip on a boundary. The mood word (drained → radiant) shows live under the slider
+- **Toasts with a bit of personality**: dry, warm one-liners when you finish a check-in, with special lines for late nights and streak milestones
+- **Journal**: scroll back through every intention, "what happened" and "one honest thing", newest first
+- **This week's story**: the week stitched together day by day like a short diary — intentions, notes, boundaries, gym, spending, mood — with a *copy week* button for your weekly review
+- **Haptics**: a tiny tick on phones that support it when you tap chips, finish a goal or save
 - **Progress**: your streak and record, the last 7 days, averages vs the period before, a sleep/mood/body chart, boundary hold rates, and mood after better vs worse sleep over 7, 14, or 30 days
 - **Editable boundaries**: add or remove your own boundaries from the evening tab
 - **Copy daily note as markdown** — paste the day into your journal or notes app

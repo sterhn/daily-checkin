@@ -50,6 +50,19 @@
       radial-gradient(at 100% 100%, #e3dbff 0, transparent 60%),
       #fdf0f5;
     --font: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+
+    /* the mascot */
+    --ch-hood: #bdb2f2;
+    --ch-hood-lo: #a194e4;
+    --ch-skin: #fde7d8;
+    --ch-hair: #7ea6ee;
+    --ch-hair-lo: #5d84d4;
+    --ch-ink: #3b2b2e;
+    --ch-bag: #c79ab4;
+    --ch-string: #fffaf2;
+    --ch-mug: #fffaf2;
+    --ch-steam: #ffffff;
+    --ch-decor: #9d8be0;
     color-scheme: light;
   }
   @media (prefers-color-scheme: dark) {
@@ -80,6 +93,16 @@
         radial-gradient(at 0% 0%, rgba(255, 170, 110, 0.22) 0, transparent 60%),
         radial-gradient(at 100% 100%, rgba(150, 125, 255, 0.25) 0, transparent 60%),
         #201b23;
+      --ch-hood: #9283da;
+      --ch-hood-lo: #7668c6;
+      --ch-skin: #f5ddcd;
+      --ch-hair: #77a0ea;
+      --ch-hair-lo: #4f76c4;
+      --ch-bag: #b88aa6;
+      --ch-string: #e9e3f5;
+      --ch-mug: #f3ece2;
+      --ch-steam: rgba(255, 255, 255, 0.85);
+      --ch-decor: #b9adf5;
       color-scheme: dark;
     }
   }
@@ -115,10 +138,11 @@
     box-shadow: var(--shadow);
     flex: none;
   }
-  .streak-pill .blob { width: 36px; height: 36px; margin: -3px -2px; }
+  .streak-pill .blob { width: 46px; height: 46px; margin: -8px -3px -6px -5px; }
   .streak-pill b { font-size: 1rem; font-weight: 800; }
-  .streak-pill:not(.lit) .blob { filter: grayscale(0.9) opacity(0.55); }
+  .streak-pill:not(.lit) b { color: var(--muted); }
   .streak-pill.pop .blob { animation: boing 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); }
+  .streak-pill.squish .blob { animation: squish 0.45s cubic-bezier(0.34, 1.56, 0.64, 1); }
   @keyframes boing {
     0% { transform: scale(0.6) rotate(-12deg); }
     60% { transform: scale(1.25) rotate(6deg); }
@@ -206,17 +230,15 @@
   .segments:focus-visible { outline: 2px solid var(--c); outline-offset: 3px; border-radius: 12px; }
   .seg-ends { display: flex; justify-content: space-between; margin-top: 5px; font-size: 0.72rem; color: var(--muted); }
 
-  .mood-head { justify-content: flex-start; align-items: center; gap: 12px; }
-  .mood-blob { width: 80px; height: 80px; flex: none; display: block; margin: -8px -6px -8px -10px; }
-  .mood-blob .blob { width: 100%; height: 100%; }
-  .mood-blob.squish { animation: squish 0.45s cubic-bezier(0.34, 1.56, 0.64, 1); }
   @keyframes squish {
     0% { transform: scale(1.12, 0.86); }
     55% { transform: scale(0.95, 1.07); }
     100% { transform: none; }
   }
-  .mood-text { flex: 1; display: flex; flex-direction: column; }
-  .mood-word { font-size: 0.85rem; font-weight: 600; color: var(--muted); }
+  /* the live mood word sits under the slider, between the two ends */
+  .mood-ends { align-items: baseline; }
+  .mood-word { font-size: 0.85rem; font-weight: 700; color: var(--text); }
+  .mood-word.empty { font-weight: 600; color: var(--muted); }
   .mood-word.wisp { animation: wisp 0.35s ease; }
   @keyframes wisp { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
   .scale-val.bump { animation: bump 0.28s cubic-bezier(0.34, 1.56, 0.64, 1); }
@@ -232,6 +254,7 @@
     font-size: 0.95rem;
   }
   textarea { min-height: 76px; resize: vertical; margin-top: 10px; }
+  textarea.short { min-height: 0; resize: none; }
   textarea:focus, .field:focus { outline: none; border-color: var(--faint); background: var(--card); }
   textarea::placeholder, .field::placeholder { color: var(--muted); }
   .field-label { font-weight: 600; font-size: 0.92rem; }
@@ -323,18 +346,36 @@
   .summary .tile { flex: 1; border-radius: 16px; padding: 10px 12px; }
   .tile b { display: block; font-size: 1.3rem; font-weight: 800; letter-spacing: -0.02em; }
   .tile span { font-size: 0.72rem; color: var(--muted); font-weight: 600; }
-  .quote { margin-top: 10px; font-size: 0.85rem; color: var(--muted); }
+  /* the morning's intention, read back in the evening */
+  .intent { margin-top: 12px; background: var(--grad-soft); border-radius: 16px; padding: 13px 15px 14px; }
+  .intent-label { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+  .intent-text { font-size: 1.12rem; font-weight: 700; letter-spacing: -0.01em; line-height: 1.3; margin-top: 3px; white-space: pre-wrap; overflow-wrap: anywhere; }
 
   /* ---- blobs ---- */
   .blob { display: block; overflow: visible; }
-  .blob-trio { display: flex; align-items: flex-end; justify-content: center; gap: 2px; }
-  .blob-trio .blob:nth-child(1) { width: 40px; height: 40px; margin-bottom: 6px; }
-  .blob-trio .blob:nth-child(2) { width: 70px; height: 70px; }
-  .blob-trio .blob:nth-child(3) { width: 30px; height: 30px; margin-bottom: 16px; }
   .floaty .blob { animation: floaty 4s ease-in-out infinite; }
-  .floaty .blob:nth-child(2) { animation-delay: -1.3s; }
-  .floaty .blob:nth-child(3) { animation-delay: -2.6s; }
   @keyframes floaty { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+
+  /* ---- the mascot: colours are CSS variables so it follows light / dark ---- */
+  .ch-hood { fill: var(--ch-hood); }
+  .ch-hood-lo { fill: var(--ch-hood-lo); }
+  .ch-sleeve { fill: none; stroke: var(--ch-hood-lo); stroke-width: 11; stroke-linecap: round; stroke-linejoin: round; }
+  .ch-rim { fill: none; stroke: var(--ch-hood-lo); stroke-width: 3.2; }
+  .ch-seam { fill: none; stroke: var(--ch-hood-lo); stroke-width: 2; stroke-linecap: round; }
+  .ch-skin { fill: var(--ch-skin); }
+  .ch-hair { fill: var(--ch-hair); }
+  .ch-strand { fill: none; stroke: var(--ch-hair-lo); stroke-width: 1.8; stroke-linecap: round; }
+  .ch-ink { fill: var(--ch-ink); }
+  .ch-line { fill: none; stroke: var(--ch-ink); stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+  .ch-bag { fill: none; stroke: var(--ch-bag); stroke-width: 1.8; stroke-linecap: round; }
+  .ch-mouth { fill: #b8434c; stroke: var(--ch-ink); stroke-width: 1.6; stroke-linejoin: round; }
+  .ch-string { fill: none; stroke: var(--ch-string); stroke-width: 1.8; stroke-linecap: round; }
+  .ch-mug { fill: var(--ch-mug); }
+  .ch-steam { fill: none; stroke: var(--ch-steam); stroke-width: 2.4; stroke-linecap: round; }
+  .ch-hop { animation: hop 0.9s ease-in-out 3; }
+  @keyframes hop { 0%, 100% { transform: none; } 45% { transform: translateY(-6px); } }
+  .hero-char { display: flex; justify-content: center; }
+  .hero-char .blob { width: 96px; height: 96px; margin: -8px 0 -4px; }
 
   /* ---- goals ---- */
   .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
@@ -430,6 +471,33 @@
   .bar-row .pct { width: 42px; text-align: right; font-size: 0.85rem; font-weight: 700; }
   .empty-note { color: var(--muted); font-size: 0.85rem; margin-top: 10px; }
 
+  /* ---- reading back: journal + week story ---- */
+  .read-links { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+  .read-link {
+    text-align: left;
+    background: var(--card); border: 1px solid var(--line); border-radius: 18px;
+    padding: 14px; box-shadow: var(--shadow);
+    transition: transform 0.12s ease;
+  }
+  .read-link:active { transform: scale(0.97); }
+  .read-link b { display: block; font-size: 0.92rem; font-weight: 700; }
+  .read-link span { font-size: 0.75rem; color: var(--muted); font-weight: 500; }
+  .story-day + .story-day { margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--line); }
+  .story-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+  .story-date { font-weight: 700; font-size: 0.92rem; }
+  .story-scores { font-size: 0.7rem; font-weight: 700; color: var(--muted); background: var(--seg); border-radius: 999px; padding: 3px 9px; }
+  .story-line { margin-top: 8px; }
+  .story-label { display: block; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--text); opacity: 0.7; }
+  .story-text { display: block; font-size: 0.86rem; color: var(--muted); white-space: pre-wrap; overflow-wrap: anywhere; }
+  .story-gap .story-date { color: var(--muted); font-weight: 600; }
+  .week-nav { display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: 4px; }
+  .week-nav button {
+    background: rgba(255, 255, 255, 0.6); border: none; border-radius: 50%;
+    width: 36px; height: 36px; font-size: 1.1rem; font-weight: 700;
+  }
+  .week-nav button:disabled { opacity: 0.3; cursor: default; }
+  @media (prefers-color-scheme: dark) { .week-nav button { background: rgba(255, 255, 255, 0.1); } }
+
   /* ---- nav ---- */
   nav {
     position: fixed;
@@ -468,6 +536,7 @@
     border-radius: 999px;
     font-size: 0.85rem; font-weight: 600;
     text-align: center;
+    text-wrap: balance;
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.25s, transform 0.25s cubic-bezier(0.34, 1.4, 0.64, 1);
@@ -775,30 +844,136 @@ function blobSVG(kind, mood = 8, opts = {}) {
   return wrap(inner + (opts.decor === false || !f.decor ? "" : f.decor()));
 }
 
-// the mood character: a mochi whose colour and expression follow the 1–10 value
-const MOODS = {
-  0:  { col: "cream",  eyes: "closed", mouth: "small", decor: () => zzz(86, 4, DECOR.purple) },
-  1:  { col: "blue",   eyes: "sad",    mouth: "frown", tear: true },
-  2:  { col: "green",  eyes: "angry",  mouth: "frown", decor: () => burst(16, 26, [185, 245], DECOR.green, 7, 15) + burst(84, 26, [-65, -5], DECOR.green, 7, 15) },
-  3:  { col: "blue",   eyes: "dot",    mouth: "frown" },
-  4:  { col: "lav",    eyes: "meh",    mouth: "flat" },
-  5:  { col: "orange", eyes: "dot",    mouth: "small" },
-  6:  { col: "orange", eyes: "wink",   mouth: "small", decor: () => star5(94, 16, 7, DECOR.yellow) },
-  7:  { col: "yellow", eyes: "happy",  mouth: "small", decor: () => burst(14, 24, [180, 228, 276], DECOR.yellow, 7, 15) },
-  8:  { col: "yellow", eyes: "happy",  mouth: "open",  decor: () => burst(14, 24, [180, 228, 276], DECOR.yellow, 7, 15) },
-  9:  { col: "pink",   eyes: "happy",  mouth: "open",  decor: () => heart(16, 20, 7, DECOR.pink) + heart(92, 18, 7, DECOR.pink) },
-  10: { col: "pink",   eyes: "happy",  mouth: "open",  decor: () => heart(14, 20, 7, DECOR.pink) + heart(92, 16, 7.5, DECOR.pink) + heart(102, 36, 4.5, DECOR.pink) + sparkle(4, 44, 5, DECOR.yellow) }
+// ---- the mascot: one small creature with messy blue hair, tired eyes and an
+// oversized hoodie whose sleeves swallow its hands. same character everywhere,
+// only the expression (and what it's doing with its sleeves) changes.
+const EXPRESSIONS = {
+  neutral:  { eyes: "dot",     mouth: "smile" },
+  happy:    { eyes: "arc",     mouth: "wide",  blush: 0.8 },
+  great:    { eyes: "sparkle", mouth: "grin",  blush: 0.85, arms: "up", hop: true,
+              decor: () => sparkle(6, 30, 5, DECOR.yellow) + sparkle(95, 28, 6, DECOR.yellow) + sparkle(86, 6, 3.5, DECOR.pink) },
+  low:      { eyes: "sad",     mouth: "frown", bags: 1 },
+  rough:    { eyes: "sad",     hood: "hide",   bags: 1 },
+  sleepy:   { eyes: "half",    mouth: "yawn",  bags: 1, tilt: 6, decor: () => zzz(80, -4, "var(--ch-decor)") },
+  proud:    { eyes: "content", mouth: "smirk", blush: 0.7, arms: "hips", tilt: -6,
+              decor: () => sparkle(88, 14, 5, DECOR.yellow) + sparkle(96, 30, 3, DECOR.yellow) },
+  coffee:   { eyes: "content", mouth: "small", arms: "mug" },
+  thinking: { eyes: "side",    mouth: "flat",  brows: "quirk", arms: "chin",
+              decor: () => `<g fill="var(--ch-decor)"><circle cx="88" cy="24" r="1.8"/><circle cx="94" cy="15" r="2.6"/><circle cx="101" cy="4" r="3.6"/></g>` },
+  cozy:     { eyes: "content", mouth: "small", blush: 0.75, hood: "up", arms: "hug",
+              decor: () => `<path d="M93 -2 A10 10 0 1 0 103 14 A7.5 7.5 0 0 1 93 -2 Z" fill="${DECOR.yellow}"/>` }
 };
-function moodBlobSVG(v) {
-  const m = MOODS[v || 0];
-  const p = PALETTE[m.col];
-  const id = "mb" + (blobSeq++);
-  // one soft, round mochi shape for every mood; only colour and face change
-  const body = `<path d="M8 68 C 8 40, 26 24, 50 24 C 74 24, 92 40, 92 68 C 92 86, 76 91, 50 91 C 24 91, 8 86, 8 68 Z"/>`;
-  return wrap(`<defs>${grad(id, p)}</defs>
-    <g fill="url(#${id})" filter="url(#clay)">${body}</g>
-    ${faceSVG({ at: [50, 60, 1.3], eyes: m.eyes, mouth: m.mouth, tear: m.tear })}
-    ${m.decor ? m.decor() : ""}`, 32);
+const SLEEVES = {
+  down: ["M28 73 C 23 80, 20 86, 21 93", "M72 73 C 77 80, 80 86, 79 93"],
+  up:   ["M28 72 C 21 67, 16 60, 13 52", "M72 72 C 79 67, 84 60, 87 52"],
+  hips: ["M28 73 C 19 78, 20 86, 30 88", "M72 73 C 81 78, 80 86, 70 88"],
+  mug:  ["M28 73 C 25 82, 30 90, 39 91", "M72 73 C 75 82, 70 90, 61 91"],
+  hug:  ["M28 73 C 27 84, 40 90, 59 86", "M72 73 C 73 84, 60 90, 41 86"],
+  chin: ["M28 73 C 23 80, 20 86, 21 93", "M73 75 C 75 83, 65 83, 61 70"]
+};
+function charSVG(expr = "neutral") {
+  const x = EXPRESSIONS[expr] || EXPRESSIONS.neutral;
+  const hood = x.hood || "down";
+  const hy = hood === "hide" ? 50 : hood === "up" ? 45 : 42; // head centre
+  const ey = hy + 5, my = ey + 10;                           // eye line, mouth line
+  const L = 40, R = 60;
+  const line = d => `<path class="ch-line" d="${d}"/>`;
+  const dot = (cx, cy, s = 1) => `<ellipse class="ch-ink" cx="${f1(cx)}" cy="${f1(cy)}" rx="${f1(2.7 * s)}" ry="${f1(3.4 * s)}"/>
+    <circle cx="${f1(cx - 0.9 * s)}" cy="${f1(cy - 1.3 * s)}" r="${f1(0.9 * s)}" fill="#fff" opacity="0.85"/>`;
+  // o = which way is "outward" for this eye: -1 left, +1 right
+  const EYES = {
+    dot:     c => dot(c, ey),
+    side:    c => dot(c + 1.8, ey - 0.6),
+    arc:     c => line(`M${c - 4} ${ey + 1.5} Q${c} ${ey - 3.5} ${c + 4} ${ey + 1.5}`),
+    content: c => line(`M${c - 4} ${ey - 0.5} Q${c} ${ey + 3} ${c + 4} ${ey - 0.5}`),
+    half:    c => `<path class="ch-ink" d="M${c - 3.4} ${ey} A3.4 3.2 0 0 0 ${c + 3.4} ${ey} Z"/>` + line(`M${c - 4.4} ${ey} H${c + 4.4}`),
+    sparkle: c => dot(c, ey, 1.2) + sparkle(c + 1.3, ey + 1.5, 1.6, "#fff"),
+    sad:     (c, o) => dot(c, ey + 0.6, 0.9) + line(`M${c + 4.5 * o} ${ey - 4.5} L${c - 3.5 * o} ${ey - 7.5}`)
+  };
+  const MOUTHS = {
+    smile: () => line(`M46 ${my} Q50 ${my + 3} 54 ${my}`),
+    small: () => line(`M47 ${my} Q50 ${my + 2.2} 53 ${my}`),
+    wide:  () => line(`M44 ${my - 1} Q50 ${my + 5} 56 ${my - 1}`),
+    grin:  () => `<path class="ch-mouth" d="M43.5 ${my - 1.5} Q50 ${my + 10} 56.5 ${my - 1.5} Z"/><ellipse cx="50" cy="${my + 2.4}" rx="2.8" ry="1.5" fill="#f28a98"/>`,
+    frown: () => line(`M46 ${my + 2} Q50 ${my - 1.5} 54 ${my + 2}`),
+    flat:  () => line(`M47.5 ${my + 1} H53`),
+    smirk: () => line(`M46 ${my + 0.5} Q51 ${my + 2.8} 55.5 ${my - 2}`),
+    yawn:  () => `<ellipse class="ch-ink" cx="50" cy="${my + 1}" rx="1.9" ry="2.5"/>`
+  };
+
+  const hoodBack = hood === "down" ? "" : `<path class="ch-hood" filter="url(#clay)" d="M50 ${hy - 31} C 69 ${hy - 31}, 82 ${hy - 17}, 82 ${hy + 2} C 82 ${hy + 16}, 76 ${hy + 24}, 70 ${hy + 28} L 30 ${hy + 28} C 24 ${hy + 24}, 18 ${hy + 16}, 18 ${hy + 2} C 18 ${hy - 17}, 31 ${hy - 31}, 50 ${hy - 31} Z"/>`;
+  const body = `<path class="ch-hood" filter="url(#clay)" d="M14 97 C 13 82, 20 70, 34 66 C 42 64, 58 64, 66 66 C 80 70, 87 82, 86 97 C 86 99.5, 84 100, 81 100 L 19 100 C 16 100, 14 99.5, 14 97 Z"/>`;
+  const arms = x.arms || "down";
+  const pocket = arms === "mug" || arms === "hug" ? "" : `<path class="ch-seam" d="M33 89 Q50 85 67 89"/>`;
+
+  // hair: a messy tuft when the hood is down, just a fringe peeking out when it's up
+  const hair = hood === "down"
+    ? `<g class="ch-hair" filter="url(#clay-sm)">
+        <path d="M24 46 C 20 28, 32 14, 50 14 C 68 14, 80 28, 76 46 C 74 40, 71 35, 68 31 C 66 35, 61 36, 58 32 C 55 36, 49 37, 47 33 C 44 37, 38 37, 36 33 C 33 37, 28 40, 24 46 Z"/>
+        <path d="M47 16 C 43 8, 49 2, 57 3 C 53 6, 53 10, 55 15 Z"/>
+        <path d="M68 19 C 74 15, 79 17, 82 12 C 83 19, 78 24, 73 25 Z"/>
+      </g>
+      <path class="ch-strand" d="M38 21 C 42 25, 44 28, 44 32 M58 19 C 61 23, 62 26, 64 29"/>`
+    : `<g class="ch-hair" filter="url(#clay-sm)" transform="translate(0 ${hy - 42})">
+        <path d="M27 42 C 30 30, 40 24, 50 24 C 60 24, 70 30, 73 42 C 70 38, 67 35, 64 33 C 62 37, 57 37, 55 33 C 52 37, 47 37, 45 33 C 42 37, 37 37, 35 34 C 32 37, 29 39, 27 42 Z"/>
+        <path d="M47 25 C 45 19, 50 16, 54 17 C 51 19, 51 22, 52 25 Z"/>
+      </g>`;
+  const faceR = hood === "down" ? 25 : 22.5;
+  const brows = x.brows === "quirk"
+    ? line(`M${L - 4} ${ey - 7} H${L + 3.5}`) + line(`M${R - 4} ${ey - 8} Q${R} ${ey - 12} ${R + 4} ${ey - 9}`)
+    : "";
+  const bags = `<path class="ch-bag" opacity="${x.bags ?? 0.75}" d="M${L - 4} ${ey + 5} Q${L} ${ey + 7.5} ${L + 4} ${ey + 5} M${R - 4} ${ey + 5} Q${R} ${ey + 7.5} ${R + 4} ${ey + 5}"/>`;
+  const blush = hood === "hide" ? "" : `<circle cx="${L - 7}" cy="${ey + 6}" r="3.6" fill="${BLUSH}" opacity="${x.blush ?? 0.5}"/><circle cx="${R + 7}" cy="${ey + 6}" r="3.6" fill="${BLUSH}" opacity="${x.blush ?? 0.5}"/>`;
+  const tilt = x.tilt ? ` transform="rotate(${x.tilt} 50 68)${x.tilt < 0 ? " translate(0 -1.5)" : ""}"` : "";
+  const head = `<g${tilt}>
+      <circle class="ch-skin" filter="url(#clay)" cx="50" cy="${hy}" r="${faceR}"/>
+      ${hair}
+      ${hood === "down" ? "" : `<circle class="ch-rim" cx="50" cy="${hy}" r="${faceR + 1.2}"/>`}
+      ${blush}${bags}
+      ${EYES[x.eyes](L, -1)}${EYES[x.eyes](R, 1)}
+      ${brows}
+      ${hood === "hide" ? "" : MOUTHS[x.mouth]()}
+    </g>`;
+
+  // collar: normally a soft ring round the neck; hiding, it's pulled up to the eyes
+  const collar = hood === "hide"
+    ? `<path class="ch-hood" filter="url(#clay)" d="M20 ${ey + 11} C 34 ${ey + 6.5}, 66 ${ey + 6.5}, 80 ${ey + 11} L 84 88 L 16 88 Z"/>
+       <path class="ch-seam" d="M26 ${ey + 13} C 38 ${ey + 10}, 62 ${ey + 10}, 74 ${ey + 13}"/>`
+    : `<path class="ch-hood-lo" d="M29 64 C 37 67, 63 67, 71 64 C 73 71, 63 75, 50 75 C 37 75, 27 71, 29 64 Z"/>
+       <path class="ch-string" d="M45.5 74 V81 M54.5 74 V81"/>
+       <circle cx="45.5" cy="82" r="1.5" fill="var(--ch-string)"/><circle cx="54.5" cy="82" r="1.5" fill="var(--ch-string)"/>`;
+  const mug = arms === "mug"
+    ? `<rect class="ch-mug" filter="url(#clay-sm)" x="40" y="83" width="20" height="14" rx="4"/><rect x="40" y="88" width="20" height="3" fill="var(--pink)" opacity="0.75"/>`
+    : "";
+  const sleeves = `<g filter="url(#clay-sm)">${SLEEVES[arms].map(d => `<path class="ch-sleeve" d="${d}"/>`).join("")}</g>`;
+  const steam = arms === "mug" ? `<path class="ch-steam" d="M46.5 80 q-2.2 -3 0 -6 q2.2 -3 0 -6 M53.5 80 q-2.2 -3 0 -6 q2.2 -3 0 -6"/>` : "";
+
+  const inner = `<g${x.hop ? ` class="ch-hop"` : ""}>${hoodBack}${body}${pocket}${head}${collar}${mug}${sleeves}${steam}</g>${x.decor ? x.decor() : ""}`;
+  return `<svg class="blob char" data-expr="${expr}" viewBox="-12 -12 124 124" aria-hidden="true">
+    <ellipse cx="50" cy="101" rx="34" ry="4.5" fill="#3a2a20" opacity="0.1" filter="url(#clay-soft)"/>
+    ${inner}
+  </svg>`;
+}
+
+// which face fits a 1–10 mood. `idle` is the face before a mood is picked;
+// `tired` (small hours, bad sleep) turns the middle of the scale sleepy.
+function exprFor(mood, { idle = "neutral", tired = false } = {}) {
+  if (mood == null) return tired ? "sleepy" : idle;
+  if (mood <= 2) return "rough";
+  if (mood <= 4) return "low";
+  if (mood <= 6) return tired ? "sleepy" : "neutral";
+  if (mood <= 8) return "happy";
+  return "great";
+}
+// after midnight and before 7am
+const smallHours = () => new Date().getHours() < 7;
+
+// a short-lived face after something happens (a slip, a milestone, a goal done)
+let reaction = null;
+function react(expr, ms = 1800) {
+  reaction = expr;
+  clearTimeout(react._t);
+  react._t = setTimeout(() => { reaction = null; paintPill(); }, ms);
 }
 const CHECK = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 12.5l4 4 8-9" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 
@@ -888,7 +1063,8 @@ function normalizeImportedState(raw) {
         boundaries: boundariesObj,
         gym: (rec.evening.gym === "went" || rec.evening.gym === "rest" || rec.evening.gym === "skipped") ? rec.evening.gym : null,
         happened: typeof rec.evening.happened === "string" ? rec.evening.happened : "",
-        honest: typeof rec.evening.honest === "string" ? rec.evening.honest : ""
+        honest: typeof rec.evening.honest === "string" ? rec.evening.honest : "",
+        spent: typeof rec.evening.spent === "string" ? rec.evening.spent : ""
       };
       if (typeof rec.evening.savedAt === "string") out.evening.savedAt = rec.evening.savedAt;
     }
@@ -975,7 +1151,7 @@ function morningFilled(m) {
 }
 function eveningFilled(ev) {
   return !!ev && (ev.mood != null || ev.body != null || !!ev.gym ||
-    !!(ev.happened || "").trim() || !!(ev.honest || "").trim() ||
+    !!(ev.happened || "").trim() || !!(ev.honest || "").trim() || !!(ev.spent || "").trim() ||
     Object.values(ev.boundaries || {}).some(Boolean));
 }
 // a day counts toward the streak if either check-in has something in it
@@ -1050,8 +1226,9 @@ function morningModel(key) {
 }
 function eveningModel(key) {
   const saved = state.days[key]?.evening;
-  const ev = saved ? clone(saved) : { mood: null, body: null, boundaries: {}, gym: null, happened: "", honest: "" };
+  const ev = saved ? clone(saved) : { mood: null, body: null, boundaries: {}, gym: null, happened: "", honest: "", spent: "" };
   if (!ev.boundaries || typeof ev.boundaries !== "object") ev.boundaries = {};
+  ev.spent = saved?.spent ?? "";
   // pick up boundaries added since last save
   for (const b of state.boundaries) if (!(b in ev.boundaries)) ev.boundaries[b] = null;
   return ev;
@@ -1066,13 +1243,75 @@ function commit(key, part, model) {
   save();
   flashSaved();
   const started = !wasFilled && dayFilled(today);
+  const n = started ? currentStreak() : 0;
+  const milestone = STREAK_MILESTONES.includes(n);
+  if (milestone) react("great", 2600);
   refreshChrome(started);
-  if (started) {
-    const n = currentStreak();
-    if (STREAK_MILESTONES.includes(n)) { toast(`${n} days in a row — amazing`); confetti(); }
-    else if (n > 1) toast(`Day ${n} of your streak`);
-    else toast("Streak started");
+  if (started && !streakToast(n)) {
+    if (milestone) toast(`${n} days in a row. look at you`);
+    else if (n > 1) toast(`day ${n}. still going`);
+    else toast("day one. streak started");
   }
+  if (milestone) { confetti(); tick(); }
+}
+
+// ---------- toasts with a bit of personality ----------
+const MORNING_TOASTS = [
+  "noted. go be a person now",
+  "morning logged. don't forget water",
+  "got it. the day is yours",
+  "saved. you're already ahead of yesterday-you",
+  "cool. now close this app and do the thing",
+  "morning check — done. coffee check — pending?",
+  "okay, you're awake. that's step one"
+];
+const EVENING_TOASTS = [
+  "day's on record. rest now",
+  "saved. tomorrow's a reset",
+  "logged. you showed up today, that counts",
+  "done. close your eyes before your phone closes them for you",
+  "the day happened. you wrote it down. that's enough",
+  "evening saved. the bed is right there"
+];
+const EMPTY_TOASTS = [
+  "blank check-in is just opening the app with extra steps",
+  "you opened it, might as well fill something in",
+  "the form is right there, just saying"
+];
+const STREAK_TOASTS = {
+  7: "a whole week. that's not nothing",
+  14: "two weeks. you're building something here",
+  30: "a month. i'm genuinely impressed",
+  100: "one hundred days. who even are you"
+};
+// random line, never the same one twice in a row
+function pick(list) {
+  let i = Math.floor(Math.random() * list.length);
+  if (list.length > 1 && list[i] === pick.last) i = (i + 1) % list.length;
+  return (pick.last = list[i]);
+}
+// the big streak lines show once per day they're reached
+const streakToastsShown = new Set();
+function streakToast(n) {
+  const id = `${todayKey()}:${n}`;
+  if (!STREAK_TOASTS[n] || streakToastsShown.has(id)) return false;
+  streakToastsShown.add(id);
+  toast(STREAK_TOASTS[n]);
+  return true;
+}
+function doneToast(part) {
+  if (dayFilled(todayKey()) && streakToast(currentStreak())) return;
+  const h = new Date().getHours();
+  if (part === "morning") toast(h < 6 ? "you're either up early or haven't slept. either way — noted" : pick(MORNING_TOASTS));
+  else if (h < 2) toast("it's tomorrow already. save and sleep");
+  else if (h < 6) toast("you're up late. this counts as dedication or denial");
+  else if (eveningOffset !== 0) toast("yesterday's on record. better late than never");
+  else toast(pick(EVENING_TOASTS));
+}
+
+// the lightest possible haptic tick, where the phone supports it
+function tick() {
+  try { if (navigator.vibrate) navigator.vibrate(10); } catch (e) { /* not allowed here */ }
 }
 
 function flashSaved() {
@@ -1097,11 +1336,6 @@ function kindFor(g) {
   const i = state.goals.filter(x => !KIND_BY_ICON[x.icon]).indexOf(g);
   return EXTRA_KINDS[Math.max(0, i) % EXTRA_KINDS.length];
 }
-// today's mood (evening first) drives the mascot's smile
-function todaysMood() {
-  const d = state.days[todayKey()];
-  return d?.evening?.mood ?? d?.morning?.mood ?? 8;
-}
 
 const SCALE_VARS = { sleep: "--lav", mood: "--pink", body: "--mint" };
 
@@ -1112,20 +1346,17 @@ function scaleHTML(id, label, value, withMood, ends) {
     const cls = value === null || i > value ? "" : i === value ? "on tip" : "on";
     segs += `<button tabindex="-1" data-v="${i}" class="${cls}" aria-hidden="true"></button>`;
   }
-  const head = withMood
-    ? `<div class="scale-head mood-head">
-        <span class="mood-blob">${moodBlobSVG(value)}</span>
-        <span class="mood-text"><span class="scale-label">${label}</span><span class="mood-word">${value ? moodWord(value) : "slide to pick"}</span></span>
-        <span class="scale-val ${value === null ? "empty" : ""}">${value === null ? "–" : value}</span>
-      </div>`
-    : `<div class="scale-head">
-        <span class="scale-label">${label}</span>
-        <span class="scale-val ${value === null ? "empty" : ""}">${value === null ? "–" : value}</span>
-      </div>`;
+  // the mood scale says its word out loud, live, between the two ends
+  const below = withMood
+    ? `<div class="seg-ends mood-ends"><span>Drained</span><span class="mood-word ${value ? "" : "empty"}">${value ? moodWord(value) : "slide to pick"}</span><span>Radiant</span></div>`
+    : ends ? `<div class="seg-ends"><span>${ends[0]}</span><span>${ends[1]}</span></div>` : "";
   return `<div class="scale" data-scale-id="${id}">
-    ${head}
+    <div class="scale-head">
+      <span class="scale-label">${label}</span>
+      <span class="scale-val ${value === null ? "empty" : ""}">${value === null ? "–" : value}</span>
+    </div>
     <div class="segments" role="slider" tabindex="0" style="--c:var(${SCALE_VARS[id]})" aria-label="${label}" aria-valuemin="1" aria-valuemax="10" aria-valuenow="${value ?? 0}" aria-valuetext="${value ? (withMood ? `${value} — ${moodWord(value)}` : value) : "not set"}">${segs}</div>
-    ${ends ? `<div class="seg-ends"><span>${ends[0]}</span><span>${ends[1]}</span></div>` : ""}
+    ${below}
   </div>`;
 }
 
@@ -1146,17 +1377,13 @@ function paintScale(root, id, value) {
     void val.offsetWidth;
     val.classList.add("bump");
   }
-  const blob = root.querySelector(".mood-blob");
+  const word = root.querySelector(".mood-word");
   const seg = root.querySelector(".segments");
   seg.setAttribute("aria-valuenow", value ?? 0);
-  seg.setAttribute("aria-valuetext", value ? (blob ? `${value} — ${moodWord(value)}` : String(value)) : "not set");
-  if (blob && changed) {
-    blob.innerHTML = moodBlobSVG(value);
-    blob.classList.remove("squish");
-    void blob.offsetWidth;
-    blob.classList.add("squish");
-    const word = root.querySelector(".mood-word");
+  seg.setAttribute("aria-valuetext", value ? (word ? `${value} — ${moodWord(value)}` : String(value)) : "not set");
+  if (word && changed) {
     word.textContent = value ? moodWord(value) : "slide to pick";
+    word.classList.toggle("empty", value === null);
     word.classList.remove("wisp");
     void word.offsetWidth;
     word.classList.add("wisp");
@@ -1208,10 +1435,34 @@ function wireScales(model, onChange) {
 function moodWord(v) { return v ? MOOD_WORDS[v - 1] : ""; }
 
 // ---------- shared pieces: header pill, week card, up-next card ----------
+// the header character: coffee in the morning, cozy in the evening, then
+// whatever the mood slider says
+function headerExpression() {
+  if (reaction) return reaction;
+  if (tab === "evening") {
+    return exprFor(state.days[eveningKey()]?.evening?.mood, { idle: "cozy", tired: smallHours() });
+  }
+  const m = state.days[todayKey()]?.morning;
+  return exprFor(m?.mood, { idle: "coffee", tired: smallHours() || (m?.sleep != null && m.sleep < 4) });
+}
+const pillSig = () => `${currentStreak()}|${dayFilled(todayKey())}|${headerExpression()}`;
 function pillHTML(pop) {
   const cur = currentStreak();
   const done = dayFilled(todayKey());
-  return `<button class="streak-pill ${done ? "lit" : ""} ${pop ? "pop" : ""}" data-goto="progress" aria-label="${cur} day streak">${blobSVG("flower", done ? todaysMood() : 5, { decor: false })}<b>${cur}</b></button>`;
+  return `<button class="streak-pill ${done ? "lit" : ""} ${pop ? "pop" : ""}" data-goto="progress" aria-label="${cur} day streak">${charSVG(headerExpression())}<b>${cur}</b></button>`;
+}
+// repaint the header pill only when something on it changed; returns whether it did
+function paintPill(pop) {
+  const slot = view.querySelector("#pill-slot");
+  if (!slot) return false;
+  const sig = pillSig();
+  if (!pop && slot.dataset.sig === sig) return false;
+  const prevExpr = (slot.dataset.sig || "").split("|")[2];
+  slot.innerHTML = pillHTML(pop);
+  slot.dataset.sig = sig;
+  if (!pop && prevExpr && prevExpr !== sig.split("|")[2]) slot.firstElementChild.classList.add("squish");
+  wireShared(slot);
+  return true;
 }
 
 function weekHTML() {
@@ -1257,7 +1508,7 @@ function nudgeHTML() {
       <div class="nudge-main"><span class="badge">All done</span>
         <div class="nudge-title">Every goal is ticked off</div>
         <div class="nudge-sub">Enjoy it — new ones start next week</div></div>
-      ${blobSVG("flower", 10)}
+      ${charSVG("proud")}
     </button>`;
   }
   const { g, n } = pending[0];
@@ -1282,11 +1533,9 @@ function wireShared(root) {
 // after a save: update the streak bits without re-rendering the form
 function refreshChrome(pop) {
   updateNavDots();
-  const pill = view.querySelector("#pill-slot");
-  if (pill) pill.innerHTML = pillHTML(pop);
+  paintPill(pop);
   const week = view.querySelector("#week-slot");
   if (week) week.innerHTML = weekHTML();
-  if (pill || week) wireShared(view);
 }
 
 function updateNavDots() {
@@ -1303,7 +1552,7 @@ function updateNavDots() {
 function topHTML(title, sub, saved) {
   return `<header class="top">
     <div><div class="date">${sub}${saved !== undefined ? ` · <span class="saved-note">${saved ? "Saved" : "Saves as you go"}</span>` : ""}</div><h1>${title}</h1></div>
-    <div id="pill-slot">${pillHTML()}</div>
+    <div id="pill-slot" data-sig="${pillSig()}">${pillHTML()}</div>
   </header>`;
 }
 
@@ -1332,7 +1581,9 @@ function renderMorning() {
   view.querySelector("#intention").oninput = e => { m.intention = e.target.value; onChange(); };
   view.querySelector("#done-morning").onclick = e => {
     pulse(e.currentTarget);
-    toast(morningFilled(m) ? "Morning saved — have a good one" : "Nothing filled in yet");
+    if (!morningFilled(m)) { toast(pick(EMPTY_TOASTS)); return; }
+    tick();
+    doneToast("morning");
   };
 }
 
@@ -1342,15 +1593,21 @@ function renderEvening() {
   const ev = eveningModel(key);
   const onChange = () => commit(key, "evening", ev);
   const m = state.days[key]?.morning;
+  // the intention leads: it's what you told yourself the day was for
+  const intent = (m?.intention || "").trim();
+  const hasScores = m && (m.sleep != null || m.mood != null || m.body != null);
   const summary = morningFilled(m) ? `
     <section class="card">
       <div class="card-head"><span class="card-title">${eveningOffset === 0 ? "This morning" : "That morning"}</span></div>
-      <div class="summary">
+      ${intent ? `<div class="intent">
+        <div class="intent-label">You said ${eveningOffset === 0 ? "today" : "yesterday"} was for</div>
+        <div class="intent-text">${esc(intent)}</div>
+      </div>` : ""}
+      ${hasScores ? `<div class="summary">
         <div class="tile t-round"><b>${m.sleep ?? "–"}</b><span>Sleep</span></div>
         <div class="tile t-flower"><b>${m.mood ?? "–"}</b><span>Mood${m.mood ? ` · ${moodWord(m.mood)}` : ""}</span></div>
         <div class="tile t-square"><b>${m.body ?? "–"}</b><span>Body</span></div>
-      </div>
-      ${m.intention ? `<div class="quote">“${esc(m.intention)}”</div>` : ""}
+      </div>` : ""}
     </section>` : "";
 
   const boundaryRows = state.boundaries.map(b => {
@@ -1402,6 +1659,10 @@ function renderEvening() {
       </div>
     </section>
     <section class="card">
+      <label class="field-label" for="spent">Spent ${eveningOffset === 0 ? "today" : "that day"} (rough)</label>
+      <textarea id="spent" class="short" placeholder="Ballpark is fine" rows="1">${esc(ev.spent)}</textarea>
+    </section>
+    <section class="card">
       <label class="field-label" for="happened">What happened</label>
       <textarea id="happened" placeholder="The shape of the day">${esc(ev.happened)}</textarea>
       <label class="field-label" for="honest">One honest thing</label>
@@ -1420,12 +1681,18 @@ function renderEvening() {
   // tapping the selected option again clears it
   view.querySelectorAll("[data-b]").forEach(b => b.onclick = () => {
     const name = b.dataset.b;
-    ev.boundaries[name] = ev.boundaries[name] === b.dataset.s ? null : b.dataset.s;
+    const next = ev.boundaries[name] === b.dataset.s ? null : b.dataset.s;
+    ev.boundaries[name] = next;
+    tick();
+    if (next) react(next === "slipped" ? "low" : "proud");
     onChange();
     renderEvening();
   });
+  const GYM_FACES = { went: "proud", rest: "cozy", skipped: "low" };
   view.querySelectorAll("[data-gym]").forEach(b => b.onclick = () => {
     ev.gym = ev.gym === b.dataset.gym ? null : b.dataset.gym;
+    tick();
+    if (ev.gym) react(GYM_FACES[ev.gym]);
     onChange();
     renderEvening();
   });
@@ -1453,15 +1720,17 @@ function renderEvening() {
     view.querySelector("#add-boundary-btn").onclick = add;
     addInput.onkeydown = e => { if (e.key === "Enter") add(); };
   }
+  view.querySelector("#spent").oninput = e => { ev.spent = e.target.value; onChange(); };
   view.querySelector("#happened").oninput = e => { ev.happened = e.target.value; onChange(); };
   view.querySelector("#honest").oninput = e => { ev.honest = e.target.value; onChange(); };
   view.querySelector("#done-evening").onclick = e => {
     pulse(e.currentTarget);
-    if (!eveningFilled(ev)) { toast("Nothing filled in yet"); return; }
+    if (!eveningFilled(ev)) { toast(pick(EMPTY_TOASTS)); return; }
     // the day toggle marks days that already have an evening saved
     const tabBtn = view.querySelector(`[data-day="${eveningOffset}"]`);
     if (tabBtn && !tabBtn.querySelector(".mark")) tabBtn.insertAdjacentHTML("beforeend", `<span class="mark"></span>`);
-    toast(eveningOffset === 0 ? "Evening saved — sleep well" : "Yesterday's evening saved");
+    tick();
+    doneToast("evening");
   };
   view.querySelector("#copy-md").onclick = () => copyMarkdown(key, ev);
 }
@@ -1487,6 +1756,7 @@ function copyMarkdown(key, ev) {
       for (const [name, s] of bounds) lines.push(`  - ${name}: ${s}`);
     }
     if (ev.gym) lines.push(`- gym: ${ev.gym}`);
+    if (ev.spent) lines.push(`- spent: ${ev.spent}`);
     if (ev.happened) lines.push(`- what happened: ${ev.happened}`);
     if (ev.honest) lines.push(`- one honest thing: ${ev.honest}`);
     lines.push("");
@@ -1499,9 +1769,11 @@ function copyMarkdown(key, ev) {
       lines.push(`- ${g ? g.title.toLowerCase() : "goal"}: ${e.text}${e.tag ? ` (${e.tag})` : ""}`);
     }
   }
-  const text = lines.join("\n").trim() + "\n";
+  copyText(lines.join("\n").trim() + "\n", "Copied");
+}
+function copyText(text, done) {
   navigator.clipboard.writeText(text).then(
-    () => toast("Copied"),
+    () => toast(done),
     () => toast("Copy failed")
   );
 }
@@ -1559,19 +1831,26 @@ function closeSheet() {
 }
 document.addEventListener("keydown", e => { if (e.key === "Escape" && sheet) closeSheet(); });
 
+const SHEETS = {
+  goal:    { label: "goal", html: () => goalSheetHTML(), wire: () => wireGoalSheet() },
+  add:     { label: "add a goal", html: () => addSheetHTML(), wire: () => wireAddSheet() },
+  journal: { label: "journal", html: () => journalSheetHTML(), wire: () => wireJournalSheet() },
+  week:    { label: "week in review", html: () => weekSheetHTML(), wire: () => wireWeekSheet() }
+};
 function renderSheet(animate) {
   if (!sheet) return;
   const scrollTop = sheetRoot.querySelector(".sheet")?.scrollTop || 0;
-  const body = sheet.type === "goal" ? goalSheetHTML() : addSheetHTML();
+  const kind = SHEETS[sheet.type];
+  const body = kind.html();
   if (body === null) { closeSheet(); return; }
   sheetRoot.innerHTML = `<div class="sheet-back" data-close></div>
-    <div class="sheet" role="dialog" aria-modal="true" aria-label="${sheet.type === "goal" ? "goal" : "add a goal"}">
+    <div class="sheet" role="dialog" aria-modal="true" aria-label="${kind.label}">
       <div class="grab"></div>${body}
     </div>`;
   const el = sheetRoot.querySelector(".sheet");
   if (!animate) { el.style.animation = "none"; sheetRoot.querySelector(".sheet-back").style.animation = "none"; el.scrollTop = scrollTop; }
   sheetRoot.querySelectorAll("[data-close]").forEach(b => b.onclick = closeSheet);
-  if (sheet.type === "goal") wireGoalSheet(); else wireAddSheet();
+  kind.wire();
 }
 
 function goalSheetHTML() {
@@ -1650,12 +1929,15 @@ function wireGoalSheet() {
     state.log.push(entry);
     save();
     logDraft = { text: "", tag: null, date: todayKey() };
+    const completed = periodOf(g, date) === p && before < g.target && before + 1 >= g.target;
+    if (completed) react("proud", 2400);
     renderSheet();
     rerenderTab();
-    if (periodOf(g, date) === p && before < g.target && before + 1 >= g.target) {
+    if (completed) {
       const s = goalStreak(g);
       toast(s > 1 ? `Done — ${s} ${unit(g, s)} in a row` : `Done for this ${g.period}`);
       confetti();
+      tick();
     } else {
       toast("Logged");
     }
@@ -1685,8 +1967,8 @@ function addSheetHTML() {
   const ideas = GOAL_IDEAS.filter(i => !existing.has(i.title.toLowerCase()));
   return `
     <div class="sheet-hero" style="background:var(--grad-soft)">
-      <div class="blob-trio">${blobSVG("heart", 8)}${blobSVG("bear", 9)}${blobSVG("star", 8)}</div>
-      <h2 style="margin-top:6px">Add a goal</h2>
+      ${charSVG("thinking")}
+      <h2>Add a goal</h2>
       <div class="card-sub">Something small you'd like to do again and again</div>
     </div>
     <section class="card">
@@ -1739,23 +2021,172 @@ function wireAddSheet() {
   });
 }
 
+// ---------- reading back: journal + week story ----------
+const hasText = s => !!(s || "").trim();
+const listJoin = xs => xs.length < 2 ? xs.join("") : xs.slice(0, -1).join(", ") + " and " + xs[xs.length - 1];
+const GYM_TEXT = { went: "went", rest: "rest day", skipped: "skipped" };
+
+// "mood 5 → 7 · body 6 · sleep 4" — morning to evening when both are there
+function scoreBits(key) {
+  const m = state.days[key]?.morning, ev = state.days[key]?.evening;
+  const arc = (a, b) => a != null && b != null && a !== b ? `${a} → ${b}` : (b ?? a);
+  const bits = [];
+  const mood = arc(m?.mood, ev?.mood);
+  if (mood != null) bits.push(`mood ${mood}`);
+  const body = arc(m?.body, ev?.body);
+  if (body != null) bits.push(`body ${body}`);
+  if (m?.sleep != null) bits.push(`sleep ${m.sleep}`);
+  return bits;
+}
+// the day's words as [label, text] pairs; `full` adds boundaries and gym
+function storyLines(key, full) {
+  const m = state.days[key]?.morning, ev = state.days[key]?.evening;
+  const out = [];
+  const add = (label, text) => { if (hasText(text)) out.push([label, text.trim()]); };
+  add("intention", m?.intention);
+  add("what happened", ev?.happened);
+  add("one honest thing", ev?.honest);
+  if (full) {
+    const held = [], slipped = [];
+    for (const [name, s] of Object.entries(ev?.boundaries || {})) {
+      if (s === "held") held.push(name);
+      else if (s === "slipped") slipped.push(name);
+    }
+    const parts = [];
+    if (held.length) parts.push(`held ${listJoin(held)}`);
+    if (slipped.length) parts.push(`slipped on ${listJoin(slipped)}`);
+    if (parts.length) out.push(["boundaries", parts.join("; ")]);
+    if (ev?.gym) out.push(["gym", GYM_TEXT[ev.gym]]);
+  }
+  add("spent", ev?.spent);
+  return out;
+}
+function storyDayHTML(key, date, full) {
+  const bits = scoreBits(key);
+  return `<div class="story-day">
+    <div class="story-head"><span class="story-date">${date}</span>${bits.length ? `<span class="story-scores">${bits.join(" · ")}</span>` : ""}</div>
+    ${storyLines(key, full).map(([label, text]) =>
+      `<div class="story-line"><span class="story-label">${label}</span><span class="story-text">${esc(text)}</span></div>`).join("")}
+  </div>`;
+}
+
+const JOURNAL_PAGE = 14;
+function journalKeys() {
+  return Object.keys(state.days).filter(k => {
+    const d = state.days[k];
+    return hasText(d?.morning?.intention) || hasText(d?.evening?.happened) || hasText(d?.evening?.honest) || hasText(d?.evening?.spent);
+  }).sort().reverse();
+}
+function journalDate(key) {
+  const opts = { weekday: "short", day: "numeric", month: "short" };
+  if (key.slice(0, 4) !== todayKey().slice(0, 4)) opts.year = "numeric";
+  return parseKey(key).toLocaleDateString("en-GB", opts);
+}
+function journalSheetHTML() {
+  const keys = journalKeys();
+  const shown = keys.slice(0, sheet.limit);
+  return `
+    <div class="sheet-hero" style="background:var(--grad-soft)">
+      ${charSVG("thinking")}
+      <h2>Journal</h2>
+      <div class="card-sub">${keys.length ? `${keys.length} ${keys.length === 1 ? "day" : "days"} in your own words` : "Nothing written yet"}</div>
+    </div>
+    ${shown.length ? shown.map(k => `<section class="card">${storyDayHTML(k, journalDate(k), false)}</section>`).join("")
+      : `<section class="card"><div class="empty-note" style="margin-top:0">Intentions, “what happened” and “one honest thing” show up here once you've written a few.</div></section>`}
+    ${keys.length > shown.length ? `<button class="btn-ghost" id="journal-more">Show more</button>` : ""}
+  `;
+}
+function wireJournalSheet() {
+  const more = sheetRoot.querySelector("#journal-more");
+  if (more) more.onclick = () => { sheet.limit += JOURNAL_PAGE; renderSheet(); };
+}
+
+// sheet.offset: 0 = this week, -1 = last week, …
+function storyWeek() {
+  const start = addDays(weekStart(todayKey()), 7 * sheet.offset);
+  const today = todayKey();
+  const days = [];
+  for (let i = 0; i < 7; i++) {
+    const k = addDays(start, i);
+    if (k > today) break;
+    days.push({ key: k, has: scoreBits(k).length > 0 || storyLines(k, true).length > 0 });
+  }
+  return { start, end: addDays(start, 6), days };
+}
+function weekSheetHTML() {
+  const { start, end, days } = storyWeek();
+  const written = days.filter(d => d.has);
+  const moods = written.map(d => collectDay(d.key).mood).filter(v => v !== null);
+  const face = moods.length ? exprFor(Math.round(avg(moods))) : "thinking";
+  const range = `${shortDate(start, true)} – ${shortDate(end, true)}`;
+  return `
+    <div class="sheet-hero" style="background:var(--grad-soft)">
+      ${charSVG(face)}
+      <h2>${sheet.offset === 0 ? "This week's story" : sheet.offset === -1 ? "Last week's story" : "Week in review"}</h2>
+      <div class="week-nav">
+        <button data-week="-1" aria-label="previous week">‹</button>
+        <span class="card-sub">${range}</span>
+        <button data-week="1" aria-label="next week" ${sheet.offset >= 0 ? "disabled" : ""}>›</button>
+      </div>
+    </div>
+    <section class="card">
+      ${written.length ? days.map(d => d.has
+        ? storyDayHTML(d.key, prettyDate(d.key), true)
+        : `<div class="story-day story-gap"><div class="story-head"><span class="story-date">${prettyDate(d.key)}</span><span class="muted">—</span></div></div>`
+      ).join("") : `<div class="empty-note" style="margin-top:0">Nothing written this week${sheet.offset === 0 ? " yet" : ""}.</div>`}
+    </section>
+    ${written.length ? `<button class="btn-ghost" id="copy-week">Copy week as markdown</button>` : ""}
+  `;
+}
+function weekMarkdown() {
+  const { start, end, days } = storyWeek();
+  const long = k => parseKey(k).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" }).toLowerCase();
+  const lines = [`# week of ${long(start)}`, ""];
+  for (const d of days.filter(x => x.has)) {
+    lines.push(`## ${prettyDate(d.key).toLowerCase()}`);
+    const bits = scoreBits(d.key);
+    if (bits.length) lines.push(`- ${bits.join(" · ")}`);
+    for (const [label, text] of storyLines(d.key, true)) lines.push(`- ${label}: ${text}`);
+    lines.push("");
+  }
+  const logged = state.log.filter(e => e.date >= start && e.date <= end).sort((a, b) => a.date.localeCompare(b.date));
+  if (logged.length) {
+    lines.push("## goals");
+    for (const e of logged) {
+      const g = state.goals.find(x => x.id === e.goal);
+      lines.push(`- ${g ? g.title.toLowerCase() : "goal"}: ${e.text}${e.tag ? ` (${e.tag})` : ""}`);
+    }
+  }
+  return lines.join("\n").trim() + "\n";
+}
+function wireWeekSheet() {
+  sheetRoot.querySelectorAll("[data-week]").forEach(b => b.onclick = () => {
+    sheet.offset = Math.min(0, sheet.offset + Number(b.dataset.week));
+    renderSheet();
+    sheetRoot.querySelector(".sheet").scrollTop = 0;
+  });
+  const copy = sheetRoot.querySelector("#copy-week");
+  if (copy) copy.onclick = () => copyText(weekMarkdown(), "Week copied");
+}
+
 // ---------- progress tab ----------
 // n days ending `shift` days ago
 function collectWindow(n, shift = 0) {
   const out = [];
-  for (let i = n - 1; i >= 0; i--) {
-    const key = todayKey(-i - shift);
-    const d = state.days[key];
-    const m = d?.morning, ev = d?.evening;
-    out.push({
-      key,
-      sleep: m?.sleep ?? null,
-      mood: ev?.mood ?? m?.mood ?? null,
-      body: ev?.body ?? m?.body ?? null,
-      boundaries: ev?.boundaries ?? null
-    });
-  }
+  for (let i = n - 1; i >= 0; i--) out.push(collectDay(todayKey(-i - shift)));
   return out;
+}
+// one day's numbers, evening first
+function collectDay(key) {
+  const d = state.days[key];
+  const m = d?.morning, ev = d?.evening;
+  return {
+    key,
+    sleep: m?.sleep ?? null,
+    mood: ev?.mood ?? m?.mood ?? null,
+    body: ev?.body ?? m?.body ?? null,
+    boundaries: ev?.boundaries ?? null
+  };
 }
 const avg = xs => xs.length ? xs.reduce((a, b) => a + b, 0) / xs.length : null;
 const fmt1 = x => x === null ? "–" : (Math.round(x * 10) / 10).toFixed(1);
@@ -1789,7 +2220,17 @@ function chartSVG(days) {
     });
     if (path) g = `<path d="${path.trim()}" fill="none" stroke="${color}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>` + g;
   }
-  return `<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="sleep, mood and body over time" style="font-family:var(--font)">${g}</svg>`;
+  return `<svg class="chart" viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="sleep, mood and body over time" style="font-family:var(--font)">${g}</svg>`;
+}
+
+// the progress hero: thinking with no streak, proud once it's a habit,
+// otherwise today's mood (a rough day still shows as one)
+function streakExpression(cur) {
+  if (!cur) return "thinking";
+  const mood = collectDay(todayKey()).mood;
+  if (mood != null && mood <= 4) return exprFor(mood);
+  if (cur >= 7) return "proud";
+  return mood != null ? exprFor(mood) : "thinking";
 }
 
 function renderProgress() {
@@ -1798,6 +2239,7 @@ function renderProgress() {
   const hasData = days.some(d => d.sleep !== null || d.mood !== null || d.body !== null);
   const checkedIn = days.filter(d => dayFilled(d.key)).length;
   const cur = currentStreak(), best = bestStreak();
+  const journalCount = journalKeys().length;
 
   // last 7 days, sliding
   let last7 = "", n7 = 0;
@@ -1865,10 +2307,14 @@ function renderProgress() {
       <div><div class="date">How it's going</div><h1>Progress</h1></div>
     </header>
     <div class="hero">
-      <div class="blob-trio floaty">${blobSVG("cloud", 8)}${blobSVG("flower", todaysMood())}${blobSVG("book", 7)}</div>
+      <div class="hero-char floaty">${charSVG(streakExpression(cur))}</div>
       <div class="big">${cur}</div>
       <div class="big-label">${cur === 1 ? "day" : "days"} in a row</div>
       <p>${dayFilled(todayKey()) ? "Today's in. " : "Check in today to keep it growing. "}Your record is ${best}.</p>
+    </div>
+    <div class="read-links">
+      <button class="read-link" id="open-week"><b>This week's story</b><span>Read it like a diary</span></button>
+      <button class="read-link" id="open-journal"><b>Journal</b><span>${journalCount ? `${journalCount} ${journalCount === 1 ? "day" : "days"} written` : "Past entries"}</span></button>
     </div>
     <section class="card">
       <div class="card-head"><span class="card-title">Last 7 days</span><span class="card-sub">${n7} of 7</span></div>
@@ -1911,6 +2357,8 @@ function renderProgress() {
     <input type="file" id="import-file" accept="application/json" hidden>
   `;
   view.querySelectorAll("[data-range]").forEach(b => b.onclick = () => { range = Number(b.dataset.range); renderProgress(); });
+  view.querySelector("#open-week").onclick = () => openSheet({ type: "week", offset: 0 });
+  view.querySelector("#open-journal").onclick = () => openSheet({ type: "journal", limit: JOURNAL_PAGE });
   view.querySelector("#export-json").onclick = () => {
     const blob = new Blob([JSON.stringify(state, null, 2)], { type: "application/json" });
     const a = document.createElement("a");
@@ -1947,7 +2395,7 @@ function animateProgress() {
     view.querySelectorAll(".bar-fill[data-w]").forEach(f => { f.style.width = f.dataset.w + "%"; });
     return;
   }
-  const paths = view.querySelectorAll("svg path");
+  const paths = view.querySelectorAll("svg.chart path");
   paths.forEach(p => {
     const len = p.getTotalLength();
     p.style.strokeDasharray = len;
@@ -1968,7 +2416,8 @@ function toast(msg) {
   t.textContent = msg;
   t.classList.add("show");
   clearTimeout(toast._t);
-  toast._t = setTimeout(() => t.classList.remove("show"), 2200);
+  // longer lines stay up long enough to read
+  toast._t = setTimeout(() => t.classList.remove("show"), Math.max(2200, msg.length * 55));
 }
 
 function pulse(btn) {
